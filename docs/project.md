@@ -1,5 +1,7 @@
 # Project
 
+> **Project-context document:** This file describes the current AI Development Harness product and phase. A future project may reuse the scaffold, but must replace this content with its own scope and state.
+
 ## Product
 
 AI Development Harness
@@ -40,7 +42,7 @@ Phase 0 should support:
 
 ```text
 project.md
-→ design document
+→ design document when needed
 → GitHub Issues
 → current-slice.md
 → manual implementation
@@ -57,14 +59,15 @@ It is not yet intended to be a universal development framework.
 
 ## Phase 0 scope
 
-- Repository constitution through `AGENTS.md`.
-- Clear document responsibilities.
+- A reusable workflow constitution through `AGENTS.md`.
+- A clear separation between reusable workflow assets and project-owned context.
+- Clear responsibilities for every project document.
 - GitHub Issues as the work queue.
-- A reusable `current-slice.md` execution contract.
+- A reusable `current-slice.md` schema for project-specific execution packages.
 - Selective context-loading rules.
 - Planning, implementation, validation, and review boundaries.
 - Lightweight structural validation.
-- Instructions for starting new projects.
+- Instructions for initializing new projects without copying harness context.
 - Real-world testing through `live-draft-tool-v2`.
 
 ## Phase 0 non-goals
@@ -82,18 +85,20 @@ It is not yet intended to be a universal development framework.
 ## Product principles
 
 1. Intelligence lives in project documents.
-2. Each project remains self-contained.
-3. Human approval remains explicit.
-4. Work is executed in small, bounded slices.
-5. Validation and review are separate concepts.
-6. Reusable mechanics are extracted only after proven repetition.
-7. Every phase must leave the harness usable.
+2. Reusable workflow mechanics remain separate from project context.
+3. Each project remains self-contained.
+4. Human approval remains explicit.
+5. Work is executed in small, bounded slices.
+6. Validation and review are separate concepts.
+7. Reusable mechanics are extracted only after proven repetition.
+8. Every phase must leave the harness usable.
 
 ## Phase 0 success criteria
 
 Phase 0 is complete when:
 
-- a new repository can begin from this template;
+- a new repository can begin from the harness without inheriting harness-specific project context;
+- reusable workflow assets and project-document scaffolds are clearly distinguished;
 - its project and architecture can be documented without inventing a workflow;
 - work can be represented as GitHub Issues;
 - one issue can be promoted into a strong implementation slice;

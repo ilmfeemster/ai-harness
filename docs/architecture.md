@@ -1,20 +1,21 @@
 # Architecture
 
+> **Project-context document:** This file describes the architecture of the AI Development Harness project. A future project may reuse its headings or scaffold, but must replace the harness-specific content. Reusable workflow governance and document responsibilities live in `AGENTS.md`.
+
 ## Current architecture stage
 
 Phase 0 is a document-first project template with lightweight local tooling.
 
-The template must remain usable without a hosted service, central controller, database, or autonomous agent system.
+The harness must remain usable without a hosted service, central controller, database, or autonomous agent system.
 
 ## Core boundary
 
-Each project created from the template is self-contained.
+Each project created from the harness is self-contained.
 
 ```text
 project repository
-├── workflow constitution
-├── project intelligence
-├── design documents
+├── reusable workflow assets
+├── project-owned documents
 ├── GitHub work items
 ├── active execution package
 ├── source code
@@ -22,15 +23,62 @@ project repository
 └── validation history
 ```
 
-The harness repository is the source template, not a runtime control plane for other repositories.
+The harness repository is the source and test project for the template. It is not a runtime control plane for other repositories.
 
-## Ownership model
+## Template composition
 
-### Project-owned intelligence
+The template has two distinct output categories.
 
-The following should remain in each project:
+### Reusable workflow assets
+
+These encode workflow mechanics rather than product knowledge:
+
+- the default `AGENTS.md` constitution;
+- GitHub Issue templates after Phase 0.3;
+- structural validators and workflow scripts added in later slices;
+- reusable schemas or starter headings.
+
+These assets should remain project-neutral unless a project intentionally changes its workflow.
+
+### Initialized project-owned documents
+
+These are created from scaffolds but populated with the new project's intelligence and state:
+
+- project README;
+- current project scope;
+- project roadmap;
+- project architecture;
+- durable project decisions;
+- detailed designs;
+- project testing strategy;
+- GitHub Issue contents;
+- active slice;
+- source code and tests.
+
+The current harness contents of these sources are development context, not reusable project content.
+
+## Source-repository dual role
+
+This repository uses the same document paths that future projects will use because the harness must prove its own workflow through real development.
+
+That does not mean project creation should copy all files verbatim.
+
+A future project-start process must:
+
+1. copy reusable workflow assets;
+2. create project-document paths from approved scaffolds;
+3. remove harness-specific content and bootstrap state;
+4. initialize those documents with the new project's context;
+5. preserve project self-containment.
+
+The exact initialization procedure belongs to Phase 0.7. This architecture defines the boundary that procedure must preserve.
+
+## Project-local intelligence
+
+The following remain local to each project:
 
 - product vision and current scope;
+- roadmap;
 - architecture;
 - durable decisions;
 - domain knowledge;
@@ -38,11 +86,13 @@ The following should remain in each project:
 - GitHub Issues;
 - active slice;
 - testing strategy;
-- project-specific agent instructions.
+- source code and tests.
 
-### Potential shared mechanics, later
+Project intelligence must not be embedded in a central harness service or silently inherited from an unrelated source project.
 
-Only after repeated use may these be extracted:
+## Potential shared mechanics, later
+
+Only after repeated use may these be extracted into shared tooling:
 
 - structural document validation;
 - issue parsing;
@@ -52,43 +102,34 @@ Only after repeated use may these be extracted:
 - model invocation adapters;
 - evaluation logic.
 
-## Phase 0 components
+Extraction should move mechanics, not project intelligence.
 
-### `AGENTS.md`
+## Phase 0 runtime model
 
-The workflow constitution. It defines instruction priority, context loading, work modes, implementation boundaries, validation, review, and completion behavior.
+Phase 0 has no automated runtime orchestrator.
 
-### Project documents
-
-Durable layers of project intelligence:
+The operating sequence is manually initiated:
 
 ```text
-roadmap
-  ↓
-project
-  ↓
-architecture and decisions
-  ↓
-design
+project documents
+↓
+ready work item
+↓
+approved current slice
+↓
+implementation agent
+↓
+deterministic validation
+↓
+human review and approval
 ```
 
-Each layer should add detail without duplicating lower or higher layers.
-
-### GitHub Issues
-
-The implementation work queue. Issues define meaningful outcomes and acceptance criteria.
-
-### `current-slice.md`
-
-The single approved bounded execution package. It converts one ready issue into specific implementation steps, files, commands, and review conditions.
-
-### Local validation
-
-Small scripts may validate document structure and execute declared commands. These tools must remain understandable and replaceable.
+Local scripts may validate document structure and execute declared commands. These tools must remain understandable and replaceable.
 
 ## Architecture principles
 
 - Documents before orchestration code.
+- Reusable mechanics separated from project context.
 - Project-local intelligence.
 - Human approval at phase boundaries.
 - One active implementation slice.
@@ -118,6 +159,7 @@ Phase 0 does not include:
 Future automation must preserve:
 
 - document authority;
+- the separation of reusable mechanics from project context;
 - project self-containment;
 - issue-to-slice traceability;
 - bounded execution;

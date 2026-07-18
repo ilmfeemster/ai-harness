@@ -1,5 +1,7 @@
 # Decisions
 
+> **Project-context document:** This file records durable decisions for the AI Development Harness project. New projects may reuse the decision-record format, but must not inherit these entries as their own decisions.
+
 Record only decisions that materially affect future development.
 
 ## 2026-07-17 — Template-first architecture
@@ -82,3 +84,43 @@ Documents are inspectable, versioned, editable, and usable across model provider
 - Document quality becomes a critical dependency.
 - Contradictions and drift need explicit management.
 - Later tooling must discover and assemble documents reliably.
+
+## 2026-07-18 — Separate reusable workflow assets from project context
+
+### Decision
+
+Treat the harness output as two different categories:
+
+1. reusable workflow assets that can be copied with little project-specific content; and
+2. project-document scaffolds whose substantive contents must be initialized for each project.
+
+`AGENTS.md` owns the reusable document responsibility and template-treatment model. Documents such as `project.md`, `roadmap.md`, `architecture.md`, `decisions.md`, `testing.md`, designs, Issues, and the active slice contain project intelligence or state.
+
+### Reason
+
+The harness repository is both the development project and the source for future project templates. Without an explicit separation, harness-specific scope, architecture, decisions, and active state could be mistaken for reusable template content.
+
+### Tradeoffs
+
+- Starting a project requires an initialization or reset step rather than copying the source repository byte for byte.
+- Reusable schemas and project content must be maintained as distinct concepts.
+- Phase 0.7 must define a reliable project-start process.
+- The harness can test its own workflow using real documents without treating their current contents as universal defaults.
+
+## 2026-07-18 — Authority is determined by concern
+
+### Decision
+
+Resolve document authority according to each source's defined responsibility rather than a universal priority list.
+
+The active slice controls execution detail, but it cannot silently override current scope, architecture, durable decisions, approved design, project-wide testing standards, or the required outcome of its source work item.
+
+### Reason
+
+A universal hierarchy incorrectly implies that a more operational document may rewrite unrelated upstream constraints. Authority by concern preserves both precise execution and durable project boundaries.
+
+### Tradeoffs
+
+- Conflicts sometimes require an explicit stop and upstream correction.
+- Agents must identify which concern a statement governs.
+- The responsibility model must remain clear and current in `AGENTS.md`.

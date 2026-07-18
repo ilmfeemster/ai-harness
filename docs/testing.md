@@ -1,5 +1,7 @@
 # Testing and Validation
 
+> **Project-context document:** This file defines confidence standards for the AI Development Harness project. A future project may reuse its structure and general concepts, but must specialize the actual commands, test levels, and acceptance standards for that project.
+
 ## Goal
 
 Define the confidence required before harness work is considered complete.
@@ -11,6 +13,8 @@ This document separates:
 - workflow validation;
 - human review;
 - future automated evaluation.
+
+Slice-specific commands and results belong in `docs/current-slice.md`. This document owns project-wide standards.
 
 ## Testing philosophy
 
@@ -24,6 +28,8 @@ Testing depth should increase with harness maturity.
 
 Phase 0 should prove that:
 
+- reusable workflow assets are distinguishable from project-context documents;
+- a new project can be initialized without inheriting harness-specific context;
 - required project documents exist;
 - document responsibilities are clear;
 - a GitHub Issue can represent a ready work item;
@@ -50,7 +56,7 @@ Mechanical evidence such as:
 
 Judgment about whether:
 
-- the issue is actually satisfied;
+- the source work item is actually satisfied;
 - scope remained bounded;
 - architecture and decisions were preserved;
 - tests are meaningful;
@@ -59,16 +65,26 @@ Judgment about whether:
 
 Passing validation does not automatically imply approval.
 
+## Project-wide standards versus slice checks
+
+`docs/testing.md` defines the level and type of evidence the project generally requires.
+
+`docs/current-slice.md` identifies the exact commands, manual checks, and acceptance criteria required for one work item.
+
+A slice may add stricter checks. It may not weaken project-wide standards merely to pass.
+
 ## Phase 0 test levels
 
 ### Structural tests
 
-Validate the template itself:
+Validate the harness and generated project structure:
 
 - required files exist;
 - required headings exist;
 - referenced paths are valid where practical;
-- `current-slice.md` includes a source issue and validation commands;
+- reusable assets do not contain harness-only project state;
+- project-context scaffolds can be initialized without carrying source-project content;
+- `current-slice.md` includes a source work item and validation commands;
 - approved slices contain no unresolved template markers.
 
 ### Unit tests
@@ -98,6 +114,7 @@ The fantasy-football repository is the first testbed.
 Confirm that:
 
 - document loading is understandable;
+- reusable workflow rules and project context are not mixed;
 - the slice is appropriately bounded;
 - implementation can proceed without repeated clarification;
 - completion output is easy to review;

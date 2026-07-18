@@ -1,8 +1,12 @@
 # Harness Roadmap
 
+> **Project-context document:** This roadmap describes the future development of the AI Development Harness. It is not reusable roadmap content for projects created from the harness. New projects should initialize their own roadmap from an appropriate scaffold.
+
 The harness is a project template. Each project owns its documents, code, workflow state, and implementation history.
 
 Every phase must produce a usable workflow. Later phases extend the existing model rather than replacing it.
+
+This document defines future direction and sequencing. It is not the active work queue.
 
 ## Phase 0 — Usable document-driven workflow template
 
@@ -12,7 +16,7 @@ A complete, manually operated workflow at least as useful as the current `live-d
 
 ```text
 project.md
-→ design documents
+→ design documents when needed
 → GitHub Issues
 → current-slice.md
 → manual implementation
@@ -25,18 +29,18 @@ project.md
 
 1. **0.1 Establish the harness repository**
    - Create the constitution and core documents.
-2. **0.2 Define document responsibilities**
-   - Remove ambiguity and duplication between document levels.
+2. **0.2 Define document responsibilities and reuse boundaries**
+   - Separate reusable workflow rules from project context and remove ambiguity between document levels.
 3. **0.3 Define the GitHub Issue workflow**
    - Add issue templates, readiness rules, and minimal labels.
 4. **0.4 Define the slice standard**
-   - Finalize the reusable execution-package contract.
+   - Finalize the reusable execution-package schema.
 5. **0.5 Define planning modes**
    - Formalize document loading and output expectations by operation.
 6. **0.6 Add lightweight local validation**
    - Check required files, slice sections, references, commands, and placeholders.
 7. **0.7 Add project-start instructions**
-   - Make creation and initial planning straightforward.
+   - Initialize new projects from reusable assets and clean scaffolds without copying harness context.
 8. **0.8 Compare against the fantasy workflow**
    - Bring over proven rules without copying domain-specific content.
 9. **0.9 Use the workflow on a real fantasy-app slice**
