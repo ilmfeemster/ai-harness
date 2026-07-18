@@ -57,7 +57,7 @@ Issues provide status, discussion, linking, and future branch/PR integration whi
 
 ### Decision
 
-Keep issue selection, slice approval, implementation invocation, repair decisions, and final approval manual during Phase 0.
+Keep Issue selection, slice approval, implementation invocation, repair decisions, and final approval manual during Phase 0.
 
 ### Reason
 
@@ -89,7 +89,7 @@ Documents are inspectable, versioned, editable, and usable across model provider
 
 ### Decision
 
-Treat the harness output as two different categories:
+Treat the harness output as two categories:
 
 1. reusable workflow assets that can be copied with little project-specific content; and
 2. project-document scaffolds whose substantive contents must be initialized for each project.
@@ -113,7 +113,7 @@ The harness repository is both the development project and the source for future
 
 Resolve document authority according to each source's defined responsibility rather than a universal priority list.
 
-The active slice controls execution detail, but it cannot silently override current scope, architecture, durable decisions, approved design, project-wide testing standards, or the required outcome of its source work item.
+The active slice controls execution detail, but it cannot silently override current scope, architecture, durable decisions, approved design, project-wide testing standards, or the required outcome of its source Issue.
 
 ### Reason
 
@@ -124,3 +124,39 @@ A universal hierarchy incorrectly implies that a more operational document may r
 - Conflicts sometimes require an explicit stop and upstream correction.
 - Agents must identify which concern a statement governs.
 - The responsibility model must remain clear and current in `AGENTS.md`.
+
+## 2026-07-18 — Issue contract owns readiness; labels do not
+
+### Decision
+
+Use reusable GitHub Issue forms to define required work-item information and readiness. Do not require custom labels to represent workflow state during Phase 0.
+
+Issue forms may be submitted as draft backlog items with readiness boxes unchecked. An Issue is ready only when its required fields are complete, dependencies are satisfied, and every readiness item is confirmed. An Issue becomes active when it is referenced by the approved current slice. It is complete only after human approval and closure.
+
+### Reason
+
+Issue forms travel cleanly with the template, while repository labels may be missing, renamed, or used differently. Encoding readiness in the Issue itself preserves inspectability and avoids hidden repository configuration.
+
+### Tradeoffs
+
+- Readiness is a contract enforced by review rather than a dedicated GitHub status label.
+- Later automation must parse Issue content rather than relying only on labels.
+- Labels remain useful for classification but are not authoritative state.
+
+## 2026-07-18 — Issues define outcomes; slices define execution
+
+### Decision
+
+A GitHub Issue defines the approved bounded outcome. `docs/current-slice.md` translates one ready Issue into detailed implementation steps, expected files, commands, failure conditions, and review checks.
+
+Material changes to the required outcome must be made in the Issue and reflected in a revised, reapproved slice. Execution-only refinements may be recorded in the slice.
+
+### Reason
+
+This preserves a stable project work queue without forcing Issues to carry agent-level file instructions. It also prevents an operational slice from quietly changing the work that was approved.
+
+### Tradeoffs
+
+- Promotion requires a deliberate translation step.
+- Issue and slice drift must be reviewed.
+- One work item is represented in two linked artifacts for different purposes.

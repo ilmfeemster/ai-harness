@@ -31,9 +31,10 @@ Phase 0 should prove that:
 - reusable workflow assets are distinguishable from project-context documents;
 - a new project can be initialized without inheriting harness-specific context;
 - required project documents exist;
-- document responsibilities are clear;
-- a GitHub Issue can represent a ready work item;
-- one issue can be promoted into a bounded slice;
+- reusable Issue forms exist and require the readiness contract;
+- submitted Issues remain project-specific work state;
+- one ready Issue can be promoted into a bounded slice;
+- Issue outcome and slice execution detail remain aligned;
 - the slice contains all required sections;
 - declared validation commands are usable;
 - implementation completion is reviewable;
@@ -46,6 +47,7 @@ Phase 0 should prove that:
 Mechanical evidence such as:
 
 - required files and sections;
+- valid Issue-form YAML structure;
 - no unresolved placeholders;
 - parseable configuration;
 - command exit codes;
@@ -56,7 +58,9 @@ Mechanical evidence such as:
 
 Judgment about whether:
 
-- the source work item is actually satisfied;
+- the source Issue is actually satisfied;
+- the Issue was ready before promotion;
+- the slice preserves the Issue outcome;
 - scope remained bounded;
 - architecture and decisions were preserved;
 - tests are meaningful;
@@ -84,7 +88,11 @@ Validate the harness and generated project structure:
 - referenced paths are valid where practical;
 - reusable assets do not contain harness-only project state;
 - project-context scaffolds can be initialized without carrying source-project content;
-- `current-slice.md` includes a source work item and validation commands;
+- both reusable Issue forms exist;
+- blank Issues are disabled so work uses the defined contract;
+- Issue forms contain outcome, scope, non-goal, acceptance, dependency, document, and readiness fields;
+- readiness boxes can remain unchecked for draft backlog Issues;
+- `current-slice.md` includes a source Issue and validation commands;
 - approved slices contain no unresolved template markers.
 
 ### Unit tests
@@ -101,10 +109,13 @@ Run a real work item through:
 
 ```text
 GitHub Issue
+→ readiness review
 → current-slice.md
 → implementation
 → validation
 → review
+→ approval
+→ Issue closure
 ```
 
 The fantasy-football repository is the first testbed.
@@ -115,6 +126,8 @@ Confirm that:
 
 - document loading is understandable;
 - reusable workflow rules and project context are not mixed;
+- Issue forms are useful without excessive ceremony;
+- labels are not required to infer readiness;
 - the slice is appropriately bounded;
 - implementation can proceed without repeated clarification;
 - completion output is easy to review;
@@ -131,13 +144,15 @@ A harness slice is not complete until:
 - completion notes accurately describe the result;
 - human review approves the outcome.
 
+The source Issue is closed only after this standard is met.
+
 ## Future evaluation
 
 Independent automated evaluation is planned for Phase 3.
 
 It should compare:
 
-- source issue;
+- source Issue;
 - approved slice;
 - relevant project documents;
 - implementation diff;

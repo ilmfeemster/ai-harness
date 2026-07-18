@@ -16,7 +16,7 @@ Each project created from the harness is self-contained.
 project repository
 ├── reusable workflow assets
 ├── project-owned documents
-├── GitHub work items
+├── project-specific GitHub Issues
 ├── active execution package
 ├── source code
 ├── tests
@@ -34,11 +34,13 @@ The template has two distinct output categories.
 These encode workflow mechanics rather than product knowledge:
 
 - the default `AGENTS.md` constitution;
-- GitHub Issue templates after Phase 0.3;
+- `.github/ISSUE_TEMPLATE/` Issue forms;
 - structural validators and workflow scripts added in later slices;
 - reusable schemas or starter headings.
 
 These assets should remain project-neutral unless a project intentionally changes its workflow.
+
+The Issue forms define a reusable contract. They do not contain a project's backlog. Submitted Issues remain project-owned state.
 
 ### Initialized project-owned documents
 
@@ -67,11 +69,25 @@ A future project-start process must:
 
 1. copy reusable workflow assets;
 2. create project-document paths from approved scaffolds;
-3. remove harness-specific content and bootstrap state;
+3. remove harness-specific content and operational state;
 4. initialize those documents with the new project's context;
-5. preserve project self-containment.
+5. initialize the reusable Issue forms in the new GitHub repository;
+6. preserve project self-containment.
 
 The exact initialization procedure belongs to Phase 0.7. This architecture defines the boundary that procedure must preserve.
+
+## GitHub work-item model
+
+GitHub Issues are the project-owned work queue. The reusable Issue forms require enough information to determine whether one outcome is ready for promotion.
+
+Workflow state is deliberately not encoded in custom labels during Phase 0:
+
+- readiness is established by the Issue contract;
+- active work is identified by `docs/current-slice.md`;
+- completion is represented by human approval followed by Issue closure;
+- labels may classify work but are not authoritative state.
+
+This avoids coupling the reusable template to a repository-specific label inventory.
 
 ## Project-local intelligence
 
@@ -83,7 +99,7 @@ The following remain local to each project:
 - durable decisions;
 - domain knowledge;
 - detailed designs;
-- GitHub Issues;
+- submitted GitHub Issues;
 - active slice;
 - testing strategy;
 - source code and tests.
@@ -95,7 +111,7 @@ Project intelligence must not be embedded in a central harness service or silent
 Only after repeated use may these be extracted into shared tooling:
 
 - structural document validation;
-- issue parsing;
+- Issue parsing;
 - context assembly;
 - command execution;
 - run reporting;
@@ -113,7 +129,7 @@ The operating sequence is manually initiated:
 ```text
 project documents
 ↓
-ready work item
+ready GitHub Issue
 ↓
 approved current slice
 ↓
@@ -122,6 +138,8 @@ implementation agent
 deterministic validation
 ↓
 human review and approval
+↓
+Issue closure
 ```
 
 Local scripts may validate document structure and execute declared commands. These tools must remain understandable and replaceable.
@@ -161,7 +179,7 @@ Future automation must preserve:
 - document authority;
 - the separation of reusable mechanics from project context;
 - project self-containment;
-- issue-to-slice traceability;
+- Issue-to-slice traceability;
 - bounded execution;
 - inspectable decisions;
 - deterministic validation;

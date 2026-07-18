@@ -32,15 +32,15 @@ project.md
 2. **0.2 Define document responsibilities and reuse boundaries**
    - Separate reusable workflow rules from project context and remove ambiguity between document levels.
 3. **0.3 Define the GitHub Issue workflow**
-   - Add issue templates, readiness rules, and minimal labels.
+   - Add reusable Issue forms, the readiness and promotion contract, a minimal label policy, and project-specific Issues for the remaining Phase 0 work.
 4. **0.4 Define the slice standard**
-   - Finalize the reusable execution-package schema.
+   - Finalize the reusable execution-package schema while ensuring every active slice is reset and populated as project-specific state.
 5. **0.5 Define planning modes**
    - Formalize document loading and output expectations by operation.
 6. **0.6 Add lightweight local validation**
-   - Check required files, slice sections, references, commands, and placeholders.
+   - Check required files, slice sections, references, commands, unresolved placeholders, and separation between reusable assets and project context.
 7. **0.7 Add project-start instructions**
-   - Initialize new projects from reusable assets and clean scaffolds without copying harness context.
+   - Package reusable assets and initialize clean project documents without copying harness context.
 8. **0.8 Compare against the fantasy workflow**
    - Bring over proven rules without copying domain-specific content.
 9. **0.9 Use the workflow on a real fantasy-app slice**
@@ -57,7 +57,7 @@ A ready GitHub Issue can become a high-quality `current-slice.md` with little re
 ### Capabilities
 
 - local document discovery;
-- issue parsing;
+- Issue-form parsing;
 - context manifests;
 - design-document selection;
 - slice drafting;
@@ -89,7 +89,7 @@ No automatic repair.
 
 ### Outcome
 
-Implementation results are independently evaluated against the issue, slice, architecture, tests, and validation evidence. Identified defects may receive limited repair attempts.
+Implementation results are independently evaluated against the Issue, slice, architecture, tests, and validation evidence. Identified defects may receive limited repair attempts.
 
 ### Capabilities
 
@@ -104,17 +104,17 @@ Implementation results are independently evaluated against the issue, slice, arc
 
 ### Outcome
 
-A ready issue can become a review-ready draft pull request while preserving human approval before merge.
+A ready Issue can become a review-ready draft pull request while preserving human approval before merge.
 
 ### Capabilities
 
 - branch and commit creation;
-- issue, slice, commit, and PR linkage;
+- Issue, slice, commit, and PR linkage;
 - draft PR creation;
 - CI status collection;
 - selected review-feedback repair;
 - merge-readiness reporting;
-- issue closure after merge.
+- Issue closure after merge.
 
 ## Phase 5 — Proven reusable tooling
 
@@ -125,7 +125,7 @@ Mechanics demonstrated across multiple projects are extracted into a versioned p
 Possible components:
 
 - document validators;
-- issue parsers;
+- Issue parsers;
 - context assembly;
 - execution runners;
 - model adapters;
@@ -139,7 +139,7 @@ Consider only after repeated use demonstrates value.
 
 Possible capabilities:
 
-- recommending the next ready issue;
+- recommending the next ready Issue;
 - detecting blocked work;
 - preparing several future slices;
 - comparing model cost and quality;

@@ -4,9 +4,9 @@
 
 This repository uses an opinionated, document-driven workflow for AI-assisted software development.
 
-This file is the reusable workflow constitution. It defines how agents should locate context, plan work, prepare slices, implement changes, validate results, and stop for human approval.
+This file is the reusable workflow constitution. It defines how agents locate context, plan work, create work items, prepare slices, implement changes, validate results, and stop for human approval.
 
-Keep product vision, roadmap, architecture, design, active work, and implementation history in their project-owned sources rather than embedding them here.
+Keep product vision, roadmap, architecture, decisions, designs, active work, and implementation history in their project-owned sources rather than embedding them here.
 
 ## 2. Core philosophy
 
@@ -33,7 +33,7 @@ The harness separates reusable workflow mechanics from project-specific intellig
 These should normally be copied into a new project with little or no project-specific content:
 
 - `AGENTS.md`;
-- future GitHub Issue templates;
+- `.github/ISSUE_TEMPLATE/`;
 - future structural validators and workflow scripts;
 - reusable document schemas or starter headings.
 
@@ -54,11 +54,7 @@ These paths may be created from reusable scaffolds, but their substantive conten
 
 Do not copy another project's product context, roadmap, architecture, decisions, designs, active slice, or work-item contents into a new project merely because the file paths are part of the template.
 
-### Bootstrap-only artifacts
-
-If `docs/bootstrap-tasks.md` exists, it is a temporary queue used only while the repository's GitHub Issue workflow is not yet available. It is not part of the reusable project template and should be deleted after its contents are transferred into Issues.
-
-## 4. Document responsibilities and authority
+## 4. Document responsibilities
 
 Authority is determined **by concern**, not by one universal descending hierarchy.
 
@@ -72,16 +68,18 @@ Authority is determined **by concern**, not by one universal descending hierarch
 | `docs/architecture.md` | Current system structure, boundaries, components, dependency direction, and architectural constraints | Reuse scaffold; replace content | Generic workflow governance, project backlog, or decision history |
 | `docs/decisions.md` | Durable project decisions, rationale, and tradeoffs | Reuse empty format; replace entries | General notes, temporary planning, or status log |
 | `docs/design/*.md` | Detailed approved design for a coherent capability or change | Reuse document pattern; create project-specific designs | Work queue, implementation transcript, or broad project roadmap |
-| GitHub Issues | Project work queue and required outcome of bounded work items | Reuse Issue templates; create project-specific Issues | Full file-level execution package |
-| `docs/current-slice.md` | One approved, bounded execution package for the active work item | Reuse schema; reset active content | Backlog, multi-item plan, or authority to alter upstream constraints silently |
+| GitHub Issues | Project work queue and required outcome of bounded work items | Reuse Issue forms; create project-specific Issues | Full file-level execution package |
+| `docs/current-slice.md` | One approved, bounded execution package for the active Issue | Reuse schema; reset active content | Backlog, multi-item plan, or authority to alter upstream constraints silently |
 | `docs/testing.md` | Project-wide testing philosophy, validation standards, and confidence requirements | Reuse scaffold; specialize content | Slice-specific command results or substitute for acceptance criteria |
 | Code and tests | Actual implemented behavior and executable evidence | Entirely project-specific | Product planning or undocumented policy |
 
-A more detailed source may add specificity within its concern only when it remains compatible with the sources that govern other concerns.
+A more detailed source may add specificity within its concern only when it remains compatible with sources governing other concerns.
+
+## 5. Conflict handling
 
 `docs/current-slice.md` is the execution package during implementation. It does not silently override:
 
-- its source work item;
+- its source Issue;
 - current project scope;
 - architecture;
 - durable decisions;
@@ -96,7 +94,7 @@ When authoritative sources materially conflict:
 4. correct the appropriate upstream source when authorized, or request a decision;
 5. do not resolve the conflict through an undocumented assumption.
 
-## 5. Normal information flow
+## 6. Normal information flow
 
 Not every change requires every layer.
 
@@ -136,9 +134,7 @@ validation + review
 human approval
 ```
 
-During repository bootstrap, `docs/bootstrap-tasks.md` may temporarily replace GitHub Issues.
-
-## 6. Startup procedure
+## 7. Startup procedure
 
 At the beginning of repository work:
 
@@ -149,7 +145,7 @@ At the beginning of repository work:
 5. Do not read every document by default.
 6. Expand context only when a missing dependency or contradiction requires it.
 
-## 7. Work modes and document loading
+## 8. Work modes and document loading
 
 ### Repository orientation
 
@@ -170,7 +166,7 @@ Read:
 - relevant durable decisions;
 - relevant completed designs when they constrain the plan.
 
-Update `docs/project.md` when current goals or scope change. Update `docs/roadmap.md` when future phase direction changes.
+Update `docs/project.md` when current goals or scope change. Update `docs/roadmap.md` when future direction changes.
 
 ### Architecture work
 
@@ -205,15 +201,13 @@ Read:
 - relevant architecture and decisions;
 - relevant testing constraints.
 
-A GitHub Issue should define a meaningful, reviewable outcome. Do not duplicate the complete file-level execution plan that belongs in `docs/current-slice.md`.
-
-If the Issue workflow is not yet available and `docs/bootstrap-tasks.md` exists, use its relevant entry as the temporary source work item.
+Create one meaningful, reviewable outcome per Issue. Do not duplicate the complete file-level execution plan that belongs in `docs/current-slice.md`.
 
 ### Slice preparation
 
 Read:
 
-- the source GitHub Issue, or approved temporary bootstrap task;
+- the source GitHub Issue;
 - its linked design document, when one exists;
 - `docs/project.md`;
 - relevant architecture, decisions, and testing rules;
@@ -244,7 +238,7 @@ Run the most specific declared commands first. Project-wide standards supplement
 
 Read:
 
-- the source work item;
+- the source Issue;
 - `docs/current-slice.md`;
 - changed files and diff;
 - validation results;
@@ -252,7 +246,7 @@ Read:
 
 Review whether the result is correct, in scope, structurally compatible, meaningfully tested, and maintainable for the current project maturity.
 
-## 8. Planning rules
+## 9. Planning rules
 
 For new features or major changes:
 
@@ -262,38 +256,79 @@ For new features or major changes:
 4. Establish acceptance criteria.
 5. Update project scope, architecture, or decisions only when their concerns change.
 6. Create or update a design document when detailed design adds value.
-7. Break approved work into small GitHub Issues, or temporary bootstrap tasks before Issues exist.
-8. Promote only one ready work item into `docs/current-slice.md`.
+7. Break approved work into small GitHub Issues.
+8. Promote only one ready Issue into `docs/current-slice.md`.
 
 Do not start implementation during planning unless explicitly requested.
 
 Not every work item requires a new design document or decision record.
 
-## 9. Work-item rules
+## 10. GitHub Issue contract
 
-GitHub Issues are the authoritative project work queue once the Issue workflow is established.
+GitHub Issues are the authoritative project work queue.
 
-A ready implementation work item should define:
+Use the implementation form for features, refactors, documentation, infrastructure, and other planned changes. Use the bug form for incorrect existing behavior.
 
-- goal;
+Every Issue form captures the following concerns. An Issue becomes ready only after every readiness checkbox is checked:
+
+- goal or expected outcome;
 - context;
-- scope;
-- non-goals;
+- included scope;
+- explicit non-goals;
 - acceptance criteria;
 - dependencies;
-- relevant design documents.
+- relevant project documents;
+- readiness confirmation.
 
-Work items describe the required outcome. Detailed file-level execution instructions belong in `docs/current-slice.md`.
+Issue forms are reusable workflow assets. Each submitted Issue is project-specific state.
 
-Do not use `docs/roadmap.md`, `docs/project.md`, or a design document as the active task queue.
+### Issue lifecycle
 
-## 10. Current slice rules
+An Issue moves through these conceptual states:
+
+1. **Draft** — required information, decisions, or dependencies are incomplete, or one or more readiness boxes remain unchecked.
+2. **Ready** — required fields are complete, dependencies are satisfied, and every readiness item is checked.
+3. **Active** — the Issue is referenced by the one approved `docs/current-slice.md`.
+4. **Complete** — implementation is validated, reviewed, human-approved, and the Issue is closed.
+
+Do not use labels as the authoritative workflow state. Phase 0 requires no custom labels. Existing labels such as `bug`, `enhancement`, or `documentation` may classify work, but readiness comes from the Issue contract and active status comes from `current-slice.md`.
+
+### Readiness requirements
+
+An Issue may be promoted only when:
+
+- the outcome is singular and bounded;
+- scope and non-goals are explicit;
+- acceptance criteria can be evaluated;
+- dependencies are satisfied or explicitly handled by the slice;
+- relevant documents are linked;
+- no unresolved product or architecture decision blocks execution;
+- the Issue is small enough for one reviewable slice.
+
+### Promotion to current slice
+
+When promoting an Issue:
+
+1. verify readiness;
+2. place the Issue number and URL in `docs/current-slice.md`;
+3. preserve the Issue's goal, scope, non-goals, and acceptance criteria;
+4. add file-level steps, commands, failure conditions, and review checks in the slice;
+5. obtain human approval before implementation;
+6. leave every other Issue unpromoted.
+
+If the required outcome changes materially after promotion, update the Issue and revise and reapprove the slice. If only execution detail changes, update the slice and record the adjustment.
+
+Newly discovered work outside the Issue scope becomes a separate Issue rather than silently expanding the active slice.
+
+Close the Issue only after human approval of the completed implementation.
+
+## 11. Current slice rules
 
 `docs/current-slice.md` is the single bounded execution package currently approved for implementation.
 
 A slice should include:
 
-- source work item;
+- source Issue number and URL;
 - status;
 - context;
 - goal;
@@ -311,7 +346,7 @@ A slice must be independently reviewable and small enough to complete without br
 
 The slice may specify how to implement the source outcome. It may not quietly change what outcome was approved.
 
-## 11. Implementation rules
+## 12. Implementation rules
 
 When implementing a slice:
 
@@ -327,13 +362,13 @@ When implementing a slice:
 
 Do not satisfy acceptance criteria through hardcoding, bypasses, weakened tests, or placeholder functionality unless explicitly required.
 
-## 12. Validation and review
+## 13. Validation and review
 
 Validation asks whether declared mechanical checks pass.
 
 Review asks whether the implementation:
 
-- satisfies the source work item and slice;
+- satisfies the source Issue and slice;
 - preserves scope;
 - respects architecture, decisions, and approved design;
 - uses meaningful tests;
@@ -342,7 +377,7 @@ Review asks whether the implementation:
 
 Passing tests alone does not prove the work is acceptable.
 
-## 13. Completion behavior
+## 14. Completion behavior
 
 After implementation:
 
@@ -351,11 +386,12 @@ After implementation:
 3. report validation results;
 4. identify blockers or known limitations;
 5. record completion notes in the slice when requested;
-6. stop for human approval.
+6. stop for human approval;
+7. close the source Issue only after approval.
 
-Do not automatically select or begin another issue.
+Do not automatically select or begin another Issue.
 
-## 14. Scope management
+## 15. Scope management
 
 Aggressively distinguish:
 
@@ -364,9 +400,9 @@ Aggressively distinguish:
 - useful idea;
 - unnecessary complexity.
 
-Move valid deferred ideas to the roadmap or an appropriate future location rather than expanding the active slice.
+Move valid deferred ideas to the roadmap or a new Issue rather than expanding the active slice.
 
-## 15. Architecture philosophy
+## 16. Architecture philosophy
 
 Prefer:
 

@@ -1,0 +1,115 @@
+name: Bug report
+description: Define incorrect existing behavior as one bounded fix outcome
+title: "[Bug] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form for incorrect existing behavior. Describe the required corrected outcome here; detailed file-level execution belongs in `docs/current-slice.md` after promotion.
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: State the incorrect behavior in one concise sentence.
+    validations:
+      required: true
+
+  - type: textarea
+    id: observed
+    attributes:
+      label: Observed behavior
+      description: Describe what currently happens.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: Describe the correct observable behavior.
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Reproduction or evidence
+      description: Provide steps, logs, screenshots, failing tests, or another reliable signal.
+    validations:
+      required: true
+
+  - type: textarea
+    id: impact
+    attributes:
+      label: Impact
+      description: Explain who or what is affected and how severely.
+    validations:
+      required: true
+
+  - type: textarea
+    id: scope
+    attributes:
+      label: Fix scope
+      description: Define the behavior that must be corrected.
+      placeholder: |
+        - Correct...
+        - Preserve...
+    validations:
+      required: true
+
+  - type: textarea
+    id: non_goals
+    attributes:
+      label: Non-goals
+      description: State related cleanup, redesign, or feature work that is outside this fix.
+      placeholder: |
+        - Do not...
+        - Defer...
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: List observable conditions proving the bug is fixed without regression.
+      placeholder: |
+        - [ ] ...
+        - [ ] ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Dependencies
+      description: List blocking Issues, decisions, external systems, or write `None`.
+      placeholder: None
+    validations:
+      required: true
+
+  - type: textarea
+    id: documents
+    attributes:
+      label: Relevant project documents
+      description: Link documents that define expected behavior or constrain the fix. Write `None` only when no durable document applies.
+      placeholder: |
+        - `docs/project.md`
+        - `docs/design/example.md`
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: readiness
+    attributes:
+      label: Readiness
+      description: Every item must be true before this Issue is promoted into `docs/current-slice.md`.
+      options:
+        - label: The incorrect and expected behaviors are clear.
+        - label: Reproduction or evidence is sufficient to validate the fix.
+        - label: Fix scope and non-goals are explicit.
+        - label: Acceptance criteria are observable and reviewable.
+        - label: Dependencies are satisfied or explicitly handled.
+        - label: Relevant project documents are identified.
+        - label: The fix is small enough for one implementation slice.

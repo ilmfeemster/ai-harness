@@ -1,0 +1,107 @@
+name: Implementation work item
+description: Define one bounded, reviewable project outcome
+title: ""
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form for features, refactors, documentation, infrastructure, and other planned changes. Define the required outcome here; detailed file-level execution belongs in `docs/current-slice.md` after promotion.
+
+  - type: dropdown
+    id: work_type
+    attributes:
+      label: Work type
+      options:
+        - Feature
+        - Refactor
+        - Documentation
+        - Infrastructure
+        - Test improvement
+        - Maintenance
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal
+      description: State the single outcome this work must produce.
+      placeholder: The project should...
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Explain why this work is needed and what current behavior or constraint matters.
+    validations:
+      required: true
+
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope
+      description: List what is included. Keep the work small enough for one reviewable slice.
+      placeholder: |
+        - Include...
+        - Update...
+    validations:
+      required: true
+
+  - type: textarea
+    id: non_goals
+    attributes:
+      label: Non-goals
+      description: State related work that must not be pulled into this Issue.
+      placeholder: |
+        - Do not...
+        - Defer...
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: List observable conditions that allow a reviewer to determine whether the outcome is complete.
+      placeholder: |
+        - [ ] ...
+        - [ ] ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Dependencies
+      description: List blocking Issues, decisions, designs, external systems, or write `None`.
+      placeholder: None
+    validations:
+      required: true
+
+  - type: textarea
+    id: documents
+    attributes:
+      label: Relevant project documents
+      description: Link the project, architecture, decision, design, testing, or domain documents that constrain this work. Write `None` only when no durable document applies.
+      placeholder: |
+        - `docs/project.md`
+        - `docs/design/example.md`
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: readiness
+    attributes:
+      label: Readiness
+      description: Every item must be true before this Issue is promoted into `docs/current-slice.md`.
+      options:
+        - label: The goal is singular and bounded.
+        - label: Scope and non-goals are explicit.
+        - label: Acceptance criteria are observable and reviewable.
+        - label: Dependencies are satisfied or explicitly handled.
+        - label: Relevant project documents are identified.
+        - label: No unresolved product or architecture decision blocks execution.
+        - label: The work is small enough for one implementation slice.
