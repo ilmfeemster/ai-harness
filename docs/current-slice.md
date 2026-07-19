@@ -4,9 +4,9 @@
 
 ## Status
 
-Draft
+Ready for review
 
-Implementation is not authorized. Issue #2 has an unchecked dependency-readiness item and requires human approval before the status can become `Approved`.
+Implementation and declared validation are complete within the approved Issue #2 scope. Human review is required before completion.
 
 ## Source Issue
 
@@ -108,28 +108,32 @@ Stop and revise before implementation or approval if:
 
 ## Completion evidence
 
-**Implementation status:** Pending. This turn prepared the Draft slice only; no implementation was performed.
+**Implementation status:** Complete; awaiting human review.
 
-**Acceptance-criteria status:** Pending implementation and review.
+**Acceptance-criteria status:** Met. Each mode now defines inputs, selective loading rules, outputs, prohibited side effects, and stop conditions; planning and implementation boundaries remain explicit; small changes can load a narrow source set; and the rules remain reusable.
 
-**Files changed:** `docs/current-slice.md` only for slice preparation.
+**Files changed:** `AGENTS.md` and `docs/current-slice.md`.
 
-**Validation results:** Not run. The validation commands above apply after the slice is approved and implemented.
+**Validation results:**
 
-**Manual checks:** Slice contents reviewed against Issue #2; implementation authorization remains withheld.
+- `git diff --check` passed with the repository's existing LF/CRLF warning only.
+- `git status --short` reported the expected modified files: `AGENTS.md` and `docs/current-slice.md`.
+- Mode-contract structural checks passed for all nine supported modes and all required contract fields.
 
-**Implementation adjustments or deviations:** None.
+**Manual checks:** Passed. Planning, slice preparation, implementation, validation, and review remain distinct; context expansion is limited to explicit dependency or contradiction triggers; small changes do not require every document layer; and no automatic discovery, model invocation, multi-agent routing, or product-context duplication was introduced.
 
-**Known limitations or follow-up Issues:** Issue #2 has an unchecked dependency-readiness item. Resolve that dependency before requesting approval for this slice.
+**Implementation adjustments or deviations:** The source Issue dependency-readiness checkbox was confirmed before implementation. The stale Draft-only wording in this slice was updated as an execution-state correction. No outcome or scope change was made.
 
-**Implementation summary:** Created a bounded Draft execution package for Issue #2 without implementing the planning-mode changes.
+**Known limitations or follow-up Issues:** No implementation follow-up identified. Human review and approval remain required.
+
+**Implementation summary:** Replaced preliminary work-mode guidance with a reusable operational contract for repository orientation, planning, architecture, design, work-item creation, slice preparation, implementation, validation, and review. Added explicit selective context expansion rules and preserved manual approval and bounded-slice boundaries.
 
 ## Dependencies and assumptions
 
 - The source Issue identifies the Phase 0.4 slice standard as a dependency.
-- Issue #2 is not ready for approval while its dependency-readiness checkbox remains unchecked.
+- Issue #2 dependency readiness was confirmed before implementation began.
 - No linked design document was identified for Issue #2.
-- Human approval is required before changing this slice to `Approved` or beginning implementation.
+- The slice was explicitly approved before implementation began.
 
 ## Relevant project documents
 

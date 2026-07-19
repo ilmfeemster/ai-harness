@@ -141,49 +141,95 @@ human approval
 At the beginning of repository work:
 
 1. Read this file.
-2. Identify the requested work mode.
-3. Load only the authoritative project sources required for that mode.
-4. Reuse already loaded context.
-5. Do not read every document by default.
-6. Expand context only when a missing dependency or contradiction requires it.
+2. Identify the primary work mode from the request and the current slice, when one exists.
+3. Load the required authoritative sources for that mode before optional context.
+4. Reuse already loaded context instead of rereading the same source.
+5. Treat optional sources as conditional inputs, not a checklist to complete by default.
+6. Expand context only when a required dependency is missing, a referenced source is needed to evaluate behavior, or the loaded sources materially contradict one another.
+7. Stop before a side effect when the required source, approval, or decision is missing.
 
 ## 8. Work modes and document loading
 
+Each mode is a bounded operation with explicit inputs, loading rules, outputs, prohibited side effects, and stop conditions. A request may move from one mode to another, but a handoff must be explicit. Planning and preparation do not authorize implementation, and implementation does not authorize final approval or Issue closure.
+
+Context loading is selective. Required sources are loaded first. Optional sources are loaded only when the request, a linked reference, a validation command, or a contradiction makes them relevant. Do not expand context merely for completeness.
+
 ### Repository orientation
 
-Read:
+**Required inputs:**
 
+- repository root and the user's orientation question or stated area of interest.
+
+**Load:**
+
+- `AGENTS.md`;
 - `README.md`;
 - `docs/project.md`;
 - `docs/architecture.md`;
-- `docs/roadmap.md` only when future direction matters.
+- `docs/roadmap.md` only when future direction or sequencing matters.
+
+Load `docs/current-slice.md`, `docs/decisions.md`, `docs/testing.md`, designs, or code only when the orientation request concerns active work, a durable decision, validation, a design, or an implementation area.
+
+**Expected output:** A concise repository map, current scope and architecture summary, relevant constraints, and the next authoritative sources needed for the user's question.
+
+**Prohibited side effects:** Do not modify files, Issues, slice status, dependencies, or workflow state during orientation.
+
+**Stop conditions:** Stop after the requested orientation is answered. Expand only when a referenced path is missing from the loaded sources or a material contradiction prevents an accurate summary.
 
 ### Project or phase planning
 
-Read:
+**Required inputs:**
+
+- a stated goal, problem, or phase outcome;
+- current project scope.
+
+**Load:**
 
 - `docs/project.md`;
 - `docs/roadmap.md`;
 - `docs/architecture.md`;
-- relevant durable decisions;
+- relevant entries in `docs/decisions.md`;
 - relevant completed designs when they constrain the plan.
 
-Update `docs/project.md` when current goals or scope change. Update `docs/roadmap.md` when future direction changes.
+Load `docs/testing.md` when confidence, acceptance, or validation implications affect the plan. Load code only when existing behavior is needed to bound the change.
+
+**Expected output:** A recommended approach, explicit non-goals, acceptance implications, affected project documents, and a proposed work breakdown. A planning result may recommend a design or Issue but does not become either artifact unless that handoff is requested.
+
+**Prohibited side effects:** Do not implement code, create a current slice, or silently change project scope. Update `docs/project.md` only when the current goal or scope is explicitly being changed; update `docs/roadmap.md` only when future direction or sequencing is explicitly being changed.
+
+**Stop conditions:** Stop for an unresolved product, architecture, or durable-decision conflict. Do not proceed to work-item creation until the outcome is singular enough to review.
+
 
 ### Architecture work
 
-Read:
+**Required inputs:**
+
+- a proposed structural change, boundary, dependency, or architectural decision;
+- the current project scope and architecture.
+
+**Load:**
 
 - `docs/project.md`;
 - `docs/architecture.md`;
 - `docs/decisions.md`;
 - relevant designs and code.
 
-Update `docs/architecture.md` for the current structural model. Record a decision in `docs/decisions.md` when future work must preserve the choice, rationale, or tradeoffs.
+Load `docs/testing.md` when the structural change affects confidence or validation. Load the roadmap only when sequencing is part of the decision.
+
+**Expected output:** A bounded architecture change or decision proposal with affected boundaries, dependency direction, tradeoffs, and required follow-up documents. Update `docs/architecture.md` for the current structural model and record a durable choice in `docs/decisions.md` when future work must preserve its rationale or tradeoffs.
+
+**Prohibited side effects:** Do not implement unrelated behavior, introduce a central controller, or change product scope to make a structural proposal fit.
+
+**Stop conditions:** Stop when the proposed structure conflicts with current scope, a durable decision, or the self-contained project boundary, or when the required behavior cannot be understood from the loaded sources.
 
 ### Design work
 
-Read:
+**Required inputs:**
+
+- a coherent capability or change to design;
+- known goals, constraints, and relevant project scope.
+
+**Load:**
 
 - `docs/project.md`;
 - `docs/architecture.md`;
@@ -192,22 +238,40 @@ Read:
 - relevant code;
 - `docs/testing.md` when confidence or validation implications matter.
 
-A design document should define behavior, boundaries, flows, alternatives, risks, and acceptance implications. It should not act as the implementation queue.
+**Expected output:** A project-specific design that defines behavior, boundaries, flows, alternatives, risks, and acceptance implications. The design is a decision artifact, not the implementation queue.
+
+**Prohibited side effects:** Do not implement the capability, create an Issue, or create a current slice unless that handoff is explicitly requested.
+
+**Stop conditions:** Stop when a product or architecture decision is unresolved, when the design would require a scope change not approved by the project documents, or when the relevant existing behavior cannot be determined.
 
 ### Work-item creation
 
-Read:
+**Required inputs:**
+
+- one singular, bounded outcome;
+- its context, scope, non-goals, acceptance criteria, dependencies, and relevant documents.
+
+**Load:**
 
 - `docs/project.md`;
 - the relevant approved design, when one exists;
-- relevant architecture and decisions;
-- relevant testing constraints.
+- relevant `docs/architecture.md` and `docs/decisions.md` entries;
+- relevant testing constraints from `docs/testing.md`.
 
-Create one meaningful, reviewable outcome per Issue. Do not duplicate the complete file-level execution plan that belongs in `docs/current-slice.md`.
+**Expected output:** One meaningful, reviewable GitHub Issue using the reusable form, with its goal, context, scope, non-goals, acceptance criteria, dependencies, relevant documents, and readiness confirmation. The Issue describes the outcome; file-level execution detail belongs in `docs/current-slice.md`.
+
+**Prohibited side effects:** Do not create multiple Issues for one outcome, promote an Issue into a slice, or begin implementation. Do not mark readiness complete by assumption when a dependency or decision is unresolved.
+
+**Stop conditions:** Stop when the outcome is not singular, acceptance cannot be evaluated, dependencies are unknown or unsatisfied, relevant documents are missing, or an unresolved decision blocks execution.
 
 ### Slice preparation
 
-Read:
+**Required inputs:**
+
+- one ready GitHub Issue;
+- the Issue's approved outcome, scope, non-goals, and acceptance criteria.
+
+**Load:**
 
 - the source GitHub Issue;
 - its linked design document, when one exists;
@@ -215,38 +279,82 @@ Read:
 - relevant architecture, decisions, and testing rules;
 - nearby code only when needed to make the slice executable.
 
-The slice may add implementation detail but must preserve the source outcome and upstream constraints.
+**Expected output:** A `Draft` `docs/current-slice.md` containing the required sections, source Issue traceability, file-level implementation steps, expected files, validation commands, failure conditions, and review checks. The slice may add execution detail but must preserve the source outcome and upstream constraints.
+
+**Prohibited side effects:** Do not change the Issue outcome, authorize implementation, modify unrelated project documents, or prepare a second active slice. Promotion creates `Draft`; only explicit human approval changes it to `Approved`.
+
+**Stop conditions:** Stop when the Issue is not ready, a dependency or authority conflict remains unresolved, the expected work is not bounded to one reviewable slice, or the slice would need to change the Issue rather than refine execution detail.
 
 ### Implementation
 
-Read:
+**Required inputs:**
+
+- an `Approved` `docs/current-slice.md`;
+- explicit authorization to implement the approved work.
+
+**Load:**
 
 - `docs/current-slice.md`;
 - only the documents and code it references or clearly requires.
 
-Treat the approved slice as the bounded execution package. Do not expand scope merely because additional work is discoverable.
+Verify the source Issue, expected files, implementation constraints, and validation plan before editing. Change the slice status to `In progress` when implementation begins.
+
+**Expected output:** The implementation within the expected files, meaningful tests or documentation checks where required, validation results, and completion evidence. After implementation and declared validation pass, change the slice status to `Ready for review`; do not mark it `Complete` without human approval.
+
+**Prohibited side effects:** Do not expand scope, alter the source Issue outcome, bypass acceptance criteria, weaken tests, update dependencies without need, begin another Issue, or close the source Issue. Treat the approved slice as the bounded execution package even when additional work is discoverable.
+
+**Stop conditions:** Stop when the slice is not `Approved`, a required source or approval is missing, implementation reveals a material contradiction, work would exceed the slice, or unrelated validation failures prevent a trustworthy result.
 
 ### Validation
 
-Read:
+**Required inputs:**
+
+- the implemented slice;
+- its acceptance criteria and declared validation plan.
+
+**Load:**
 
 - validation commands and acceptance criteria in `docs/current-slice.md`;
 - `docs/testing.md`;
 - relevant test configuration or code.
 
-Run the most specific declared commands first. Project-wide standards supplement rather than replace slice-specific checks.
+**Expected output:** Command exit codes and results, manual-check results where required, acceptance-criteria status, known limitations, and evidence suitable for review. Run the most specific declared commands first; project-wide standards supplement rather than replace slice-specific checks.
+
+**Prohibited side effects:** Do not weaken tests, rewrite acceptance criteria, hide command failures, or treat passing mechanical checks as human approval. Corrective implementation is a separate explicit handoff.
+
+**Stop conditions:** Stop when a declared command fails, required evidence cannot be collected, the implementation does not match the slice, or validation exposes a scope or authority conflict.
 
 ### Review
 
-Read:
+**Required inputs:**
 
 - the source Issue;
 - `docs/current-slice.md`;
+- the implementation diff and validation results.
+
+**Load:**
+
 - changed files and diff;
 - validation results;
 - relevant architecture, decisions, designs, and testing rules.
 
-Review whether the result is correct, in scope, structurally compatible, meaningfully tested, and maintainable for the current project maturity.
+**Expected output:** Findings first, ordered by severity, followed by acceptance-criteria status, open questions or assumptions, validation gaps, and a concise change summary. Review whether the result is correct, in scope, structurally compatible, meaningfully tested, and maintainable for the current project maturity.
+
+**Prohibited side effects:** Do not close the Issue, change the slice to `Complete`, or silently authorize follow-up work. Review findings may request changes, but implementation remains a separate bounded action.
+
+**Stop conditions:** Stop when the source Issue or slice cannot be evaluated from the available evidence, when a material contradiction is found, or when human approval is still required for the requested lifecycle transition.
+
+### Context expansion rules
+
+Expand beyond a mode's required sources only when:
+
+- a required source links to another artifact needed to understand the approved outcome or expected behavior;
+- a validation command, test configuration, or changed file requires additional context;
+- the loaded sources contain a material contradiction that cannot be resolved within the current concern;
+- existing behavior must be inspected to determine whether the requested change is in scope;
+- a newly discovered dependency affects the mode's stop conditions or acceptance evidence.
+
+When context expands, preserve the original mode boundary and record a meaningful execution adjustment in `docs/current-slice.md` when the work is inside an active slice. Expansion must not become a reason to read every project document or to begin an unrelated work item.
 
 ## 9. Planning rules
 
