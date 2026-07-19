@@ -35,6 +35,7 @@ These encode workflow mechanics rather than product knowledge:
 
 - the default `AGENTS.md` constitution;
 - `.github/ISSUE_TEMPLATE/` Issue forms;
+- `templates/docs/current-slice.md`, the reusable scaffold for active slices;
 - structural validators and workflow scripts added in later slices;
 - reusable schemas or starter headings.
 
@@ -58,6 +59,8 @@ These are created from scaffolds but populated with the new project's intelligen
 - source code and tests.
 
 The current harness contents of these sources are development context, not reusable project content.
+
+The reusable slice scaffold and `docs/current-slice.md` must never be treated as the same substantive content. The scaffold defines neutral structure; the active slice records one project's selected Issue, execution plan, validation evidence, and lifecycle state.
 
 ## Source-repository dual role
 

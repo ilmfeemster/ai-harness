@@ -160,3 +160,37 @@ This preserves a stable project work queue without forcing Issues to carry agent
 - Promotion requires a deliberate translation step.
 - Issue and slice drift must be reviewed.
 - One work item is represented in two linked artifacts for different purposes.
+
+## 2026-07-19 - Reusable slice scaffold is separate from active slice state
+
+### Decision
+
+Keep `templates/docs/current-slice.md` as the reusable, project-neutral scaffold for active slices. Keep `docs/current-slice.md` as project-owned operational state for exactly one promoted Issue.
+
+### Reason
+
+The harness needs a reusable slice schema, but copying the active harness slice would leak source-project Issues, phase state, validation evidence, and implementation history into new projects.
+
+### Tradeoffs
+
+- Project initialization must create or reset `docs/current-slice.md` from the scaffold.
+- The scaffold and active slice need separate validation rules.
+- The active slice can prove the workflow without becoming template content.
+
+## 2026-07-19 - Slice lifecycle uses explicit approval states
+
+### Decision
+
+Use only these active-slice status values: `Draft`, `Approved`, `In progress`, `Blocked`, `Ready for review`, and `Complete`.
+
+Promotion creates a `Draft` slice. Human approval changes it to `Approved` and authorizes implementation. Completed implementation and validation change it to `Ready for review`. Human approval and Issue closure are required before `Complete`.
+
+### Reason
+
+Future workflow tooling and manual review need unambiguous lifecycle boundaries. In particular, work awaiting human approval must not be represented as complete.
+
+### Tradeoffs
+
+- Status changes remain manual in Phase 0.
+- The slice records lifecycle state in addition to the Issue lifecycle.
+- Automation added later must preserve the approval boundaries rather than compressing them.

@@ -39,6 +39,7 @@ The future project template is not a byte-for-byte copy of this repository's cur
 
 - `AGENTS.md`;
 - `.github/ISSUE_TEMPLATE/`;
+- `templates/docs/current-slice.md`;
 - future workflow validators and scripts;
 - reusable headings and schemas for project documents.
 
@@ -67,12 +68,13 @@ Phase 0 is intentionally human-orchestrated. GitHub Issues are the authoritative
 
 - `AGENTS.md` — reusable workflow constitution, Issue contract, and document-responsibility model.
 - `.github/ISSUE_TEMPLATE/` — reusable Issue forms for implementation work and bugs.
+- `templates/docs/current-slice.md` — reusable scaffold for initializing a project-specific active slice.
 - `docs/project.md` — current AI Development Harness scope and active phase.
 - `docs/roadmap.md` — future harness maturity direction.
 - `docs/architecture.md` — current architecture of the harness product.
 - `docs/decisions.md` — durable harness decisions and tradeoffs.
 - `docs/testing.md` — harness-specific testing and confidence standards.
-- `docs/current-slice.md` — the single bounded harness work package approved for implementation.
+- `docs/current-slice.md` — the single bounded harness work package approved for implementation, created as project-owned state rather than copied as reusable content.
 - `docs/design/` — detailed harness designs when needed.
 
 ## Phase 0 operating model

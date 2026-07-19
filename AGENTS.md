@@ -34,6 +34,7 @@ These should normally be copied into a new project with little or no project-spe
 
 - `AGENTS.md`;
 - `.github/ISSUE_TEMPLATE/`;
+- `templates/docs/current-slice.md`;
 - future structural validators and workflow scripts;
 - reusable document schemas or starter headings.
 
@@ -69,6 +70,7 @@ Authority is determined **by concern**, not by one universal descending hierarch
 | `docs/decisions.md` | Durable project decisions, rationale, and tradeoffs | Reuse empty format; replace entries | General notes, temporary planning, or status log |
 | `docs/design/*.md` | Detailed approved design for a coherent capability or change | Reuse document pattern; create project-specific designs | Work queue, implementation transcript, or broad project roadmap |
 | GitHub Issues | Project work queue and required outcome of bounded work items | Reuse Issue forms; create project-specific Issues | Full file-level execution package |
+| `templates/docs/current-slice.md` | Reusable scaffold for initializing one project's active slice | Reuse scaffold; replace placeholders in project-owned `docs/current-slice.md` | Active Issue state, validation evidence, or harness-specific work history |
 | `docs/current-slice.md` | One approved, bounded execution package for the active Issue | Reuse schema; reset active content | Backlog, multi-item plan, or authority to alter upstream constraints silently |
 | `docs/testing.md` | Project-wide testing philosophy, validation standards, and confidence requirements | Reuse scaffold; specialize content | Slice-specific command results or substitute for acceptance criteria |
 | Code and tests | Actual implemented behavior and executable evidence | Entirely project-specific | Product planning or undocumented policy |
@@ -310,13 +312,14 @@ An Issue may be promoted only when:
 When promoting an Issue:
 
 1. verify readiness;
-2. place the Issue number and URL in `docs/current-slice.md`;
+2. place the Issue number, title, and URL in `docs/current-slice.md`;
 3. preserve the Issue's goal, scope, non-goals, and acceptance criteria;
 4. add file-level steps, commands, failure conditions, and review checks in the slice;
-5. obtain human approval before implementation;
-6. leave every other Issue unpromoted.
+5. create or update the slice with status `Draft`;
+6. obtain human approval before changing the slice status to `Approved`;
+7. leave every other Issue unpromoted.
 
-If the required outcome changes materially after promotion, update the Issue and revise and reapprove the slice. If only execution detail changes, update the slice and record the adjustment.
+If the required outcome changes materially after promotion, update the Issue, revise the slice, return the slice to `Draft`, and obtain human approval again. If only execution detail changes, update the slice and record the adjustment.
 
 Newly discovered work outside the Issue scope becomes a separate Issue rather than silently expanding the active slice.
 
@@ -324,27 +327,86 @@ Close the Issue only after human approval of the completed implementation.
 
 ## 11. Current slice rules
 
-`docs/current-slice.md` is the single bounded execution package currently approved for implementation.
+`docs/current-slice.md` is the single bounded execution package for the active Issue. It is project-owned operational state initialized from a reusable scaffold, not reusable project content.
 
-A slice should include:
+### Required active-slice sections
 
-- source Issue number and URL;
+Every active slice must include these sections. A section may state that evidence is pending when the slice has not reached that lifecycle stage, but required sections must not be silently omitted.
+
+- work-item title;
 - status;
+- source Issue number, title, and URL;
 - context;
 - goal;
 - scope;
 - non-goals;
-- implementation steps;
-- expected files;
-- validation commands;
 - acceptance criteria;
+- implementation plan;
+- expected files;
+- validation plan;
 - failure conditions;
 - review checklist;
-- completion notes.
+- completion evidence.
+
+### Optional active-slice sections
+
+Include these only when they add useful execution context:
+
+- dependencies and assumptions;
+- relevant project documents;
+- linked design documents;
+- implementation constraints;
+- implementation adjustments;
+- blockers and known limitations;
+- rollback or migration notes.
+
+Optional sections should be brief and should not duplicate large amounts of upstream documentation.
+
+### Slice status values
+
+Use only these status values:
+
+1. **Draft** - the Issue has been translated into a candidate slice, but implementation is not authorized.
+2. **Approved** - a human has approved the slice; the source Issue is now the single active work item and implementation may begin.
+3. **In progress** - implementation has begun within the approved boundaries.
+4. **Blocked** - implementation cannot continue without resolving a stated dependency, conflict, or decision.
+5. **Ready for review** - implementation and declared validation are complete, completion evidence is recorded, and human review is required.
+6. **Complete** - the result has received human approval and the source Issue has been closed.
+
+Do not use contradictory states such as `Complete - awaiting human approval`. Work awaiting final approval is `Ready for review`.
 
 A slice must be independently reviewable and small enough to complete without broad reinterpretation.
 
 The slice may specify how to implement the source outcome. It may not quietly change what outcome was approved.
+
+An active approved slice may not contain unresolved scaffold placeholders. The reusable scaffold may contain placeholders only because it is not an approved execution package.
+
+### Execution refinements and reapproval
+
+The active slice may refine execution details without changing the approved Issue outcome. Record meaningful execution-only changes under implementation adjustments.
+
+A material change to the required outcome, scope, non-goals, or acceptance criteria requires:
+
+1. updating the source Issue;
+2. revising the slice;
+3. returning the slice to `Draft`;
+4. obtaining human approval again.
+
+Newly discovered out-of-scope work must become a separate Issue.
+
+### Completion evidence
+
+Before a slice becomes `Ready for review`, its completion evidence must report:
+
+- acceptance-criteria status;
+- files changed;
+- validation commands executed and their results;
+- manual checks performed;
+- implementation adjustments or deviations;
+- blockers, known limitations, or follow-up Issues;
+- a concise implementation summary.
+
+The source Issue remains open until the result receives human approval.
 
 ## 12. Implementation rules
 
@@ -386,8 +448,9 @@ After implementation:
 3. report validation results;
 4. identify blockers or known limitations;
 5. record completion notes in the slice when requested;
-6. stop for human approval;
-7. close the source Issue only after approval.
+6. set the slice status to `Ready for review` when implementation and declared validation are complete;
+7. stop for human approval;
+8. after approval, close the source Issue and set the slice status to `Complete`.
 
 Do not automatically select or begin another Issue.
 

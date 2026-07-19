@@ -93,7 +93,28 @@ Validate the harness and generated project structure:
 - Issue forms contain outcome, scope, non-goal, acceptance, dependency, document, and readiness fields;
 - readiness boxes can remain unchecked for draft backlog Issues;
 - `current-slice.md` includes a source Issue and validation commands;
-- approved slices contain no unresolved template markers.
+- approved slices contain no unresolved template markers;
+- active slices use only valid status values: `Draft`, `Approved`, `In progress`, `Blocked`, `Ready for review`, or `Complete`;
+- promoted active slices include the source Issue number, title, and URL;
+- reusable slice scaffolds contain every required active-slice heading;
+- reusable slice scaffolds contain no source-project active state such as project phase, Issue URL, validation result, or completion claim.
+
+Slice structural checks should confirm these required headings in the reusable scaffold and in active slices:
+
+- work-item title;
+- `## Status`;
+- `## Source Issue`;
+- `## Context`;
+- `## Goal`;
+- `## Scope`;
+- `## Non-goals`;
+- `## Acceptance criteria`;
+- `## Implementation plan`;
+- `## Expected files`;
+- `## Validation plan`;
+- `## Failure conditions`;
+- `## Review checklist`;
+- `## Completion evidence`.
 
 ### Unit tests
 

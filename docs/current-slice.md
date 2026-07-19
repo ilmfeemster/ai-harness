@@ -4,7 +4,7 @@
 
 ## Harness Phase 0.4 — Define the Slice Standard
 
-**Status:** Draft — Approved
+**Status:** Ready for review
 
 ## Source Issue
 
@@ -352,20 +352,34 @@ Stop and revise before implementation or approval if:
 
 ## Implementation adjustments
 
-None. Record execution-only refinements here without changing the approved Issue outcome.
+Validation used Git's per-command `safe.directory` option because the sandbox user differs from the repository owner. This did not change the approved Issue outcome or repository configuration.
 
 ## Completion evidence
 
-**Implementation status:** Not started.
+**Implementation status:** Implementation and declared validation complete; awaiting human review.
 
-**Acceptance-criteria status:** Pending.
+**Acceptance-criteria status:** Met. The reusable slice schema is explicit, source Issue traceability is required, status and approval boundaries are documented, completion evidence is distinct from planning and validation sections, and a project-neutral scaffold exists without harness-specific active state.
 
-**Files changed:** Pending.
+**Files changed:**
 
-**Validation results:** Not run.
+- `AGENTS.md`
+- `README.md`
+- `templates/docs/current-slice.md`
+- `docs/architecture.md`
+- `docs/decisions.md`
+- `docs/testing.md`
+- `docs/current-slice.md`
 
-**Manual review results:** Pending.
+**Validation results:**
+
+- `git -c safe.directory='C:/Users/Focus Mode/OneDrive/Documents/Code/ai-harness' diff --check` passed with line-ending warnings only.
+- `git -c safe.directory='C:/Users/Focus Mode/OneDrive/Documents/Code/ai-harness' status --short` reported the expected modified files and new `templates/` directory.
+- Required scaffold-heading check passed.
+- Reusable scaffold forbidden harness-state check passed.
+- `AGENTS.md` required lifecycle and traceability term check passed.
+
+**Manual review results:** Passed. The scaffold is reusable and project-neutral; `docs/current-slice.md` remains harness-specific active state; required and optional sections are distinguishable; promotion creates `Draft`; explicit human approval controls `Approved` and `Complete`; `Ready for review` is not conflated with `Complete`; Issue outcome and slice execution detail remain separate; no Phase 0.5 work, automation, repair loop, evaluation loop, or Phase 0.7 bootstrap implementation was introduced.
 
 **Known limitations or follow-up work:** None identified. Phase 0.6 remains responsible for automated structural validation, and Phase 0.7 remains responsible for the complete project-start procedure.
 
-**Implementation summary:** Pending.
+**Implementation summary:** Finalized the slice contract in the reusable workflow constitution, added a neutral slice scaffold, updated architecture/testing/README references, recorded durable decisions for the scaffold split and lifecycle model, and recorded completion evidence for Issue #1 while leaving the Issue open for human approval.
