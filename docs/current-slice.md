@@ -1,83 +1,83 @@
-# Phase 0.7 - Add project-start instructions
+# Phase 0.8 - Compare against the fantasy workflow
 
 > **Project operational state:** This file is the active execution package for the AI Development Harness project. Reusable slice structure belongs in `templates/docs/current-slice.md`; this file contains only the current harness work item.
 
 ## Status
 
-In progress
-
-Implementation is in progress within the approved Issue #4 scope.
+Approved
 
 ## Source Issue
 
-- **Issue:** #4 - Phase 0.7 - Add project-start instructions
-- **URL:** https://github.com/ilmfeemster/ai-harness/issues/4
+- **Issue:** #5 - Phase 0.8 - Compare against the fantasy workflow
+- **URL:** https://github.com/ilmfeemster/ai-harness/issues/5
 
 ## Context
 
-The harness source repository contains both reusable workflow assets and the real project context used to develop the harness. New projects must not be created by copying this repository byte for byte, because that would carry over harness-specific scope, roadmap, architecture, decisions, Issues, and active implementation state.
+The fantasy project in the sibling `live-draft-tool-v2` repository is the first proven testbed for this document-driven workflow. Its process includes selective document loading, explicit planning and implementation modes, task-to-slice promotion, current-slice execution guardrails, testing expectations, scope protection, and post-implementation reporting.
 
-The updated workflow constitution makes repeatable procedures subordinate to `AGENTS.md` and places them in dedicated skill files under `skills/`. Project initialization therefore needs a reusable human-operated skill, clean project-document scaffolds, and deterministic checks that make source-context leakage visible without becoming a hosted generator.
+The harness now uses GitHub Issues instead of `tasks.md` as the authoritative work queue, plus reusable skills for lifecycle operations. This slice compares the proven fantasy workflow against the Phase 0 harness and incorporates only reusable, project-neutral improvements. Fantasy-football product scope, domain rules, task backlog, and obsolete `tasks.md` assumptions must remain excluded.
 
 ## Goal
 
-Define a reliable process for starting a new project with reusable workflow assets and clean project-document scaffolds without inheriting AI Development Harness context.
+Compare the Phase 0 harness workflow against the proven `live-draft-tool-v2` workflow and incorporate missing reusable rules without copying fantasy-football context.
 
 ## Scope
 
-- Define which assets are copied nearly verbatim.
-- Define which document paths are initialized from clean scaffolds.
-- Define which source-repository artifacts are excluded.
-- Define the minimum project information needed during initialization.
-- Define how Issue forms are installed.
-- Define how project documents are checked for source-context leakage.
-- Provide straightforward human-readable startup instructions.
+- Inventory relevant workflow documents and rules in the sibling `live-draft-tool-v2` repository.
+- Compare document loading, planning, slice preparation, implementation, validation, review, and completion behavior.
+- Identify missing reusable protections or useful friction reductions.
+- Incorporate only proven project-neutral improvements.
+- Record intentionally excluded domain-specific or obsolete patterns.
 
 ## Non-goals
 
-- Do not support every project type.
-- Do not build a hosted project generator.
-- Do not introduce a central project registry.
-- Do not automatically synchronize existing projects.
+- Do not migrate the fantasy repository yet.
+- Do not copy fantasy product scope or design content.
+- Do not add speculative abstractions.
+- Do not begin a fantasy feature slice.
 
 ## Acceptance criteria
 
-- A new repository can be initialized without copying harness-specific scope, roadmap, architecture, decisions, Issues, or active slice content.
-- Reusable workflow assets are preserved.
-- Clean scaffolds exist for project-owned documents.
-- The startup process is testable and understandable.
-- The initialized project remains self-contained.
+- The comparison is explicit and reviewable.
+- Every adopted rule is project-neutral and justified by proven use.
+- Domain-specific content is excluded.
+- The Issue-based workflow remains intact.
+- Phase 0 is at least as usable as the previous manual workflow.
 
 ## Implementation plan
 
-1. Define the initialization boundary from `AGENTS.md`, `README.md`, `docs/architecture.md`, and the existing reusable assets. Separate assets copied nearly verbatim from project-owned paths that must be initialized with new content.
-2. Add the reusable `skills/start-project/SKILL.md` procedure. It must define required and optional project inputs, target-repository preconditions, copied assets, initialized paths, excluded source artifacts, Issue-form installation, leakage checks, expected outputs, prohibited side effects, stop conditions, and handoffs to validation and review skills.
-3. Add neutral scaffolds for `README.md`, `docs/project.md`, `docs/roadmap.md`, `docs/architecture.md`, `docs/decisions.md`, `docs/testing.md`, and a reusable design document. Keep all scaffolds free of harness-specific scope, phase, Issue, decision, architecture, and completion state.
-4. Define clean initialization of `docs/current-slice.md`: do not copy the harness active slice or unresolved template placeholders into a new project; create an empty project-owned active-slice file until a Ready Issue is promoted.
-5. Register the project-start operation in `AGENTS.md` and keep detailed startup mechanics in `skills/start-project/SKILL.md` rather than duplicating the procedure in the constitution.
-6. Update `README.md` with a human-readable entry point to the startup skill and the expanded reusable-asset/scaffold map. Update `docs/architecture.md` and `docs/testing.md` only where the project-start boundary and its deterministic checks change their current responsibilities.
-7. Extend `scripts/validate.ps1` and `tests/validate-structure.ps1` as needed to validate clean scaffolds, obvious source-context leakage, and an intentionally empty `docs/current-slice.md` during initialization. Keep checks local, mechanical, deterministic, and replaceable.
-8. Use `skills/implement-slice/SKILL.md` for authorized implementation, `skills/validate-slice/SKILL.md` for formal validation, and `skills/review-slice/SKILL.md` for independent review. Keep this slice `In progress` during implementation; formal validation owns the transition to `Ready for review`.
+1. Read the relevant fantasy workflow sources from the sibling repository, limited to workflow-facing documents such as AGENTS.md, CLAUDE.md, docs/tasks.md, docs/current-slice.md, docs/completed-tasks.md, docs/testing.md, docs/architecture.md, docs/decisions.md, docs/future_ideas.md, and QA or patch notes only when they clarify workflow mechanics.
+2. Create a concise comparison artifact in docs/design/fantasy-workflow-comparison.md. Cover document loading, planning, work-item creation, slice promotion, implementation guardrails, validation, review, completion evidence, scope control, and migration differences from `tasks.md` to GitHub Issues.
+3. In the comparison artifact, separate three categories:
+   - adopted project-neutral rules or friction reductions;
+   - already-covered harness behaviors that require no change;
+   - intentionally excluded fantasy-specific, domain-specific, obsolete, or speculative patterns.
+4. Update `AGENTS.md` only for reusable workflow rules that are proven by the fantasy process and missing or weaker in the harness constitution. Preserve the Issue-based lifecycle, human approval boundaries, authority-by-concern model, and one-work-item invariant.
+5. Update the relevant skill files only when an adopted rule belongs in an operation procedure rather than the general constitution. Likely candidates are `skills/prepare-slice/SKILL.md`, `skills/implement-slice/SKILL.md`, `skills/validate-slice/SKILL.md`, `skills/review-slice/SKILL.md`, and `skills/finalize-work-item/SKILL.md`.
+6. Update `docs/testing.md` if the comparison proves a reusable validation or review expectation that is not already represented in the harness testing standards.
+7. Update `docs/architecture.md` or `docs/decisions.md` only if the adopted rule changes current workflow architecture or creates a durable decision. Do not use those documents as implementation notes.
+8. Update `README.md` only if the resulting workflow changes the human operating model or repository map in a way a user must see at entry.
+9. Extend `scripts/validate.ps1` and `tests/validate-structure.ps1` only if an adopted rule can be checked deterministically and locally without semantic judgment.
+10. Update this slice during implementation only with execution-only adjustments and later completion evidence. Formal validation must use `skills/validate-slice/SKILL.md`; independent review must use `skills/review-slice/SKILL.md`.
 
 ## Expected files
 
-- `skills/start-project/SKILL.md` - reusable human-operated project-initialization procedure.
-- `AGENTS.md` - register the project-initialization skill without duplicating its detailed procedure.
-- `README.md` - human-readable startup entry point and repository reuse map.
-- `templates/README.md` - neutral project README scaffold.
-- `templates/docs/project.md` - neutral current-project scope scaffold.
-- `templates/docs/roadmap.md` - neutral future-direction scaffold.
-- `templates/docs/architecture.md` - neutral architecture scaffold.
-- `templates/docs/decisions.md` - neutral durable-decision scaffold.
-- `templates/docs/testing.md` - neutral testing and validation scaffold.
-- `templates/docs/design.md` - neutral detailed-design scaffold for project capabilities.
-- `scripts/validate.ps1` - checks for clean scaffolds, source-context leakage, and an empty initialization slice where applicable.
-- `tests/validate-structure.ps1` - deterministic initialization and leakage test cases.
-- `docs/architecture.md` - current project-start and reusable-asset boundary.
-- `docs/testing.md` - initialization validation standards and evidence expectations.
-- `docs/current-slice.md` - this project-owned execution package and later completion evidence.
+- docs/current-slice.md - this promoted Draft slice and later lifecycle/evidence notes.
+- docs/design/fantasy-workflow-comparison.md - explicit comparison, adopted rules, already-covered behaviors, and exclusions.
+- `AGENTS.md` - only if reusable workflow authority needs a proven project-neutral improvement.
+- `skills/prepare-slice/SKILL.md` - only if promotion procedure needs a proven project-neutral improvement.
+- `skills/implement-slice/SKILL.md` - only if implementation procedure needs a proven project-neutral improvement.
+- `skills/validate-slice/SKILL.md` - only if validation procedure needs a proven project-neutral improvement.
+- `skills/review-slice/SKILL.md` - only if review procedure needs a proven project-neutral improvement.
+- `skills/finalize-work-item/SKILL.md` - only if completion procedure needs a proven project-neutral improvement.
+- `docs/testing.md` - only if project-wide validation standards need a proven project-neutral improvement.
+- `docs/architecture.md` - only if the workflow architecture boundary changes.
+- `docs/decisions.md` - only if a durable workflow decision is added or revised.
+- `README.md` - only if the human entry point or operating model changes.
+- `scripts/validate.ps1` - only if a new adopted rule is mechanically checkable.
+- `tests/validate-structure.ps1` - only if validator behavior changes.
 
-Do not add a hosted generator, central registry, synchronization service, automatic Git operations, model invocation, or unrelated project tooling. Do not copy current harness project documents into the new scaffolds.
+Do not edit fantasy repository files. Do not add fantasy product documents, source code, or domain-specific design content to this repository.
 
 ## Validation plan
 
@@ -92,87 +92,89 @@ git status --short
 
 Manual checks:
 
-- Follow `skills/start-project/SKILL.md` against a temporary clean target repository and confirm the procedure is understandable without hidden context.
-- Confirm reusable assets are preserved: `AGENTS.md`, `skills/`, `.github/ISSUE_TEMPLATE/`, local validation scripts/tests, and neutral templates.
-- Confirm project-owned documents are initialized from neutral scaffolds rather than copied from the harness: README, project, roadmap, architecture, decisions, testing, design, and empty current slice.
-- Confirm the initialized project contains no harness-specific scope, roadmap, architecture, decisions, Issue URLs, active slice state, or implementation history.
-- Confirm Issue forms are installed in the target repository and remain project-owned work-item templates.
-- Confirm the validator accepts an intentionally empty `docs/current-slice.md` before the first Issue is promoted, while still validating any non-empty active slice.
-- Confirm the process does not overwrite an existing project or synchronize changes automatically.
+- Confirm the comparison artifact identifies the fantasy workflow sources reviewed and keeps the comparison explicit and reviewable.
+- Confirm each adopted rule is project-neutral, justified by proven use, and placed in the correct authority source.
+- Confirm excluded patterns include fantasy product scope, fantasy domain knowledge, `tasks.md`-specific backlog mechanics that conflict with the Issue-based workflow, and speculative automation not proven by repeated use.
+- Confirm the Issue-based workflow remains intact: GitHub Issues define outcomes, current slices define execution, human approval remains required, and Issue closure remains a finalization step.
+- Confirm the resulting Phase 0 workflow is at least as usable as the prior manual workflow for document loading, slice execution, validation evidence, review, and completion handoff.
+- Confirm no implementation work begins for a fantasy feature slice and no migration of `live-draft-tool-v2` is attempted.
 
-Formal validation must follow `skills/validate-slice/SKILL.md`; it owns completion evidence and the transition to `Ready for review`. Independent review must follow `skills/review-slice/SKILL.md` and must not close Issue #4 or set this slice to `Complete`.
+Formal validation must follow `skills/validate-slice/SKILL.md`; it owns completion evidence and the transition to `Ready for review`. Independent review must follow `skills/review-slice/SKILL.md` and must not close Issue #5 or set this slice to `Complete`.
 
 ## Failure conditions
 
 Stop and revise before implementation or approval if:
 
 - the source Issue outcome, scope, non-goals, or acceptance criteria would need to change;
-- the startup procedure remains embedded primarily in `AGENTS.md` instead of the dedicated project-start skill;
-- reusable assets are omitted, copied with project state, or changed without a workflow reason;
-- any neutral scaffold contains AI Development Harness scope, phase, roadmap, architecture, decisions, Issue URLs, active-slice state, or completion evidence;
-- initialization copies the harness `docs/current-slice.md` content or leaves unresolved scaffold placeholders in the new active-slice path;
-- the minimum project information is insufficient to populate project-owned documents without guessing;
-- Issue forms are not installed or are coupled to the harness backlog;
-- leakage checks are manual-only when a deterministic local check is practical;
-- the validator cannot distinguish a clean empty current slice from a malformed non-empty slice;
-- the process overwrites existing project content, synchronizes projects automatically, or introduces a hosted generator or central registry;
-- changes add unrelated automation or conflict with the project scope, architecture, decisions, testing standards, or skill contracts.
+- the comparison cannot be made explicit and reviewable without copying fantasy product or domain content;
+- an adopted rule would weaken the Issue-based workflow, human approval boundaries, authority-by-concern model, or one-work-item invariant;
+- a useful fantasy pattern depends on obsolete `tasks.md` behavior and cannot be translated cleanly to GitHub Issues;
+- a proposed change adds speculative automation, central orchestration, multi-agent coordination, synchronization, or a generic plugin architecture;
+- a proposed validation check would require semantic judgment that belongs in review rather than deterministic local tooling;
+- expected file changes grow beyond reusable workflow rules and comparison evidence;
+- implementation requires editing the fantasy repository, starting a fantasy feature slice, or migrating that project.
 
 ## Review checklist
 
-- Does the project-start skill define required and optional inputs, outputs, prohibited side effects, and stop conditions?
-- Does it clearly separate copied reusable assets from initialized project-owned documents?
-- Are all project-owned scaffolds neutral and free of harness-specific active state?
-- Is the initial `docs/current-slice.md` state empty and safe until a Ready Issue is promoted?
-- Are the minimum project information and target-repository preconditions explicit enough to avoid guessing?
-- Are Issue forms installed without copying the harness backlog or Issue state?
-- Can the startup process be followed and checked by a human without a generator or hidden service?
-- Do deterministic checks cover scaffold leakage, initialized-document leakage, and the empty-versus-malformed current-slice distinction?
-- Does `AGENTS.md` register the skill without duplicating its procedure or changing unrelated authority?
-- Do README, architecture, and testing updates preserve self-containment and the distinction between mechanics and project intelligence?
-- Did implementation, formal validation, and independent review use their dedicated skills without silently advancing lifecycle state?
-- Does the result meet every Issue #4 acceptance criterion without synchronization, registry, or hosted-generator behavior?
+- Is the comparison explicit enough for a reviewer to see what was adopted, already covered, and excluded?
+- Does every adopted rule have a project-neutral justification grounded in the fantasy workflow?
+- Were fantasy product scope, domain rules, task backlog, and design content excluded?
+- Does the Issue-based workflow remain authoritative, with `tasks.md` treated only as legacy source context from the fantasy repo?
+- Do changes preserve the harness authority model, one active slice, and human approval boundaries?
+- Are reusable rules placed in `AGENTS.md` or the appropriate skill instead of buried in project-specific documents?
+- Are project-owned documents updated only when their concern actually changes?
+- Are any validator changes local, deterministic, and tested?
+- Does the result avoid unsupported shortcuts, speculative abstractions, and unrelated cleanup?
+- Does the workflow remain understandable for a human operator using Phase 0 manually?
 
 ## Completion evidence
 
-**Implementation status:** Implementation complete within the approved slice; formal validation and review remain.
+**Implementation status:** Pending. Promotion created this Draft slice only; implementation is not authorized.
 
-**Acceptance-criteria status:** Implementation evidence is present for all criteria; formal validation and independent review are pending.
+**Acceptance-criteria status:** Pending.
 
-**Files changed:** `skills/start-project/SKILL.md`, `templates/README.md`, `templates/docs/project.md`, `templates/docs/roadmap.md`, `templates/docs/architecture.md`, `templates/docs/decisions.md`, `templates/docs/testing.md`, `templates/docs/design.md`, `AGENTS.md`, `README.md`, `scripts/validate.ps1`, `tests/validate-structure.ps1`, `docs/architecture.md`, `docs/testing.md`, and this slice's lifecycle/evidence notes.
+**Files changed:** `docs/current-slice.md`.
 
-**Validation results:** `scripts/validate.ps1` passed. `tests/validate-structure.ps1` passed. `git diff --check` passed with only existing line-ending normalization warnings.
+**Validation results:** Not run.
 
-**Manual checks:** A disposable clean target was initialized from the reusable assets and neutral scaffolds; the target accepted `scripts/validate.ps1` with `-InitializedProject -CleanInitialization`, its validator tests passed, and the empty active slice was confirmed.
+**Manual checks:** Issue #5 readiness checked against the Issue body; Phase 0.7 dependency checked against the previous completed current slice; required harness context and relevant fantasy workflow documents were sampled for slice preparation.
 
-**Implementation adjustments or deviations:** The slice entered `In progress` under `skills/implement-slice/SKILL.md`. The active-slice wording was adjusted to avoid treating a documentation wildcard as a literal local path. Validator fixtures now create a valid temporary slice when testing a target whose real slice is intentionally empty. No outcome or scope change was made.
+**Implementation adjustments or deviations:** None.
 
-**Known limitations or follow-up Issues:** Formal validation and independent review are pending. New project types, synchronization, and automation beyond this bounded process remain out of scope.
+**Known limitations or follow-up Issues:** None identified.
 
-**Implementation summary:** Added the dedicated project-start skill, neutral project-document scaffolds, workflow registration, clean-target leakage checks, empty-slice handling, and deterministic fixture coverage described in this slice.
+**Implementation summary:** Pending.
 
 ## Dependencies and assumptions
 
-- Phase 0.6 local validation is complete and provides a local validator/test path to extend.
-- The updated `AGENTS.md` is authoritative for skill invocation and lifecycle boundaries.
-- The project-start procedure is a reusable human-operated skill, not an automatic generator.
-- No linked design document was identified for Issue #4.
-- A new project target is empty or explicitly designated for initialization; existing-project synchronization is not supported.
-- Human approval is required before implementation begins.
+- Phase 0.7 project-start instructions are complete, based on the prior `docs/current-slice.md` state.
+- The sibling comparison target is available at `C:\Users\Focus Mode\OneDrive\Documents\Code\live-draft-tool-v2`.
+- No linked approved design document was identified for Issue #5.
+- The comparison artifact is documentation work inside this repository; it must not modify or migrate the fantasy repository.
+- Human approval is required before this Draft slice becomes Approved, and implementation remains unauthorized until explicitly requested after approval.
 
 ## Relevant project documents
 
 - `AGENTS.md`
 - `README.md`
 - `docs/project.md`
+- `docs/roadmap.md`
 - `docs/architecture.md`
 - `docs/decisions.md`
 - `docs/testing.md`
+- `templates/docs/current-slice.md`
+- `scripts/validate.ps1`
+- `tests/validate-structure.ps1`
+- Sibling workflow source: `C:\Users\Focus Mode\OneDrive\Documents\Code\live-draft-tool-v2\AGENTS.md`
+- Sibling workflow source: `C:\Users\Focus Mode\OneDrive\Documents\Code\live-draft-tool-v2\CLAUDE.md`
+- Sibling workflow source: `C:\Users\Focus Mode\OneDrive\Documents\Code\live-draft-tool-v2\docs\tasks.md`
+- Sibling workflow source: `C:\Users\Focus Mode\OneDrive\Documents\Code\live-draft-tool-v2\docs\current-slice.md`
+- Sibling workflow source: `C:\Users\Focus Mode\OneDrive\Documents\Code\live-draft-tool-v2\docs\completed-tasks.md`
 
 ## Implementation constraints
 
 - Follow `skills/implement-slice/SKILL.md` for authorized implementation and leave this slice `In progress` afterward.
 - Follow `skills/validate-slice/SKILL.md` for formal validation; do not set `Ready for review` during implementation.
-- Follow `skills/review-slice/SKILL.md` for independent review; do not close Issue #4 or set this slice `Complete` during review.
-- Keep detailed initialization mechanics in `skills/start-project/SKILL.md`; keep `AGENTS.md` limited to authority, invariants, and skill registration.
-- Reuse the existing `templates/docs/current-slice.md` as a schema source, but initialize a new project's active slice as empty until promotion.
+- Follow `skills/review-slice/SKILL.md` for independent review; do not close Issue #5 or set this slice `Complete` during review.
+- Preserve Issue #5's goal, scope, non-goals, and acceptance criteria.
+- Treat `live-draft-tool-v2` as evidence for proven workflow mechanics, not as a source of reusable product context.
