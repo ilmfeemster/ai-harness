@@ -1,73 +1,83 @@
-# Phase 0.6 - Add lightweight local validation
+# Phase 0.7 - Add project-start instructions
 
 > **Project operational state:** This file is the active execution package for the AI Development Harness project. Reusable slice structure belongs in `templates/docs/current-slice.md`; this file contains only the current harness work item.
 
 ## Status
 
-In progress
+Ready
 
-Implementation is in progress within the approved Issue #3 scope.
+Implementation is not authorized. Human approval is required before changing this slice to `Approved`.
 
 ## Source Issue
 
-- **Issue:** #3 - Phase 0.6 - Add lightweight local validation
-- **URL:** https://github.com/ilmfeemster/ai-harness/issues/3
+- **Issue:** #4 - Phase 0.7 - Add project-start instructions
+- **URL:** https://github.com/ilmfeemster/ai-harness/issues/4
 
 ## Context
 
-The document, Issue, and slice contracts were defined by Phases 0.2 through 0.5. They now need deterministic local checks for required files, headings, references, commands, placeholders, and reusable-asset versus project-context leakage.
+The harness source repository contains both reusable workflow assets and the real project context used to develop the harness. New projects must not be created by copying this repository byte for byte, because that would carry over harness-specific scope, roadmap, architecture, decisions, Issues, and active implementation state.
 
-The repository currently has no validator, test harness, or script directory. This slice should add one small, understandable, project-local validation path without introducing a hosted service, model evaluation, repair loop, or general plugin framework.
+The updated workflow constitution makes repeatable procedures subordinate to `AGENTS.md` and places them in dedicated `skills/*/SKILL.md` files. Project initialization therefore needs a reusable human-operated skill, clean project-document scaffolds, and deterministic checks that make source-context leakage visible without becoming a hosted generator.
 
 ## Goal
 
-Add understandable local checks that detect structural workflow failures without pretending to provide independent evaluation.
+Define a reliable process for starting a new project with reusable workflow assets and clean project-document scaffolds without inheriting AI Development Harness context.
 
 ## Scope
 
-- Validate required repository files and directories.
-- Validate required current-slice sections.
-- Validate Issue-template files and required fields.
-- Detect unresolved template placeholders.
-- Check referenced local paths where practical.
-- Check that declared validation commands are present.
-- Check reusable assets for obvious harness-specific active state.
-- Add tests for deterministic validator behavior.
+- Define which assets are copied nearly verbatim.
+- Define which document paths are initialized from clean scaffolds.
+- Define which source-repository artifacts are excluded.
+- Define the minimum project information needed during initialization.
+- Define how Issue forms are installed.
+- Define how project documents are checked for source-context leakage.
+- Provide straightforward human-readable startup instructions.
 
 ## Non-goals
 
-- Do not evaluate implementation quality semantically.
-- Do not invoke models.
-- Do not run automatic repair.
-- Do not create a general plugin framework.
+- Do not support every project type.
+- Do not build a hosted project generator.
+- Do not introduce a central project registry.
+- Do not automatically synchronize existing projects.
 
 ## Acceptance criteria
 
-- One documented local command runs the structural checks.
-- Failures are specific and actionable.
-- Validator behavior has deterministic tests.
-- The checks distinguish mechanical validation from human review.
-- The tooling remains small, local, and replaceable.
+- A new repository can be initialized without copying harness-specific scope, roadmap, architecture, decisions, Issues, or active slice content.
+- Reusable workflow assets are preserved.
+- Clean scaffolds exist for project-owned documents.
+- The startup process is testable and understandable.
+- The initialized project remains self-contained.
 
 ## Implementation plan
 
-1. Inspect the current repository structure and existing documentation contracts, then establish a small local validator boundary with no new external dependency or framework.
-2. Add `scripts/validate.ps1` with deterministic checks for required files and directories, required active-slice headings and traceability, Issue-template files and required fields, unresolved placeholders, practical local references, declared validation commands, and obvious harness-specific active state in reusable assets.
-3. Make validator failures specific and actionable, return a non-zero exit code on failure, and provide a concise success result without treating mechanical success as review approval.
-4. Add `tests/validate-structure.ps1` with deterministic passing and failing cases for the validator. Tests should exercise representative temporary or fixture repository states, including missing files, missing sections, unresolved placeholders, invalid references, and reusable-asset leakage.
-5. Update `docs/testing.md` with the documented structural-validation command, test command, evidence expectations, and the boundary between mechanical validation and human review.
-6. Update `docs/architecture.md` only as needed to identify the local validator and deterministic tests as understandable, replaceable workflow mechanics; do not introduce a runtime controller or central service.
-7. Use the implementation skill for bounded changes, the validation skill for formal commands and evidence, and the review skill for independent assessment. Leave the slice `Draft` until a human approves it.
+1. Define the initialization boundary from `AGENTS.md`, `README.md`, `docs/architecture.md`, and the existing reusable assets. Separate assets copied nearly verbatim from project-owned paths that must be initialized with new content.
+2. Add the reusable `skills/start-project/SKILL.md` procedure. It must define required and optional project inputs, target-repository preconditions, copied assets, initialized paths, excluded source artifacts, Issue-form installation, leakage checks, expected outputs, prohibited side effects, stop conditions, and handoffs to validation and review skills.
+3. Add neutral scaffolds for `README.md`, `docs/project.md`, `docs/roadmap.md`, `docs/architecture.md`, `docs/decisions.md`, `docs/testing.md`, and a reusable design document. Keep all scaffolds free of harness-specific scope, phase, Issue, decision, architecture, and completion state.
+4. Define clean initialization of `docs/current-slice.md`: do not copy the harness active slice or unresolved template placeholders into a new project; create an empty project-owned active-slice file until a Ready Issue is promoted.
+5. Register the project-start operation in `AGENTS.md` and keep detailed startup mechanics in `skills/start-project/SKILL.md` rather than duplicating the procedure in the constitution.
+6. Update `README.md` with a human-readable entry point to the startup skill and the expanded reusable-asset/scaffold map. Update `docs/architecture.md` and `docs/testing.md` only where the project-start boundary and its deterministic checks change their current responsibilities.
+7. Extend `scripts/validate.ps1` and `tests/validate-structure.ps1` as needed to validate clean scaffolds, obvious source-context leakage, and an intentionally empty `docs/current-slice.md` during initialization. Keep checks local, mechanical, deterministic, and replaceable.
+8. Use `skills/implement-slice/SKILL.md` for authorized implementation, `skills/validate-slice/SKILL.md` for formal validation, and `skills/review-slice/SKILL.md` for independent review. Leave this slice `Draft` until human approval.
 
 ## Expected files
 
-- `scripts/validate.ps1` - local structural validator and command entry point.
-- `tests/validate-structure.ps1` - deterministic validator tests and representative pass/fail cases.
-- `docs/testing.md` - project-wide command and confidence expectations for structural validation.
-- `docs/architecture.md` - current local-tooling boundary, only if the validator changes the documented structural model.
-- `docs/current-slice.md` - this project-owned execution package and its later completion evidence.
+- `skills/start-project/SKILL.md` - reusable human-operated project-initialization procedure.
+- `AGENTS.md` - register the project-initialization skill without duplicating its detailed procedure.
+- `README.md` - human-readable startup entry point and repository reuse map.
+- `templates/README.md` - neutral project README scaffold.
+- `templates/docs/project.md` - neutral current-project scope scaffold.
+- `templates/docs/roadmap.md` - neutral future-direction scaffold.
+- `templates/docs/architecture.md` - neutral architecture scaffold.
+- `templates/docs/decisions.md` - neutral durable-decision scaffold.
+- `templates/docs/testing.md` - neutral testing and validation scaffold.
+- `templates/docs/design.md` - neutral detailed-design scaffold for project capabilities.
+- `scripts/validate.ps1` - checks for clean scaffolds, source-context leakage, and an empty initialization slice where applicable.
+- `tests/validate-structure.ps1` - deterministic initialization and leakage test cases.
+- `docs/architecture.md` - current project-start and reusable-asset boundary.
+- `docs/testing.md` - initialization validation standards and evidence expectations.
+- `docs/current-slice.md` - this project-owned execution package and later completion evidence.
 
-Do not add dependencies, a general plugin framework, a hosted service, model integrations, or automatic repair. Do not modify unrelated project documents.
+Do not add a hosted generator, central registry, synchronization service, automatic Git operations, model invocation, or unrelated project tooling. Do not copy current harness project documents into the new scaffolds.
 
 ## Validation plan
 
@@ -82,79 +92,78 @@ git status --short
 
 Manual checks:
 
-- The documented validator command runs locally without network access or model invocation.
-- Each required structural check has a specific, actionable failure message.
-- Deterministic tests cover both passing and failing repository states.
-- The validator checks mechanical structure only and does not claim semantic implementation evaluation.
-- Reusable assets are checked for obvious harness-specific active state without treating current project content as reusable template content.
-- The expected files and diff remain limited to the Issue outcome.
+- Follow `skills/start-project/SKILL.md` against a temporary clean target repository and confirm the procedure is understandable without hidden context.
+- Confirm reusable assets are preserved: `AGENTS.md`, `skills/`, `.github/ISSUE_TEMPLATE/`, local validation scripts/tests, and neutral templates.
+- Confirm project-owned documents are initialized from neutral scaffolds rather than copied from the harness: README, project, roadmap, architecture, decisions, testing, design, and empty current slice.
+- Confirm the initialized project contains no harness-specific scope, roadmap, architecture, decisions, Issue URLs, active slice state, or implementation history.
+- Confirm Issue forms are installed in the target repository and remain project-owned work-item templates.
+- Confirm the validator accepts an intentionally empty `docs/current-slice.md` before the first Issue is promoted, while still validating any non-empty active slice.
+- Confirm the process does not overwrite an existing project or synchronize changes automatically.
 
-Formal validation must follow `skills/validate-slice/SKILL.md`; successful validation owns the transition from `In progress` to `Ready for review`. Review must follow `skills/review-slice/SKILL.md` and must not be conflated with validation or human approval.
+Formal validation must follow `skills/validate-slice/SKILL.md`; it owns completion evidence and the transition to `Ready for review`. Independent review must follow `skills/review-slice/SKILL.md` and must not close Issue #4 or set this slice to `Complete`.
 
 ## Failure conditions
 
 Stop and revise before implementation or approval if:
 
-- the source Issue or its readiness state changes materially;
-- the validator requires an external dependency, network access, model invocation, or hosted service to run;
-- a structural failure is hidden, downgraded to a warning without justification, or reported without an actionable location or cause;
-- the validator hardcodes the current harness state instead of checking reusable contracts and project structure;
-- deterministic tests do not exercise representative pass and fail cases;
-- the validator evaluates semantic implementation quality or attempts automatic repair;
-- the work introduces a general plugin framework, central controller, or unrelated automation;
-- changes modify unrelated project documents or exceed the expected file boundary;
-- `docs/testing.md` or `docs/architecture.md` would need a material change outside this Issue's outcome;
-- validation commands cannot be specified as safe, local, repeatable checks;
-- a contradiction appears between the Issue, current project scope, architecture, decisions, testing standards, or this slice.
+- the source Issue outcome, scope, non-goals, or acceptance criteria would need to change;
+- the startup procedure remains embedded primarily in `AGENTS.md` instead of the dedicated project-start skill;
+- reusable assets are omitted, copied with project state, or changed without a workflow reason;
+- any neutral scaffold contains AI Development Harness scope, phase, roadmap, architecture, decisions, Issue URLs, active-slice state, or completion evidence;
+- initialization copies the harness `docs/current-slice.md` content or leaves unresolved scaffold placeholders in the new active-slice path;
+- the minimum project information is insufficient to populate project-owned documents without guessing;
+- Issue forms are not installed or are coupled to the harness backlog;
+- leakage checks are manual-only when a deterministic local check is practical;
+- the validator cannot distinguish a clean empty current slice from a malformed non-empty slice;
+- the process overwrites existing project content, synchronizes projects automatically, or introduces a hosted generator or central registry;
+- changes add unrelated automation or conflict with the project scope, architecture, decisions, testing standards, or skill contracts.
 
 ## Review checklist
 
-- Does one documented local command run all required structural checks?
-- Are validator failures specific enough for a contributor to correct the underlying problem?
-- Do deterministic tests cover both valid and invalid repository states without relying on network or model behavior?
-- Are required files, directories, slice sections, Issue-template fields, placeholders, local references, commands, and reusable-asset leakage covered within scope?
-- Does the validator remain mechanical and distinct from semantic evaluation and human review?
-- Is the implementation small, local, replaceable, and free of unnecessary dependencies or abstractions?
-- Does the result preserve the project self-containment boundary and current architecture?
-- Did the implementation and validation follow `skills/implement-slice/SKILL.md` and `skills/validate-slice/SKILL.md`?
-- Are review findings handled through `skills/review-slice/SKILL.md` without silently changing lifecycle state?
-- Does the result satisfy every Issue #3 acceptance criterion without adding repair, models, or plugin infrastructure?
+- Does the project-start skill define required and optional inputs, outputs, prohibited side effects, and stop conditions?
+- Does it clearly separate copied reusable assets from initialized project-owned documents?
+- Are all project-owned scaffolds neutral and free of harness-specific active state?
+- Is the initial `docs/current-slice.md` state empty and safe until a Ready Issue is promoted?
+- Are the minimum project information and target-repository preconditions explicit enough to avoid guessing?
+- Are Issue forms installed without copying the harness backlog or Issue state?
+- Can the startup process be followed and checked by a human without a generator or hidden service?
+- Do deterministic checks cover scaffold leakage, initialized-document leakage, and the empty-versus-malformed current-slice distinction?
+- Does `AGENTS.md` register the skill without duplicating its procedure or changing unrelated authority?
+- Do README, architecture, and testing updates preserve self-containment and the distinction between mechanics and project intelligence?
+- Did implementation, formal validation, and independent review use their dedicated skills without silently advancing lifecycle state?
+- Does the result meet every Issue #4 acceptance criterion without synchronization, registry, or hosted-generator behavior?
 
 ## Completion evidence
 
-**Implementation status:** Implementation complete; ready for formal validation.
+**Implementation status:** Pending human approval and implementation.
 
-**Acceptance-criteria status:** Implementation evidence is available; formal validation and review are pending.
+**Acceptance-criteria status:** Pending implementation and formal validation.
 
-**Files changed:** `scripts/validate.ps1`, `tests/validate-structure.ps1`, `docs/testing.md`, `docs/architecture.md`, and `docs/current-slice.md`.
+**Files changed:** Pending.
 
-**Validation results:** Focused development checks passed:
+**Validation results:** Not run. The commands above apply after this slice is approved and implemented.
 
-- `powershell -NoProfile -File scripts/validate.ps1` passed.
-- `powershell -NoProfile -File tests/validate-structure.ps1` passed.
-- `git diff --check` passed with the repository's existing LF/CRLF warning only.
+**Manual checks:** Pending implementation, formal validation, and independent review.
 
-Formal validation has not run yet and owns the transition to `Ready for review`.
+**Implementation adjustments or deviations:** None.
 
-**Manual checks:** The local validator runs without network access or model invocation; deterministic tests cover valid and invalid fixture states; the implementation remains within the expected files. Formal manual checks remain pending.
+**Known limitations or follow-up Issues:** None identified at slice preparation. New project types, synchronization, and automation beyond this bounded process remain out of scope.
 
-**Implementation adjustments or deviations:** The slice entered `In progress` under `skills/implement-slice/SKILL.md`. Windows PowerShell root resolution, explicit library import behavior for tests, Issue-form required-field counts, and command output handling were refined during focused checks. These are execution-only refinements; no outcome or scope change was made.
-
-**Known limitations or follow-up Issues:** Formal validation and independent review are pending. No out-of-scope follow-up was identified; new out-of-scope work must be recorded as a separate Issue rather than added here.
-
-**Implementation summary:** Added a dependency-free PowerShell structural validator, deterministic temporary-fixture tests, and documentation for the local validation boundary. The slice remains `In progress` for formal validation.
+**Implementation summary:** Prepared a bounded Draft execution package for Issue #4. No implementation has begun.
 
 ## Dependencies and assumptions
 
-- Phase 0.4 slice standard is complete.
-- Phase 0.5 planning modes are complete and documented in `AGENTS.md`.
-- The validator can be implemented with the repository's existing local tooling conventions and without adding a dependency.
-- No linked design document was identified for Issue #3.
+- Phase 0.6 local validation is complete and provides a local validator/test path to extend.
+- The updated `AGENTS.md` is authoritative for skill invocation and lifecycle boundaries.
+- The project-start procedure is a reusable human-operated skill, not an automatic generator.
+- No linked design document was identified for Issue #4.
+- A new project target is empty or explicitly designated for initialization; existing-project synchronization is not supported.
 - Human approval is required before implementation begins.
 
 ## Relevant project documents
 
 - `AGENTS.md`
+- `README.md`
 - `docs/project.md`
 - `docs/architecture.md`
 - `docs/decisions.md`
@@ -162,7 +171,8 @@ Formal validation has not run yet and owns the transition to `Ready for review`.
 
 ## Implementation constraints
 
-- Follow `skills/implement-slice/SKILL.md` for authorized implementation and leave the slice `In progress` afterward.
-- Follow `skills/validate-slice/SKILL.md` for formal validation and completion evidence; do not set `Ready for review` during implementation.
-- Follow `skills/review-slice/SKILL.md` for independent review; do not close the Issue or set the slice `Complete` during review.
-- Keep the command understandable and replaceable for a local Phase 0 workflow.
+- Follow `skills/implement-slice/SKILL.md` for authorized implementation and leave this slice `In progress` afterward.
+- Follow `skills/validate-slice/SKILL.md` for formal validation; do not set `Ready for review` during implementation.
+- Follow `skills/review-slice/SKILL.md` for independent review; do not close Issue #4 or set this slice `Complete` during review.
+- Keep detailed initialization mechanics in `skills/start-project/SKILL.md`; keep `AGENTS.md` limited to authority, invariants, and skill registration.
+- Reuse the existing `templates/docs/current-slice.md` as a schema source, but initialize a new project's active slice as empty until promotion.
