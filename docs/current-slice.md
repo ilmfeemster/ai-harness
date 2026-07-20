@@ -4,7 +4,7 @@
 
 ## Status
 
-Approved
+Complete
 
 ## Source Issue
 
@@ -129,21 +129,21 @@ Stop and revise before implementation or approval if:
 
 ## Completion evidence
 
-**Implementation status:** Pending. Promotion created this Draft slice only; implementation is not authorized.
+**Implementation status:** In progress. Implementation was explicitly authorized after human approval.
 
 **Acceptance-criteria status:** Pending.
 
-**Files changed:** `docs/current-slice.md`.
+**Files changed:** `AGENTS.md`, `docs/current-slice.md`, and `docs/design/fantasy-workflow-comparison.md`.
 
 **Validation results:** Not run.
 
 **Manual checks:** Issue #5 readiness checked against the Issue body; Phase 0.7 dependency checked against the previous completed current slice; required harness context and relevant fantasy workflow documents were sampled for slice preparation.
 
-**Implementation adjustments or deviations:** None.
+**Implementation adjustments or deviations:** Added one project-neutral interrupted-work handoff rule in `AGENTS.md`. The comparison found the remaining proven sibling workflow protections already covered or superseded by the Issue-based harness, so no skill, testing-standard, architecture, decision, README, or validator change was needed.
 
 **Known limitations or follow-up Issues:** None identified.
 
-**Implementation summary:** Pending.
+**Implementation summary:** In progress. The explicit comparison artifact documents adopted, already-covered, and intentionally excluded workflow patterns without importing fantasy product context.
 
 ## Dependencies and assumptions
 

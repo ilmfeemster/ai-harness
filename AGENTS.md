@@ -190,6 +190,10 @@ Expand context only when:
 
 Do not expand context merely for completeness. Context expansion does not authorize another operation or unrelated work.
 
+### 6.1 Interrupted-work handoff
+
+If work is interrupted and cannot safely continue from the available context, finish the current coherent unit when possible. Record any affected repository state, then provide a concise handoff that states progress, decisions, remaining work, blockers, and the next authorized operation. Do not use a handoff to imply approval for a later lifecycle operation.
+
 ## 7. Workflow and required skills
 
 A design-heavy capability may flow through:
