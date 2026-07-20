@@ -4,9 +4,9 @@
 
 ## Status
 
-Draft
+In progress
 
-Implementation is not authorized. Human approval is required before changing this slice to `Approved`.
+Implementation is in progress within the approved Issue #3 scope.
 
 ## Source Issue
 
@@ -122,21 +122,27 @@ Stop and revise before implementation or approval if:
 
 ## Completion evidence
 
-**Implementation status:** Pending human approval and implementation.
+**Implementation status:** Implementation complete; ready for formal validation.
 
-**Acceptance-criteria status:** Pending implementation and formal validation.
+**Acceptance-criteria status:** Implementation evidence is available; formal validation and review are pending.
 
-**Files changed:** Pending.
+**Files changed:** `scripts/validate.ps1`, `tests/validate-structure.ps1`, `docs/testing.md`, `docs/architecture.md`, and `docs/current-slice.md`.
 
-**Validation results:** Not run. The commands above apply after the slice is approved and implemented.
+**Validation results:** Focused development checks passed:
 
-**Manual checks:** Pending implementation and formal validation.
+- `powershell -NoProfile -File scripts/validate.ps1` passed.
+- `powershell -NoProfile -File tests/validate-structure.ps1` passed.
+- `git diff --check` passed with the repository's existing LF/CRLF warning only.
 
-**Implementation adjustments or deviations:** None.
+Formal validation has not run yet and owns the transition to `Ready for review`.
 
-**Known limitations or follow-up Issues:** None identified at slice preparation. New out-of-scope work must be recorded as a separate Issue rather than added here.
+**Manual checks:** The local validator runs without network access or model invocation; deterministic tests cover valid and invalid fixture states; the implementation remains within the expected files. Formal manual checks remain pending.
 
-**Implementation summary:** Prepared a bounded Draft execution package for Issue #3. No implementation has begun.
+**Implementation adjustments or deviations:** The slice entered `In progress` under `skills/implement-slice/SKILL.md`. Windows PowerShell root resolution, explicit library import behavior for tests, Issue-form required-field counts, and command output handling were refined during focused checks. These are execution-only refinements; no outcome or scope change was made.
+
+**Known limitations or follow-up Issues:** Formal validation and independent review are pending. No out-of-scope follow-up was identified; new out-of-scope work must be recorded as a separate Issue rather than added here.
+
+**Implementation summary:** Added a dependency-free PowerShell structural validator, deterministic temporary-fixture tests, and documentation for the local validation boundary. The slice remains `In progress` for formal validation.
 
 ## Dependencies and assumptions
 

@@ -69,6 +69,24 @@ Judgment about whether:
 
 Passing validation does not automatically imply approval.
 
+### Local structural validation
+
+The Phase 0 structural validator is a local, deterministic check. Run it from the repository root:
+
+```powershell
+powershell -NoProfile -File scripts/validate.ps1
+```
+
+It checks required repository paths, active-slice sections and traceability, Issue-template fields, unresolved scaffold placeholders, practical local references, declared validation commands, and obvious harness-specific state in reusable assets. Failures must identify the failed check and its actionable cause.
+
+The validator does not assess semantic implementation quality, invoke models, perform repair, or replace human review. Its deterministic behavior is tested separately:
+
+```powershell
+powershell -NoProfile -File tests/validate-structure.ps1
+```
+
+Both commands are local and replaceable. A passing command provides mechanical evidence only; the active slice still requires validation evidence, independent review where appropriate, and explicit human approval.
+
 ## Project-wide standards versus slice checks
 
 `docs/testing.md` defines the level and type of evidence the project generally requires.

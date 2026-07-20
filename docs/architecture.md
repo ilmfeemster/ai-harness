@@ -36,7 +36,8 @@ These encode workflow mechanics rather than product knowledge:
 - the default `AGENTS.md` constitution;
 - `.github/ISSUE_TEMPLATE/` Issue forms;
 - `templates/docs/current-slice.md`, the reusable scaffold for active slices;
-- structural validators and workflow scripts added in later slices;
+- `scripts/validate.ps1`, the local structural-validation entry point;
+- `tests/validate-structure.ps1`, deterministic tests for validator behavior;
 - reusable schemas or starter headings.
 
 These assets should remain project-neutral unless a project intentionally changes its workflow.
@@ -146,6 +147,8 @@ Issue closure
 ```
 
 Local scripts may validate document structure and execute declared commands. These tools must remain understandable and replaceable.
+
+Phase 0.6 adds a local structural validator and deterministic validator tests. They are workflow mechanics, not a runtime controller: they do not invoke models, evaluate implementation quality semantically, perform repair, or control another repository.
 
 ## Architecture principles
 
