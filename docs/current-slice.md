@@ -4,9 +4,9 @@
 
 ## Status
 
-Ready
+In progress
 
-Implementation is not authorized. Human approval is required before changing this slice to `Approved`.
+Implementation is in progress within the approved Issue #4 scope.
 
 ## Source Issue
 
@@ -17,7 +17,7 @@ Implementation is not authorized. Human approval is required before changing thi
 
 The harness source repository contains both reusable workflow assets and the real project context used to develop the harness. New projects must not be created by copying this repository byte for byte, because that would carry over harness-specific scope, roadmap, architecture, decisions, Issues, and active implementation state.
 
-The updated workflow constitution makes repeatable procedures subordinate to `AGENTS.md` and places them in dedicated `skills/*/SKILL.md` files. Project initialization therefore needs a reusable human-operated skill, clean project-document scaffolds, and deterministic checks that make source-context leakage visible without becoming a hosted generator.
+The updated workflow constitution makes repeatable procedures subordinate to `AGENTS.md` and places them in dedicated skill files under `skills/`. Project initialization therefore needs a reusable human-operated skill, clean project-document scaffolds, and deterministic checks that make source-context leakage visible without becoming a hosted generator.
 
 ## Goal
 
@@ -57,7 +57,7 @@ Define a reliable process for starting a new project with reusable workflow asse
 5. Register the project-start operation in `AGENTS.md` and keep detailed startup mechanics in `skills/start-project/SKILL.md` rather than duplicating the procedure in the constitution.
 6. Update `README.md` with a human-readable entry point to the startup skill and the expanded reusable-asset/scaffold map. Update `docs/architecture.md` and `docs/testing.md` only where the project-start boundary and its deterministic checks change their current responsibilities.
 7. Extend `scripts/validate.ps1` and `tests/validate-structure.ps1` as needed to validate clean scaffolds, obvious source-context leakage, and an intentionally empty `docs/current-slice.md` during initialization. Keep checks local, mechanical, deterministic, and replaceable.
-8. Use `skills/implement-slice/SKILL.md` for authorized implementation, `skills/validate-slice/SKILL.md` for formal validation, and `skills/review-slice/SKILL.md` for independent review. Leave this slice `Draft` until human approval.
+8. Use `skills/implement-slice/SKILL.md` for authorized implementation, `skills/validate-slice/SKILL.md` for formal validation, and `skills/review-slice/SKILL.md` for independent review. Keep this slice `In progress` during implementation; formal validation owns the transition to `Ready for review`.
 
 ## Expected files
 
@@ -135,21 +135,21 @@ Stop and revise before implementation or approval if:
 
 ## Completion evidence
 
-**Implementation status:** Pending human approval and implementation.
+**Implementation status:** Implementation complete within the approved slice; formal validation and review remain.
 
-**Acceptance-criteria status:** Pending implementation and formal validation.
+**Acceptance-criteria status:** Implementation evidence is present for all criteria; formal validation and independent review are pending.
 
-**Files changed:** Pending.
+**Files changed:** `skills/start-project/SKILL.md`, `templates/README.md`, `templates/docs/project.md`, `templates/docs/roadmap.md`, `templates/docs/architecture.md`, `templates/docs/decisions.md`, `templates/docs/testing.md`, `templates/docs/design.md`, `AGENTS.md`, `README.md`, `scripts/validate.ps1`, `tests/validate-structure.ps1`, `docs/architecture.md`, `docs/testing.md`, and this slice's lifecycle/evidence notes.
 
-**Validation results:** Not run. The commands above apply after this slice is approved and implemented.
+**Validation results:** `scripts/validate.ps1` passed. `tests/validate-structure.ps1` passed. `git diff --check` passed with only existing line-ending normalization warnings.
 
-**Manual checks:** Pending implementation, formal validation, and independent review.
+**Manual checks:** A disposable clean target was initialized from the reusable assets and neutral scaffolds; the target accepted `scripts/validate.ps1` with `-InitializedProject -CleanInitialization`, its validator tests passed, and the empty active slice was confirmed.
 
-**Implementation adjustments or deviations:** None.
+**Implementation adjustments or deviations:** The slice entered `In progress` under `skills/implement-slice/SKILL.md`. The active-slice wording was adjusted to avoid treating a documentation wildcard as a literal local path. Validator fixtures now create a valid temporary slice when testing a target whose real slice is intentionally empty. No outcome or scope change was made.
 
-**Known limitations or follow-up Issues:** None identified at slice preparation. New project types, synchronization, and automation beyond this bounded process remain out of scope.
+**Known limitations or follow-up Issues:** Formal validation and independent review are pending. New project types, synchronization, and automation beyond this bounded process remain out of scope.
 
-**Implementation summary:** Prepared a bounded Draft execution package for Issue #4. No implementation has begun.
+**Implementation summary:** Added the dedicated project-start skill, neutral project-document scaffolds, workflow registration, clean-target leakage checks, empty-slice handling, and deterministic fixture coverage described in this slice.
 
 ## Dependencies and assumptions
 

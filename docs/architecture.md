@@ -34,8 +34,9 @@ The template has two distinct output categories.
 These encode workflow mechanics rather than product knowledge:
 
 - the default `AGENTS.md` constitution;
+- `skills/`, including the human-operated project-start procedure;
 - `.github/ISSUE_TEMPLATE/` Issue forms;
-- `templates/docs/current-slice.md`, the reusable scaffold for active slices;
+- `templates/`, neutral scaffolds for project-owned documents and active slices;
 - `scripts/validate.ps1`, the local structural-validation entry point;
 - `tests/validate-structure.ps1`, deterministic tests for validator behavior;
 - reusable schemas or starter headings.
@@ -56,7 +57,7 @@ These are created from scaffolds but populated with the new project's intelligen
 - detailed designs;
 - project testing strategy;
 - GitHub Issue contents;
-- active slice;
+- active slice, initialized empty until a Ready Issue is promoted;
 - source code and tests.
 
 The current harness contents of these sources are development context, not reusable project content.
@@ -71,14 +72,16 @@ That does not mean project creation should copy all files verbatim.
 
 A future project-start process must:
 
-1. copy reusable workflow assets;
-2. create project-document paths from approved scaffolds;
-3. remove harness-specific content and operational state;
-4. initialize those documents with the new project's context;
-5. initialize the reusable Issue forms in the new GitHub repository;
-6. preserve project self-containment.
+1. follow `skills/start-project/SKILL.md` and confirm the target is new or empty;
+2. copy reusable workflow assets;
+3. create project-document paths from neutral scaffolds;
+4. remove source-project content and operational state;
+5. initialize those documents with the new project's context;
+6. initialize the reusable Issue forms in the new GitHub repository;
+7. create an empty active-slice path until a Ready Issue is promoted;
+8. preserve project self-containment.
 
-The exact initialization procedure belongs to Phase 0.7. This architecture defines the boundary that procedure must preserve.
+The exact initialization procedure belongs in `skills/start-project/SKILL.md`. This architecture defines the boundary that procedure must preserve.
 
 ## GitHub work-item model
 

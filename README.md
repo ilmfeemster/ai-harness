@@ -38,9 +38,10 @@ The future project template is not a byte-for-byte copy of this repository's cur
 ### Copied as reusable workflow
 
 - `AGENTS.md`;
+- `skills/`;
 - `.github/ISSUE_TEMPLATE/`;
-- `templates/docs/current-slice.md`;
-- future workflow validators and scripts;
+- `templates/` neutral document and active-slice scaffolds;
+- `scripts/validate.ps1` and `tests/validate-structure.ps1`;
 - reusable headings and schemas for project documents.
 
 ### Created from scaffolds, then filled with project context
@@ -52,7 +53,7 @@ The future project template is not a byte-for-byte copy of this repository's cur
 - `docs/decisions.md`;
 - `docs/testing.md`;
 - `docs/design/`;
-- `docs/current-slice.md`.
+- `docs/current-slice.md`, which starts empty until a Ready Issue is promoted.
 
 The current contents of those files describe the AI Development Harness project. Their structures may inform a new project, but their harness-specific content must not be carried over.
 
@@ -67,8 +68,11 @@ Phase 0 is intentionally human-orchestrated. GitHub Issues are the authoritative
 ## Repository map
 
 - `AGENTS.md` — reusable workflow constitution, Issue contract, and document-responsibility model.
+- `skills/` — repeatable operation procedures, including `skills/start-project/SKILL.md`.
 - `.github/ISSUE_TEMPLATE/` — reusable Issue forms for implementation work and bugs.
-- `templates/docs/current-slice.md` — reusable scaffold for initializing a project-specific active slice.
+- `templates/` — neutral scaffolds for project-owned documents and active slices.
+- `scripts/validate.ps1` — local structural validation for the source repository or a clean initialized project.
+- `tests/validate-structure.ps1` — deterministic validator behavior tests.
 - `docs/project.md` — current AI Development Harness scope and active phase.
 - `docs/roadmap.md` — future harness maturity direction.
 - `docs/architecture.md` — current architecture of the harness product.
@@ -76,6 +80,19 @@ Phase 0 is intentionally human-orchestrated. GitHub Issues are the authoritative
 - `docs/testing.md` — harness-specific testing and confidence standards.
 - `docs/current-slice.md` — the single bounded harness work package approved for implementation, created as project-owned state rather than copied as reusable content.
 - `docs/design/` — detailed harness designs when needed.
+
+## Starting a new project
+
+Use `skills/start-project/SKILL.md` for the human-operated initialization procedure. It separates reusable workflow assets from project-owned documents, initializes clean scaffolds, installs the Issue forms, and creates an empty `docs/current-slice.md`.
+
+Before starting, provide the target path, project purpose and users, current goals and scope, non-goals, initial roadmap direction, architecture constraints, testing expectations, and GitHub repository identity when Issues will be used. Run the clean-target validator from the initialized repository:
+
+```powershell
+powershell -NoProfile -File scripts/validate.ps1 -InitializedProject -CleanInitialization
+powershell -NoProfile -File tests/validate-structure.ps1
+```
+
+Initialization does not copy this repository's project documents or Issues, overwrite an existing project, promote work, or begin implementation.
 
 ## Phase 0 operating model
 

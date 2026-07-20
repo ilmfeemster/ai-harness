@@ -1,7 +1,9 @@
 [CmdletBinding()]
 param(
     [string]$Root,
-    [switch]$Library
+    [switch]$Library,
+    [switch]$InitializedProject,
+    [switch]$CleanInitialization
 )
 
 Set-StrictMode -Version Latest
@@ -79,6 +81,10 @@ function Test-CurrentSlice {
 
     $slice = Get-RepositoryText $RepositoryRoot 'docs/current-slice.md'
     if ($null -eq $slice) {
+        return
+    }
+
+    if ([string]::IsNullOrWhiteSpace($slice)) {
         return
     }
 
@@ -214,9 +220,91 @@ function Test-ReusableAssets {
     }
 }
 
+function Test-CleanScaffolds {
+    param(
+        [System.Collections.Generic.List[string]]$Failures,
+        [string]$RepositoryRoot
+    )
+
+    $scaffolds = @(
+        @{ Path = 'templates/README.md'; Pattern = '(?m)^# .+$'; Description = 'templates/README.md does not contain a document heading.' },
+        @{ Path = 'templates/docs/project.md'; Pattern = '(?m)^# Project Scope\s*$'; Description = 'templates/docs/project.md is missing its neutral heading.' },
+        @{ Path = 'templates/docs/roadmap.md'; Pattern = '(?m)^# Roadmap\s*$'; Description = 'templates/docs/roadmap.md is missing its neutral heading.' },
+        @{ Path = 'templates/docs/architecture.md'; Pattern = '(?m)^# Architecture\s*$'; Description = 'templates/docs/architecture.md is missing its neutral heading.' },
+        @{ Path = 'templates/docs/decisions.md'; Pattern = '(?m)^# Decisions\s*$'; Description = 'templates/docs/decisions.md is missing its neutral heading.' },
+        @{ Path = 'templates/docs/testing.md'; Pattern = '(?m)^# Testing and Validation\s*$'; Description = 'templates/docs/testing.md is missing its neutral heading.' },
+        @{ Path = 'templates/docs/design.md'; Pattern = '(?m)^# .+ Design\s*$'; Description = 'templates/docs/design.md is missing its neutral heading.' }
+    )
+
+    foreach ($scaffold in $scaffolds) {
+        $text = Get-RepositoryText $RepositoryRoot $scaffold.Path
+        if ($null -ne $text) {
+            Assert-Pattern $Failures $text $scaffold.Pattern $scaffold.Description
+        }
+    }
+}
+
+function Test-InitializedProject {
+    param(
+        [System.Collections.Generic.List[string]]$Failures,
+        [string]$RepositoryRoot,
+        [switch]$CleanInitialization
+    )
+
+    $projectPaths = @(
+        'README.md',
+        'docs/project.md',
+        'docs/roadmap.md',
+        'docs/architecture.md',
+        'docs/decisions.md',
+        'docs/testing.md',
+        'docs/design',
+        'docs/current-slice.md'
+    )
+    $forbiddenPatterns = @(
+        'AI Development Harness',
+        'ilmfeemster/ai-harness',
+        'Harness Phase 0',
+        'Phase 0\.[0-9]+'
+    )
+
+    foreach ($relativePath in $projectPaths) {
+        $path = Join-Path $RepositoryRoot $relativePath
+        if (-not (Test-Path -LiteralPath $path)) {
+            continue
+        }
+
+        $files = if (Test-Path -LiteralPath $path -PathType Leaf) {
+            @([System.IO.FileInfo](Get-Item -LiteralPath $path))
+        } else {
+            @(Get-ChildItem -LiteralPath $path -File -Recurse)
+        }
+
+        foreach ($file in $files) {
+            $text = [System.IO.File]::ReadAllText($file.FullName)
+            foreach ($pattern in $forbiddenPatterns) {
+                if ($text -match $pattern) {
+                    $displayPath = $file.FullName.Substring($RepositoryRoot.Length).TrimStart('\', '/')
+                    Add-ValidationFailure $Failures "Project-owned document contains source-context leakage: $displayPath"
+                    break
+                }
+            }
+        }
+    }
+
+    if ($CleanInitialization) {
+        $slice = Get-RepositoryText $RepositoryRoot 'docs/current-slice.md'
+        if ($null -ne $slice -and -not [string]::IsNullOrWhiteSpace($slice)) {
+            Add-ValidationFailure $Failures 'Clean initialized project must leave docs/current-slice.md empty.'
+        }
+    }
+}
+
 function Get-ValidationResult {
     param(
-        [string]$RepositoryRoot
+        [string]$RepositoryRoot,
+        [switch]$InitializedProject,
+        [switch]$CleanInitialization
     )
 
     $resolvedRoot = (Resolve-Path -LiteralPath $RepositoryRoot).Path
@@ -231,6 +319,14 @@ function Get-ValidationResult {
         'docs/decisions.md',
         'docs/testing.md',
         'docs/current-slice.md',
+        'skills/start-project/SKILL.md',
+        'templates/README.md',
+        'templates/docs/project.md',
+        'templates/docs/roadmap.md',
+        'templates/docs/architecture.md',
+        'templates/docs/decisions.md',
+        'templates/docs/testing.md',
+        'templates/docs/design.md',
         'templates/docs/current-slice.md',
         '.github/ISSUE_TEMPLATE/implementation.yml',
         '.github/ISSUE_TEMPLATE/bug.yml',
@@ -240,13 +336,17 @@ function Get-ValidationResult {
         Assert-RequiredFile $failures $resolvedRoot $relativePath
     }
 
-    foreach ($relativePath in @('docs', 'docs/design', 'skills', 'templates/docs', '.github/ISSUE_TEMPLATE', 'scripts', 'tests')) {
+    foreach ($relativePath in @('docs', 'docs/design', 'skills', 'skills/start-project', 'templates/docs', '.github/ISSUE_TEMPLATE', 'scripts', 'tests')) {
         Assert-RequiredDirectory $failures $resolvedRoot $relativePath
     }
 
     Test-CurrentSlice $failures $resolvedRoot
     Test-IssueTemplates $failures $resolvedRoot
     Test-ReusableAssets $failures $resolvedRoot
+    Test-CleanScaffolds $failures $resolvedRoot
+    if ($InitializedProject) {
+        Test-InitializedProject -Failures $failures -RepositoryRoot $resolvedRoot -CleanInitialization:$CleanInitialization
+    }
 
     [pscustomobject]@{
         Passed = ($failures.Count -eq 0)
@@ -256,10 +356,12 @@ function Get-ValidationResult {
 
 function Invoke-RepositoryValidation {
     param(
-        [string]$RepositoryRoot
+        [string]$RepositoryRoot,
+        [switch]$InitializedProject,
+        [switch]$CleanInitialization
     )
 
-    $result = Get-ValidationResult $RepositoryRoot
+    $result = Get-ValidationResult -RepositoryRoot $RepositoryRoot -InitializedProject:$InitializedProject -CleanInitialization:$CleanInitialization
     if ($result.Passed) {
         Write-Host 'Structural validation passed.'
         return 0
@@ -274,5 +376,5 @@ function Invoke-RepositoryValidation {
 }
 
 if (-not $Library) {
-    exit (Invoke-RepositoryValidation -RepositoryRoot $Root)
+    exit (Invoke-RepositoryValidation -RepositoryRoot $Root -InitializedProject:$InitializedProject -CleanInitialization:$CleanInitialization)
 }

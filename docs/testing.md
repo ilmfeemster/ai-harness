@@ -30,6 +30,8 @@ Phase 0 should prove that:
 
 - reusable workflow assets are distinguishable from project-context documents;
 - a new project can be initialized without inheriting harness-specific context;
+- neutral document scaffolds remain free of source-project state;
+- a fresh initialized project starts with an empty active slice;
 - required project documents exist;
 - reusable Issue forms exist and require the readiness contract;
 - submitted Issues remain project-specific work state;
@@ -77,7 +79,7 @@ The Phase 0 structural validator is a local, deterministic check. Run it from th
 powershell -NoProfile -File scripts/validate.ps1
 ```
 
-It checks required repository paths, active-slice sections and traceability, Issue-template fields, unresolved scaffold placeholders, practical local references, declared validation commands, and obvious harness-specific state in reusable assets. Failures must identify the failed check and its actionable cause.
+It checks required repository paths, active-slice sections and traceability when the active slice is non-empty, Issue-template fields, neutral scaffold headings, unresolved scaffold placeholders, practical local references, declared validation commands, and obvious harness-specific state in reusable assets. For a newly initialized project, run it with `-InitializedProject -CleanInitialization` to check project-owned document leakage and the empty active slice. Failures must identify the failed check and its actionable cause.
 
 The validator does not assess semantic implementation quality, invoke models, perform repair, or replace human review. Its deterministic behavior is tested separately:
 
@@ -106,11 +108,13 @@ Validate the harness and generated project structure:
 - referenced paths are valid where practical;
 - reusable assets do not contain harness-only project state;
 - project-context scaffolds can be initialized without carrying source-project content;
+- clean initialized project documents do not contain source-project names, URLs, phases, or active state;
 - both reusable Issue forms exist;
 - blank Issues are disabled so work uses the defined contract;
 - Issue forms contain outcome, scope, non-goal, acceptance, dependency, document, and readiness fields;
 - readiness boxes can remain unchecked for draft backlog Issues;
-- `current-slice.md` includes a source Issue and validation commands;
+- a non-empty `current-slice.md` includes a source Issue and validation commands;
+- a fresh initialized `current-slice.md` is empty until Issue promotion;
 - approved slices contain no unresolved template markers;
 - active slices use only valid status values: `Draft`, `Approved`, `In progress`, `Blocked`, `Ready for review`, or `Complete`;
 - promoted active slices include the source Issue number, title, and URL;
@@ -165,6 +169,8 @@ Confirm that:
 
 - document loading is understandable;
 - reusable workflow rules and project context are not mixed;
+- a new project can be initialized from neutral scaffolds without copying source context;
+- the initial active slice is empty and safe until a Ready Issue is promoted;
 - Issue forms are useful without excessive ceremony;
 - labels are not required to infer readiness;
 - the slice is appropriately bounded;

@@ -36,7 +36,7 @@ These should normally transfer to a new project with little or no project-specif
 - `AGENTS.md`;
 - `skills/`;
 - `.github/ISSUE_TEMPLATE/`;
-- `templates/docs/current-slice.md`;
+- `templates/` neutral document and active-slice scaffolds;
 - structural validators and workflow scripts;
 - reusable schemas and starter headings.
 
@@ -73,7 +73,7 @@ Authority is determined by concern, not by one universal hierarchy.
 | `docs/decisions.md` | Durable project decisions, rationale, and tradeoffs | Temporary notes or status log |
 | `docs/design/*.md` | Approved detailed design for a coherent capability or change | Work queue or implementation transcript |
 | GitHub Issues | Work queue and required outcomes of bounded work items | Full file-level execution package |
-| `templates/docs/current-slice.md` | Reusable active-slice scaffold | Active project state or completion evidence |
+| `templates/` | Reusable neutral document and active-slice scaffolds | Active project state or completion evidence |
 | `docs/current-slice.md` | One bounded execution package for the active Issue | Backlog, multi-item plan, or silent override of upstream constraints |
 | `docs/testing.md` | Project-wide validation standards and confidence requirements | Slice-specific results or substitute acceptance criteria |
 | Code and tests | Actual implemented behavior and executable evidence | Product planning or undocumented policy |
@@ -214,6 +214,7 @@ Before acting, read the complete skill for the operation:
 
 | Operation | Required skill | Primary output |
 | --- | --- | --- |
+| Project initialization | `skills/start-project/SKILL.md` | Self-contained project with reusable assets and clean project-owned scaffolds |
 | Repository orientation | `skills/orient-repository/SKILL.md` | Grounded repository map |
 | Project, architecture, or design planning | `skills/plan-change/SKILL.md` | Plan or authorized planning artifact |
 | Work-item creation | `skills/create-work-item/SKILL.md` | One Draft or Ready Issue |
