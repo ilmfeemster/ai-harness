@@ -8,6 +8,34 @@ Every phase must produce a usable workflow. Later phases extend the existing mod
 
 This document defines future direction and sequencing. It is not the active work queue.
 
+## Guiding end-state
+
+The long-term objective of the harness is:
+
+```text
+Human:
+"Start the next work item."
+↓
+Harness:
+- determine or receive the next approved work item
+- assemble context
+- generate or load the slice
+- implement
+- validate
+- evaluate
+- repair within bounded limits
+- prepare review evidence
+↓
+Human:
+- approve
+- raise concerns
+- redirect priorities
+- start the next loop
+```
+
+The goal is not unrestricted autonomy. The goal is minimizing repetitive orchestration work while preserving meaningful human control and review.
+
+
 ## Phase 0 — Usable document-driven workflow template
 
 ### Outcome
@@ -52,7 +80,7 @@ project.md
 
 ### Outcome
 
-A ready GitHub Issue can become a high-quality `current-slice.md` with little repetitive prompting.
+A ready GitHub Issue can become a high-quality `current-slice.md` with little repetitive prompting, reducing manual orchestration work and preparing future execution loops.
 
 ### Capabilities
 
@@ -71,7 +99,7 @@ Implementation remains manually invoked.
 
 ### Outcome
 
-An approved slice can be executed once by a project-local implementation runner, followed by deterministic validation and a structured result.
+An approved slice can be executed by a project-local implementation runner with minimal human intervention, followed by deterministic validation and a structured result.
 
 ### Capabilities
 
@@ -90,6 +118,8 @@ No automatic repair.
 ### Outcome
 
 Implementation results are independently evaluated against the Issue, slice, architecture, tests, and validation evidence. Identified defects may receive limited repair attempts.
+
+This phase establishes the first complete bounded execution loop from implementation through repair and review preparation.
 
 ### Capabilities
 
@@ -147,3 +177,67 @@ Possible capabilities:
 - project progress summaries;
 - documentation-drift detection;
 - optional multi-project coordination.
+
+
+## Phase 7 — Human-supervised continuous execution
+
+### Outcome
+
+The harness can execute complete bounded work loops with minimal operational prompting.
+
+The primary operating model becomes:
+
+```text
+Human:
+"Start the next work item."
+↓
+Harness:
+Issue selection
+↓
+Context assembly
+↓
+Slice preparation
+↓
+Implementation
+↓
+Validation
+↓
+Independent evaluation
+↓
+Bounded repair
+↓
+Review package generation
+↓
+Human review
+```
+
+### Capabilities
+
+- determine the next ready Issue;
+- resume interrupted runs;
+- automatically prepare slices;
+- execute implementation loops;
+- perform validation and evaluation;
+- perform bounded repair attempts;
+- surface blockers and concerns;
+- produce auditable review packages;
+- wait for human approval before beginning additional work.
+
+### Human responsibilities
+
+Humans remain responsible for:
+
+- strategic direction;
+- approval boundaries;
+- architectural concerns;
+- redefining requirements;
+- accepting completed work;
+- initiating the next execution loop.
+
+### Non-goals
+
+- unrestricted autonomy;
+- unlimited self-directed execution;
+- automatic production deployment;
+- removing meaningful human oversight;
+- automatic progression through multiple work items without approval.
