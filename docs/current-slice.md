@@ -1,10 +1,10 @@
 # Phase 1: Normalize supported GitHub Issue forms
 
-> **Project operational state:** This file is the active execution package for the AI Development Harness project. It is a Draft translation of GitHub Issue #8; it does not authorize implementation.
+> **Project operational state:** This file is the active execution package for the AI Development Harness project. It implements the approved GitHub Issue #8 slice.
 
 ## Status
 
-Draft
+In progress
 
 ## Source Issue
 
@@ -51,9 +51,9 @@ Provide a read-only local path that converts a human-selected supported GitHub I
 
 ## Expected files
 
-- A new Phase 1 local preparation script under `scripts/` — read-only Issue normalization boundary.
-- A new deterministic parser and failure-path test script under `tests/`.
-- New representative submitted Issue-form fixtures in a dedicated test-fixture directory.
+- `scripts/prepare-slice.ps1` — read-only Issue normalization boundary.
+- `tests/prepare-slice.ps1` — deterministic parser and failure-path tests.
+- `tests/fixtures/issues/` — representative submitted Issue-form fixtures.
 - `docs/current-slice.md` — this Draft slice and later execution evidence only.
 
 ## Validation plan
@@ -61,13 +61,13 @@ Provide a read-only local path that converts a human-selected supported GitHub I
 Run from the repository root after implementation:
 
 ```powershell
+powershell -NoProfile -File tests/prepare-slice.ps1
 powershell -NoProfile -File scripts/validate.ps1
 powershell -NoProfile -File tests/validate-structure.ps1
 ```
 
 Manual checks:
 
-- Run the deterministic parser and failure-path test command after the test script is added; record its exact command and result in this slice during implementation.
 - Use the local command with an explicit open Issue number and confirm its normalized output includes source number, title, URL, state, required form fields, readiness confirmations, and unparsed-body traceability.
 - Repeat with a supported bug-form Issue and confirm observed behavior, expected behavior, evidence, and impact remain available in the normalized result.
 - Confirm unsupported headings, missing required fields, unreadable Issue data, and a closed Issue report actionable failures.
@@ -96,21 +96,21 @@ Stop and revise before implementation or approval if:
 
 ## Completion evidence
 
-**Implementation status:** Pending human approval and implementation authorization.
+**Implementation status:** In progress. The bounded implementation is complete and awaits formal validation.
 
-**Acceptance-criteria status:** Pending.
+**Acceptance-criteria status:** Not formally evaluated; focused development evidence is available.
 
-**Files changed:** `docs/current-slice.md` (Draft preparation only).
+**Files changed:** `docs/current-slice.md`, `scripts/prepare-slice.ps1`, `tests/prepare-slice.ps1`, and `tests/fixtures/issues/`.
 
-**Validation results:** Not run.
+**Validation results:** Development checks passed on 2026-07-21: `powershell -NoProfile -File scripts/prepare-slice.ps1 -IssueNumber 8`; `powershell -NoProfile -File tests/prepare-slice.ps1`; `powershell -NoProfile -File scripts/validate.ps1`; and `powershell -NoProfile -File tests/validate-structure.ps1`. Formal validation has not yet run.
 
-**Manual checks:** GitHub Issue #8 was retrieved read-only on 2026-07-21. It is open, includes every required Issue-contract section, and has every readiness confirmation checked.
+**Manual checks:** GitHub Issue #8 was retrieved read-only on 2026-07-21. The normalizer returned its source number, title, URL, open state, unparsed body, all required implementation-form fields, and seven checked readiness confirmations. Fixture coverage confirmed equivalent bug-form preservation and defined error paths without live GitHub access.
 
-**Implementation adjustments or deviations:** None.
+**Implementation adjustments or deviations:** The normalizer exposes a local JSON-fixture input solely for deterministic tests; normal operation requires an explicit Issue number and uses the read-only GitHub CLI path. The Draft slice's expected paths were made concrete after implementation so structural validation could verify them without placeholder files.
 
 **Known limitations or follow-up Issues:** Context discovery and manifests are deferred to Issue #9; guarded slice generation is deferred to Issue #10; end-to-end workflow integration is deferred to Issue #11.
 
-**Implementation summary:** Draft slice prepared from GitHub Issue #8. Implementation has not started.
+**Implementation summary:** Added `scripts/prepare-slice.ps1`, which reads one explicit open GitHub Issue through `gh issue view` and normalizes only the supported implementation and bug forms. Added local submitted-form fixtures and `tests/prepare-slice.ps1` for valid and failure-path coverage. The tool performs no GitHub writes, Issue selection, document discovery, manifest generation, or slice generation.
 
 ## Dependencies and assumptions
 
@@ -136,4 +136,4 @@ Stop and revise before implementation or approval if:
 - Keep all GitHub interactions read-only and initiated only for an explicit Issue number.
 - Keep parser fixtures local and deterministic; do not require a live GitHub account to run tests.
 - Do not create context manifests, alter GitHub Issues, or invoke implementation, validation, review, or finalization workflows from the new tool.
-- This slice remains `Draft` until explicit human approval; implementation requires separate explicit authorization after approval.
+- This slice is `In progress`; formal validation owns the later transition to `Ready for review`.

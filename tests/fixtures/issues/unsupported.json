@@ -1,0 +1,7 @@
+{
+  "number": 103,
+  "title": "Unsupported fixture",
+  "url": "https://github.com/example/project/issues/103",
+  "state": "OPEN",
+  "body": "## Unrecognized\n\nThis does not use a supported form.\n\n## Readiness\n\n- [x] Fixture confirmation.\n"
+}

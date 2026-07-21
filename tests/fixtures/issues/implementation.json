@@ -1,0 +1,7 @@
+{
+  "number": 101,
+  "title": "Fixture implementation issue",
+  "url": "https://github.com/example/project/issues/101",
+  "state": "OPEN",
+  "body": "## Work type\n\nFeature\n\n## Goal\n\nNormalize a supported implementation Issue.\n\n## Context\n\nThe fixture exercises the implementation form.\n\n## Scope\n\n- Parse the supported form.\n\n## Non-goals\n\n- Do not fetch GitHub.\n\n## Acceptance criteria\n\n- [ ] A normalized contract is returned.\n\n## Dependencies\n\nNone.\n\n## Relevant project documents\n\n- `docs/project.md`\n\n## Readiness\n\n- [x] The goal is singular and bounded.\n- [x] Scope and non-goals are explicit.\n- [x] Acceptance criteria are observable and reviewable.\n- [x] Dependencies and their completion conditions are explicitly documented.\n- [x] Relevant project documents are identified.\n- [x] No unresolved product or architecture decision blocks execution.\n- [x] The work is small enough for one implementation slice.\n"
+}

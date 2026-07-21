@@ -1,0 +1,7 @@
+{
+  "number": 105,
+  "title": "Closed fixture",
+  "url": "https://github.com/example/project/issues/105",
+  "state": "CLOSED",
+  "body": "## Work type\n\nFeature\n\n## Goal\n\nThis Issue is closed.\n\n## Context\n\nThe fixture exercises the closed-Issue guard.\n\n## Scope\n\n- Reject closed Issues.\n\n## Non-goals\n\n- Do not parse further.\n\n## Acceptance criteria\n\n- [ ] The error is actionable.\n\n## Dependencies\n\nNone.\n\n## Relevant project documents\n\n- `docs/project.md`\n\n## Readiness\n\n- [x] Fixture confirmation.\n"
+}

@@ -1,0 +1,7 @@
+{
+  "number": 102,
+  "title": "Fixture bug issue",
+  "url": "https://github.com/example/project/issues/102",
+  "state": "OPEN",
+  "body": "## Summary\n\nParser loses a required field.\n\n## Observed behavior\n\nThe parser omits the required field.\n\n## Expected behavior\n\nThe parser retains every required field.\n\n## Reproduction or evidence\n\nUse the fixture body.\n\n## Impact\n\nBlocked promotion prevents reliable work.\n\n## Fix scope\n\n- Preserve required fields.\n\n## Non-goals\n\n- Do not redesign the form.\n\n## Acceptance criteria\n\n- [ ] The required field is present.\n\n## Dependencies\n\nNone.\n\n## Relevant project documents\n\n- `docs/project.md`\n\n## Readiness\n\n- [x] The incorrect and expected behaviors are clear.\n- [x] Reproduction or evidence is sufficient to validate the fix.\n- [x] Fix scope and non-goals are explicit.\n- [x] Acceptance criteria are observable and reviewable.\n- [x] Dependencies are satisfied or explicitly handled.\n- [x] Relevant project documents are identified.\n- [x] The fix is small enough for one implementation slice.\n"
+}

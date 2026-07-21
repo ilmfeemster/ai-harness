@@ -1,0 +1,7 @@
+{
+  "number": 104,
+  "title": "Missing goal fixture",
+  "url": "https://github.com/example/project/issues/104",
+  "state": "OPEN",
+  "body": "## Work type\n\nFeature\n\n## Context\n\nA required goal is intentionally omitted.\n\n## Scope\n\n- Parse this fixture.\n\n## Non-goals\n\n- Do not infer a goal.\n\n## Acceptance criteria\n\n- [ ] The failure is actionable.\n\n## Dependencies\n\nNone.\n\n## Relevant project documents\n\n- `docs/project.md`\n\n## Readiness\n\n- [x] Fixture confirmation.\n"
+}
