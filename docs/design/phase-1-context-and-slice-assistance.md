@@ -2,7 +2,7 @@
 
 ## Status
 
-Draft — awaiting explicit human approval before it may govern Phase 1 Issue planning or implementation.
+Approved
 
 ## Problem
 

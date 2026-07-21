@@ -4,6 +4,7 @@ work_type: "[Feature | Refactor | Documentation | Infrastructure | Test improvem
 readiness: "Draft"
 phase: "[phase-slug]"
 sequence: "[01]"
+depends_on: ""
 github_issue_number: ""
 github_issue_url: ""
 ---
@@ -39,7 +40,7 @@ github_issue_url: ""
 
 ## Dependencies
 
-[Name satisfied prerequisites, prerequisite Issue outcomes, approved designs, or write `None`.]
+[List prerequisite phase Issue sequences from `depends_on`, along with approved designs or external prerequisites. State that prerequisite Issues must be complete before promotion. Write `None` when no prerequisite exists.]
 
 ## Relevant project documents
 
@@ -51,7 +52,7 @@ github_issue_url: ""
 - [ ] The goal is singular and bounded.
 - [ ] Scope and non-goals are explicit.
 - [ ] Acceptance criteria are observable and reviewable.
-- [ ] Dependencies are satisfied or explicitly handled.
+- [ ] Dependencies and their completion conditions are explicitly documented.
 - [ ] Relevant project documents are identified.
 - [ ] No unresolved product or architecture decision blocks execution.
 - [ ] The work is small enough for one implementation slice.

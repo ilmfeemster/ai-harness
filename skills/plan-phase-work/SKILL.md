@@ -122,6 +122,21 @@ Combine work only when separation would create artificial coordination or preven
 
 Do not create generic framework work merely because it may be useful in a later phase.
 
+Dependency relationships must be explicitly identified.
+
+For every proposed Issue:
+
+- assign a stable phase-local `sequence`;
+- identify prerequisite Issues within the same phase;
+- populate `depends_on` using prerequisite sequence values;
+- use `""` when there are no prerequisite Issues;
+- use `"01"` or `"01,02"` when prerequisite Issues exist;
+- mirror dependencies in the `Dependencies` section.
+
+Dependency completion is not part of planning readiness.
+
+Prerequisite completion is evaluated later when promoting a GitHub Issue into `docs/current-slice.md`.
+
 ## Procedure
 
 1. Confirm the active phase and derive a stable phase slug, such as `phase-1`.
@@ -148,13 +163,16 @@ Do not create generic framework work merely because it may be useful in a later 
    - apply `skills/create-work-item/SKILL.md`;
    - use `templates/issue-draft.md`;
    - assign a stable numeric sequence;
+   - populate `depends_on`;
    - use a descriptive file slug;
    - state one outcome;
-   - include context, scope, non-goals, acceptance criteria, dependencies, and relevant documents;
+   - include context, scope, non-goals, acceptance criteria, dependencies, relevant documents, and promotion blockers;
    - include the approved design where applicable;
    - complete every readiness check with evidence;
    - set `readiness: Ready` only when all readiness conditions are met;
    - leave GitHub Issue number and URL empty.
+   - document prerequisite Issues using phase-local sequence references;
+   - do not mark an Issue `Draft` solely because prerequisite Issues remain incomplete;
 7. Create filenames such as:
 
    ```text
@@ -203,6 +221,7 @@ work_type: "Feature"
 readiness: "Draft"
 phase: "phase-1"
 sequence: "01"
+depends_on: ""
 github_issue_number: ""
 github_issue_url: ""
 ---
@@ -234,6 +253,9 @@ Before completing, verify:
 - the phase plan remains `Draft` until human approval;
 - `docs/project.md` records Issue planning as drafted;
 - no GitHub Issue, current slice, or implementation was created.
+- every `depends_on` reference exists and is acyclic;
+- dependency metadata matches the `Dependencies` section;
+- incomplete prerequisite Issues are represented as promotion blockers rather than readiness failures;
 
 ## Required outputs
 
@@ -274,3 +296,4 @@ This skill is complete when:
 - `docs/project.md` records the Issue-planning state;
 - no Issue was published;
 - no current slice or implementation was created.
+- every Issue has accurate dependency metadata;
