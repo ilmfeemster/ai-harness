@@ -4,45 +4,38 @@
 
 This repository uses an opinionated, document-driven workflow for AI-assisted software development.
 
-`AGENTS.md` is the reusable workflow constitution. It defines authority, invariants, lifecycle, approval boundaries, context rules, scope rules, and required skill use.
+`AGENTS.md` is the reusable workflow constitution. It defines authority, invariants, lifecycle, approval boundaries, and required skill use.
 
-Repeatable procedures live in `skills/*/SKILL.md`.
+Repeatable procedures live in `skills/*/SKILL.md`. Product state and project intelligence live in project-owned documents.
 
-Keep product vision, roadmap, architecture, decisions, designs, active work, and implementation history in their project-owned sources.
+The goal is reliable, high-quality leverage, not autonomy for its own sake.
 
-## 2. Core philosophy
-
-Project intelligence should live primarily in durable repository documents rather than repeated prompts.
+## 2. Core principles
 
 Prefer:
 
-- explicit documents;
-- bounded work items;
-- small vertical slices;
+- durable documents over repeated prompts;
+- bounded work items and small vertical slices;
+- explicit scope and non-goals;
 - deterministic validation;
 - independent review;
-- reviewable changes;
 - human approval at meaningful boundaries;
+- simple, project-local solutions;
 - abstraction only after repeated patterns are proven.
 
-Do not optimize for autonomy for its own sake. Optimize for reliable, high-quality leverage.
+Do not claim or depend on automation that does not exist.
 
-## 3. Reuse boundary
+## 3. Reuse and ownership
 
 ### Reusable workflow assets
-
-These should normally transfer to a new project with little or no project-specific content:
 
 - `AGENTS.md`;
 - `skills/`;
 - `.github/ISSUE_TEMPLATE/`;
-- `templates/` neutral document and active-slice scaffolds;
-- structural validators and workflow scripts;
-- reusable schemas and starter headings.
+- neutral files under `templates/`;
+- workflow scripts and structural validators.
 
 ### Project-owned artifacts
-
-These may use reusable scaffolds, but their substantive content must describe the current project:
 
 - `README.md`;
 - `docs/project.md`;
@@ -51,123 +44,126 @@ These may use reusable scaffolds, but their substantive content must describe th
 - `docs/decisions.md`;
 - `docs/testing.md`;
 - `docs/design/*.md`;
+- `docs/issues/<phase>/`;
 - `docs/current-slice.md`;
 - GitHub Issues;
-- source code and tests.
+- code and tests.
 
-Do not copy another project's product context, roadmap, architecture, decisions, designs, active slice, work items, or implementation history merely because the paths are reusable.
+Do not copy another project's substantive context, roadmap, designs, phase plans, Issue drafts, active slice, backlog, or implementation history merely because the paths are reusable.
 
 ## 4. Authority by concern
 
-Authority is determined by concern, not by one universal hierarchy.
-
-| Source | Governing concern | Must not become |
-| --- | --- | --- |
-| User request | Immediate intent, authorization, scope changes, and human approval | An undocumented permanent project rule |
-| `README.md` | Human entry point, setup, introduction, and navigation | Workflow constitution, roadmap, or architecture specification |
-| `AGENTS.md` | Workflow authority, invariants, lifecycle, boundaries, and skill invocation | Product scope, backlog, or active implementation state |
-| `skills/*/SKILL.md` | How an authorized operation is performed | New authority or permission beyond this constitution |
-| `docs/project.md` | Current product state, active phase, goals, scope, non-goals, and exit criteria | Long-term roadmap, architecture specification, or task queue |
-| `docs/roadmap.md` | Future phases, outcomes, and sequencing | Active status board, detailed design, or execution plan |
-| `docs/architecture.md` | Current structure, boundaries, components, dependency direction, and constraints | Workflow governance, backlog, or decision history |
-| `docs/decisions.md` | Durable project decisions, rationale, and tradeoffs | Temporary notes or status log |
-| `docs/design/*.md` | Approved detailed design for a coherent capability or change | Work queue or implementation transcript |
-| GitHub Issues | Work queue and required outcomes of bounded work items | Full file-level execution package |
-| `templates/` | Reusable neutral document and active-slice scaffolds | Active project state or completion evidence |
-| `docs/current-slice.md` | One bounded execution package for the active Issue | Backlog, multi-item plan, or silent override of upstream constraints |
-| `docs/testing.md` | Project-wide validation standards and confidence requirements | Slice-specific results or substitute acceptance criteria |
-| Code and tests | Actual implemented behavior and executable evidence | Product planning or undocumented policy |
-
-A detailed source may add specificity within its concern only when compatible with sources governing other concerns.
+| Source | Governing concern |
+| --- | --- |
+| User request | Immediate intent, authorization, scope changes, and human approval |
+| `README.md` | Human entry point, setup, and navigation |
+| `AGENTS.md` | Workflow authority, invariants, lifecycle, boundaries, and skill invocation |
+| `skills/*/SKILL.md` | Procedure for an authorized operation |
+| `docs/project.md` | Current product state, active phase, goals, scope, non-goals, phase-preparation state, and exit criteria |
+| `docs/roadmap.md` | Future phases, outcomes, capabilities, and sequencing |
+| `docs/architecture.md` | Current structure, boundaries, dependency direction, and constraints |
+| `docs/decisions.md` | Durable decisions, rationale, and tradeoffs |
+| `docs/design/*.md` | Approved detailed design for a coherent capability |
+| `docs/issues/<phase>/README.md` | Local phase work breakdown, dependency order, coverage, approval, and publication record |
+| `docs/issues/<phase>/*.md` | Local Issue drafts before publication and retained traceability afterward |
+| GitHub Issues | Authoritative work queue and required outcomes |
+| `docs/current-slice.md` | One bounded execution package for the active Issue |
+| `docs/testing.md` | Project-wide validation and confidence standards |
+| Code and tests | Implemented behavior and executable evidence |
 
 A skill is subordinate to this constitution.
 
+Before publication, a local Issue draft is proposed work. After publication, the GitHub Issue is authoritative. Retained local drafts must record the Issue number and URL and must not silently diverge.
+
 ## 5. Universal invariants
 
-### 5.1 One work item at a time
+### 5.1 One active work item
 
 Maintain at most:
 
 - one current slice;
-- one active Issue;
+- one active GitHub Issue;
 - one implementation effort governed by that slice.
 
-Do not prepare, approve, implement, or complete a second work item while another current slice remains unresolved.
+A phase may have several future Issue drafts or Ready GitHub Issues. That does not authorize multiple active slices or implementation efforts.
 
-Completion does not authorize selecting or beginning the next Issue.
+Do not begin the next Issue automatically after completion.
 
-### 5.2 Explicit operation handoffs
+### 5.2 Distinct operations
 
-Orientation, planning, work-item creation, slice preparation, implementation, validation, review, and finalization are distinct operations.
+These are separate operations:
 
-Completion of one operation does not automatically authorize the next.
+- project initialization;
+- repository orientation;
+- roadmap phase activation;
+- project, architecture, and design planning;
+- phase work breakdown;
+- Issue publication;
+- individual work-item creation or refinement;
+- slice preparation;
+- implementation;
+- validation;
+- review;
+- finalization.
 
-One user request may explicitly authorize several sequential operations, but agents must still stop at every human-approval boundary.
+Completion of one operation does not authorize the next.
 
-### 5.3 Human approval boundaries
+One request may authorize several sequential operations, but agents must stop at every approval boundary and before any unauthorized external side effect.
 
-Human approval is required:
+### 5.3 Approval and authorization boundaries
 
+Explicit human approval or authorization is required:
+
+- before a Draft design is treated as approved input;
+- before local Issue drafts are published to GitHub;
 - before a `Draft` slice becomes `Approved`;
 - before a material change to an approved outcome proceeds;
 - before a `Ready for review` slice becomes `Complete`;
 - before the source Issue is closed.
 
-Planning approval is not implementation authorization.
+A request to activate a named roadmap phase authorizes its `docs/project.md` update and design assessment. It does not authorize design creation, Issue drafting, publication, slice preparation, or implementation unless those operations are also explicit.
 
-Implementation authorization is not completion approval.
-
-Passing validation or review is not human approval.
+Planning approval is not implementation authorization. Validation or review is not human approval.
 
 ### 5.4 Scope preservation
 
 Do not silently change:
 
-- project scope;
-- Issue outcome;
-- included scope;
-- non-goals;
-- acceptance criteria;
-- architecture;
-- durable decisions;
+- project or phase scope;
+- Issue goal, scope, non-goals, or acceptance criteria;
+- architecture or durable decisions;
 - approved design;
 - testing standards.
 
-Execution may refine implementation detail without reapproval only when the approved outcome remains unchanged.
+Execution may refine implementation detail only when the approved outcome remains unchanged.
 
-New out-of-scope work belongs in a separate Issue. Do not implement or create it automatically.
+New out-of-scope work belongs in a separate explicitly authorized Issue.
 
-### 5.5 No unsupported shortcuts
+### 5.5 Conflict handling
 
-Do not satisfy acceptance criteria through:
-
-- hardcoding that bypasses intended behavior;
-- weakened or removed tests;
-- hidden failures;
-- unapproved placeholder functionality;
-- undocumented assumptions;
-- unrelated changes presented as necessary;
-- automation or tools that do not exist.
-
-### 5.6 Conflict handling
-
-`docs/current-slice.md` does not silently override its source Issue, current scope, architecture, durable decisions, approved design, or project-wide testing standards.
+No downstream artifact may silently override the concern governed by an upstream authority.
 
 When authoritative sources materially conflict:
 
-1. stop the affected work;
-2. identify the conflicting statements;
-3. state which concern each source governs;
-4. correct the appropriate upstream source when authorized, or request a decision;
-5. do not resolve the conflict through assumption.
+1. stop affected work;
+2. identify the conflict and each source's concern;
+3. correct the appropriate source when authorized, or request a decision;
+4. do not resolve the conflict through assumption.
 
-If a skill conflicts with this constitution, this constitution governs.
+If a skill conflicts with this file, this file governs.
 
-### 5.7 Stop before unauthorized side effects
+### 5.6 Side effects
 
-Stop before changing repository state when a required source, approval, decision, or authorization is missing.
+Stop before changing repository or external state when a required source, decision, approval, or authorization is missing.
 
-An informational request does not imply permission to modify files, Issues, dependencies, or lifecycle state.
+An informational request does not imply permission to:
+
+- modify files;
+- publish GitHub Issues;
+- change dependencies;
+- advance lifecycle state.
+
+Drafting local Issue documents is not publication. Creating GitHub Issues is an external side effect.
 
 ## 6. Context loading
 
@@ -176,80 +172,137 @@ At the beginning of repository work:
 1. read this file;
 2. identify the requested operation;
 3. read the complete required skill;
-4. load that skill's required authoritative sources before optional context;
+4. load that skill's required authoritative sources;
 5. reuse already loaded context;
-6. stop before a side effect when a required source, approval, or decision is missing.
+6. stop before unauthorized work.
 
-Expand context only when:
+Expand context only when required to understand linked authority, determine existing behavior, validate work, resolve a conflict, or assess a real dependency.
 
-- a required source links to another artifact needed to understand the work;
-- a validation command, test configuration, or changed file requires it;
-- loaded sources materially conflict;
-- existing behavior must be inspected to determine scope or correctness;
-- a newly discovered dependency affects a stop condition or acceptance evidence.
+Context expansion does not authorize another operation.
 
-Do not expand context merely for completeness. Context expansion does not authorize another operation or unrelated work.
+If work is interrupted, record repository state, progress, decisions, remaining work, blockers, and the next authorized operation. A handoff does not imply approval.
 
-### 6.1 Interrupted-work handoff
+## 7. Required workflow and skills
 
-If work is interrupted and cannot safely continue from the available context, finish the current coherent unit when possible. Record any affected repository state, then provide a concise handoff that states progress, decisions, remaining work, blockers, and the next authorized operation. Do not use a handoff to imply approval for a later lifecycle operation.
-
-## 7. Workflow and required skills
-
-A design-heavy capability may flow through:
+A roadmap phase becomes executable through:
 
 ```text
-roadmap
-→ project
-→ architecture + decisions
-→ design
-→ GitHub Issue
-→ current slice
+docs/roadmap.md
+→ start-phase
+→ docs/project.md
+→ plan-change when design is required
+→ approved design or recorded no-design rationale
+→ plan-phase-work
+→ docs/issues/<phase>/
+→ human review and publication authorization
+→ publish-issues
+→ GitHub Issues
+→ prepare-slice for exactly one Ready Issue
+→ docs/current-slice.md
 → human approval
 → implementation
 → validation
 → review
 → human approval
+→ finalization
 ```
 
-A small, well-understood change may begin at the Issue.
-
-Before acting, read the complete skill for the operation:
+A small, already-decided change within the active phase may begin at one directly created Issue. Starting a new roadmap phase may not skip phase activation.
 
 | Operation | Required skill | Primary output |
 | --- | --- | --- |
-| Project initialization | `skills/start-project/SKILL.md` | Self-contained project with reusable assets and clean project-owned scaffolds |
+| Project initialization | `skills/start-project/SKILL.md` | Clean, self-contained project |
 | Repository orientation | `skills/orient-repository/SKILL.md` | Grounded repository map |
-| Project, architecture, or design planning | `skills/plan-change/SKILL.md` | Plan or authorized planning artifact |
-| Work-item creation | `skills/create-work-item/SKILL.md` | One Draft or Ready Issue |
-| Slice preparation | `skills/prepare-slice/SKILL.md` | Complete `Draft` slice |
+| Roadmap phase activation | `skills/start-phase/SKILL.md` | Updated `docs/project.md` and design assessment |
+| Project, architecture, or design planning | `skills/plan-change/SKILL.md` | Authorized planning artifact |
+| Phase work breakdown | `skills/plan-phase-work/SKILL.md` | Local phase plan and Issue drafts |
+| Issue publication | `skills/publish-issues/SKILL.md` | GitHub Issues and local traceability |
+| One work-item creation or refinement | `skills/create-work-item/SKILL.md` | One Draft or Ready Issue contract |
+| Slice preparation | `skills/prepare-slice/SKILL.md` | One complete `Draft` slice |
 | Implementation or correction | `skills/implement-slice/SKILL.md` | Bounded implementation |
 | Formal validation | `skills/validate-slice/SKILL.md` | Evidence and possible `Ready for review` transition |
 | Independent review | `skills/review-slice/SKILL.md` | Findings and approval-readiness assessment |
 | Finalization | `skills/finalize-work-item/SKILL.md` | Closed Issue and `Complete` slice |
 
-Do not substitute a similarly named skill or improvise a new lifecycle operation.
+Do not substitute a similarly named skill or improvise a lifecycle operation.
 
-A skill may identify a required handoff but may not authorize the next operation implicitly.
+A coordinating skill may require another skill, but neither may authorize the next operation implicitly.
 
-## 8. Planning boundaries
+## 8. Phase lifecycle contract
 
-For new features or major changes:
+A phase may be activated only when:
 
-1. clarify the goal and constraints;
-2. recommend the simplest viable approach;
-3. define non-goals;
-4. establish acceptance implications;
-5. update project scope, architecture, or decisions only when their concerns change;
-6. create or update a design only when detailed design adds durable value;
-7. break approved work into small Issues;
-8. promote only one Ready Issue.
+- it exists in `docs/roadmap.md`;
+- the user selects it or explicitly requests the next phase;
+- the previous phase is complete, or overlapping planning is explicitly authorized;
+- current state can be represented without claiming planned capability already exists.
 
-Not every work item requires a design or decision record.
+Phase activation updates `docs/project.md` with:
 
-Planning does not authorize Issue creation, slice preparation, or implementation unless those handoffs are separately explicit.
+- active phase;
+- phase goal;
+- current scope and explicit non-goals;
+- preserved constraints and dependencies;
+- observable exit criteria;
+- design requirement and basis;
+- expected design path when required;
+- Issue-planning status;
+- GitHub-publication status.
 
-## 9. GitHub Issue contract
+`docs/roadmap.md` remains future direction. `docs/project.md` becomes the current-phase authority.
+
+When a design is required, phase Issue planning must stop until the design exists, blocking questions are resolved, and the design has explicit human approval.
+
+## 9. Phase plan and local Issue drafts
+
+Phase work planning uses:
+
+```text
+docs/issues/<phase-slug>/
+├── README.md
+├── 01-<bounded-outcome>.md
+├── 02-<bounded-outcome>.md
+└── ...
+```
+
+Use:
+
+- `templates/phase-issue-plan.md`;
+- `templates/issue-draft.md`.
+
+The phase plan must record:
+
+- roadmap and project traceability;
+- approved design or no-design rationale;
+- phase outcome and exit criteria;
+- ordered Issues and dependencies;
+- coverage of phase capabilities and exit criteria;
+- deferred work;
+- approval and publication state.
+
+Every local Issue draft must contain one bounded outcome and the repository Issue contract. It must not contain the full file-level implementation plan.
+
+Track separately:
+
+- readiness: `Draft` or `Ready`;
+- publication: empty or populated GitHub Issue number and URL.
+
+Do not publish unless:
+
+- the phase plan is approved;
+- publication is explicitly authorized;
+- each selected draft is `Ready`;
+- readiness confirmations are supported;
+- duplicates have been checked.
+
+After publication:
+
+- populate local Issue references;
+- record the phase publication result;
+- treat GitHub Issues as authoritative;
+- stop before slice preparation.
+
+## 10. GitHub Issue contract
 
 GitHub Issues are the authoritative work queue.
 
@@ -266,108 +319,54 @@ Every Issue must include:
 - relevant project documents;
 - readiness confirmation.
 
-### 9.1 Issue states
+### Issue states
 
-1. **Draft** — required information, decisions, dependencies, or readiness checks are incomplete.
-2. **Ready** — the contract is complete, dependencies are satisfied or explicitly handled, and the work fits one reviewable slice.
+1. **Draft** — information, decisions, dependencies, or readiness checks are incomplete.
+2. **Ready** — the contract is complete and the work fits one reviewable slice.
 3. **Active** — the Issue is referenced by the one human-approved current slice.
 4. **Complete** — implementation is validated, reviewed, human-approved, and the Issue is closed.
 
 An Issue remains `Ready` while its candidate slice is `Draft`. It becomes `Active` only when the slice becomes `Approved`.
 
-Labels may classify work but are not authoritative workflow state.
+Labels may classify work but do not establish workflow state.
 
-### 9.2 Readiness requirements
+An Issue may be promoted only when its outcome is singular, scope and non-goals are explicit, acceptance criteria are evaluable, dependencies are handled, governing documents are linked, no unresolved decision blocks execution, and every readiness check is complete.
 
-An Issue may be promoted only when:
+Promotion preserves the Issue outcome and adds execution detail. A material outcome change requires updating the Issue, revising any slice, returning the slice to `Draft`, and obtaining approval again.
 
-- the outcome is singular and bounded;
-- scope and non-goals are explicit;
-- acceptance criteria are evaluable;
-- dependencies are satisfied or explicitly handled by the slice;
-- relevant documents are linked;
-- no unresolved product or architecture decision blocks execution;
-- the work fits one independently reviewable slice;
-- every readiness check is complete.
+Close an Issue only through `finalize-work-item`.
 
-### 9.3 Promotion and outcome changes
-
-Promotion:
-
-- preserves the Issue's context, goal, scope, non-goals, and acceptance criteria;
-- adds file-level steps, expected files, validation commands, failure conditions, and review checks;
-- creates a `Draft` slice;
-- requires human approval before `Approved`;
-- leaves every other Issue unpromoted.
-
-A material change to the outcome, scope, non-goals, or acceptance criteria requires:
-
-1. updating the Issue;
-2. revising the slice;
-3. returning the slice to `Draft`;
-4. obtaining human approval again.
-
-Execution-only refinements may be recorded in the slice without changing the Issue.
-
-Close the Issue only through `finalize-work-item` after explicit human approval.
-
-## 10. Current slice contract
+## 11. Current slice contract
 
 `docs/current-slice.md` is the single bounded execution package for the active Issue.
 
-It must be independently reviewable and small enough to complete without broad reinterpretation.
-
-It may specify how to implement the Issue. It may not change what outcome was approved.
-
-### 10.1 Required sections
+It may specify how to implement the Issue. It may not change the approved outcome.
 
 Every non-empty slice must include:
 
-- work-item title;
-- status;
+- title and lifecycle status;
 - source Issue number, title, and URL;
-- context;
-- goal;
-- scope;
-- non-goals;
+- context, goal, scope, and non-goals;
 - acceptance criteria;
-- implementation plan;
-- expected files;
-- validation plan;
-- failure conditions;
+- implementation plan and expected files;
+- validation plan and failure conditions;
 - review checklist;
 - completion evidence.
 
-Evidence may be marked pending before its lifecycle stage. Required sections may not be omitted.
-
-### 10.2 Optional sections
-
-Include only when useful:
-
-- dependencies and assumptions;
-- relevant project documents;
-- linked designs;
-- implementation constraints;
-- implementation adjustments;
-- blockers and known limitations;
-- rollback or migration notes.
+Optional sections may add dependencies, governing documents, constraints, adjustments, blockers, or migration notes when useful.
 
 Do not duplicate substantial upstream documentation.
 
-### 10.3 Slice states
+### Slice states
 
-1. **Draft** — candidate execution package; implementation is not authorized.
-2. **Approved** — human-approved package and single active work item; new implementation may begin when explicitly authorized.
-3. **In progress** — implementation or correction has begun within approved boundaries.
-4. **Blocked** — work cannot continue without a stated dependency, conflict, or decision.
-5. **Ready for review** — implementation and formal validation are complete; evidence is recorded; review and human approval remain.
-6. **Complete** — explicit human approval has been received and the source Issue is closed.
+1. `Draft`
+2. `Approved`
+3. `In progress`
+4. `Blocked`
+5. `Ready for review`
+6. `Complete`
 
 Do not use contradictory states such as `Complete - awaiting human approval`.
-
-An approved slice may not contain unresolved scaffold placeholders.
-
-### 10.4 Permitted transitions
 
 ```text
 Draft
@@ -384,119 +383,58 @@ Complete
 Additional transitions:
 
 - `In progress` → `Blocked` when work cannot continue;
-- `Blocked` → `In progress` after the blocker is resolved, the outcome is unchanged, and resumption is authorized;
-- `Ready for review` → `In progress` for explicitly authorized corrective implementation;
-- any material outcome change → `Draft` and reapproval.
+- `Blocked` → `In progress` after resolution and authorization;
+- `Ready for review` → `In progress` for authorized correction;
+- material outcome change → `Draft` and reapproval.
 
-### 10.5 Completion evidence
+Before `Ready for review`, completion evidence must report acceptance status, files changed, validation results, manual checks, adjustments, limitations, and a concise implementation summary.
 
-Before `Ready for review`, completion evidence must report:
+## 12. Lifecycle ownership
 
-- acceptance-criteria status;
-- files changed;
-- validation commands and results;
-- manual checks;
-- implementation adjustments or deviations;
-- blockers, known limitations, or follow-up Issue references or candidates;
-- concise implementation summary.
+### Implementation
 
-Completion evidence is mandatory. The Issue remains open until final human approval.
+Requires an eligible slice and explicit authorization.
 
-## 11. Implementation, validation, review, and finalization
+Implementation remains in scope, preserves governing documents, prefers small local changes, adds required tests, records meaningful adjustments, and stops on material contradiction.
 
-### 11.1 Implementation
+Implementation leaves the slice `In progress`.
 
-New implementation requires an `Approved` slice and explicit authorization.
+### Validation
 
-Resumed or corrective implementation requires an eligible `Blocked` or `Ready for review` slice, explicit authorization, and confirmation that the approved outcome remains unchanged.
+Validation owns formal command and manual-check evidence and the transition from `In progress` to `Ready for review`.
 
-Implementation must:
+Validation does not weaken tests, rewrite acceptance criteria, approve work, or repair implementation without a separate handoff.
 
-- follow the slice unless evidence requires a reported execution-only refinement;
-- remain in scope;
-- preserve architecture, decisions, and approved design;
-- prefer small local changes;
-- avoid unrelated cleanup and renaming;
-- update dependencies only when required;
-- add meaningful tests where required;
-- record meaningful adjustments;
-- stop on material contradiction or out-of-scope work.
+### Review
 
-Implementation may run focused development checks.
+Review evaluates the Issue, slice, scope, architecture, decisions, design, tests, shortcuts, and maintainability.
 
-It leaves the slice `In progress`. Formal validation owns the transition to `Ready for review`.
+Review reports findings first. It does not implement fixes, close the Issue, or mark the slice `Complete`.
 
-### 11.2 Validation
-
-Validation asks whether declared commands and manual checks pass and whether every acceptance criterion has evidence.
-
-Run the most specific declared checks first. Project-wide standards supplement rather than replace slice-specific checks.
-
-Validation must report command exit codes, manual-check results, acceptance status, limitations, and reviewable evidence.
-
-Do not weaken tests, rewrite acceptance criteria, hide failures, approve the result, or repair implementation without a separate handoff.
-
-Successful formal validation completes the evidence and moves `In progress` to `Ready for review`.
-
-### 11.3 Review
-
-Review asks whether the result:
-
-- satisfies the Issue and slice;
-- remains in scope;
-- respects architecture, decisions, and approved design;
-- uses meaningful tests;
-- avoids unsupported shortcuts;
-- is maintainable for current project maturity.
-
-Report findings first, ordered by severity, then acceptance status, assumptions, validation gaps, and a concise summary.
-
-Review does not implement fixes, close the Issue, change the slice to `Complete`, or authorize follow-up work.
-
-### 11.4 Finalization
+### Finalization
 
 Finalization requires:
 
-- a `Ready for review` slice;
+- `Ready for review`;
 - completed validation and review;
 - no unresolved blocking finding;
 - explicit human approval.
 
 Finalization closes the source Issue and changes the slice to `Complete`.
 
-Do not claim completion unless both states are consistent. Report and reconcile any partial transition.
-
 After completion, stop. Do not reset the slice, select another Issue, or begin new work automatically.
 
-## 12. Scope and architecture philosophy
+## 13. Scope and architecture philosophy
 
-Aggressively distinguish:
+Distinguish:
 
 - current phase;
 - future phase;
 - useful deferred idea;
 - unnecessary complexity.
 
-Move valid deferred ideas to the roadmap or a separate explicitly authorized Issue rather than expanding active work.
+Prefer explicit, inspectable, project-local systems and fast feedback.
 
-Prefer:
-
-- simple systems;
-- explicit behavior;
-- boring technology;
-- small abstractions;
-- vertical slices;
-- project-local solutions;
-- inspectability;
-- fast feedback.
-
-Avoid:
-
-- premature frameworks;
-- generic adapters before multiple real implementations exist;
-- central orchestration before project-local workflows prove insufficient;
-- multi-agent systems without demonstrated role boundaries;
-- hypothetical scaling infrastructure;
-- abstractions created only to appear reusable.
+Avoid premature frameworks, hypothetical scaling infrastructure, central orchestration before proven need, and abstractions created only to appear reusable.
 
 Keep the harness opinionated for proven workflows. Generalize only after repeated real use reveals a stable pattern.
