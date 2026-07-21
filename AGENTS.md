@@ -32,7 +32,7 @@ Do not claim or depend on automation that does not exist.
 - `AGENTS.md`;
 - `skills/`;
 - `.github/ISSUE_TEMPLATE/`;
-- neutral files under `templates/`;
+- neutral files under `templates/docs/`;
 - workflow scripts and structural validators.
 
 ### Project-owned artifacts
@@ -267,8 +267,8 @@ docs/issues/<phase-slug>/
 
 Use:
 
-- `templates/phase-issue-plan.md`;
-- `templates/issue-draft.md`.
+- `templates/docs/phase-issue-plan.md`;
+- `templates/docs/issue-draft.md`.
 
 The phase plan must record:
 

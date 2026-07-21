@@ -5,8 +5,8 @@ readiness: "Ready"
 phase: "phase-1"
 sequence: "02"
 depends_on: "01"
-github_issue_number: ""
-github_issue_url: ""
+github_issue_number: "9"
+github_issue_url: "https://github.com/ilmfeemster/ai-harness/issues/9"
 ---
 
 # Phase 1: Assemble bounded context manifests

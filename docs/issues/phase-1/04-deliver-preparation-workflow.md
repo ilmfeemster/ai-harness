@@ -5,8 +5,8 @@ readiness: "Ready"
 phase: "phase-1"
 sequence: "04"
 depends_on: "01,02,03"
-github_issue_number: ""
-github_issue_url: ""
+github_issue_number: "11"
+github_issue_url: "https://github.com/ilmfeemster/ai-harness/issues/11"
 ---
 
 # Phase 1: Deliver the manual slice-preparation workflow

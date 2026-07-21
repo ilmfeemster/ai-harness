@@ -111,5 +111,5 @@ Phase 1 is complete when:
 - **Design requirement:** Required
 - **Design basis:** Phase 1 introduces shared contracts and workflow behavior for Issue parsing, context manifests, design selection, slice drafting, and structural and scope warnings. These must be decided consistently before Phase work can be divided into independent Issues.
 - **Expected design:** `docs/design/phase-1-context-and-slice-assistance.md`
-- **Issue planning:** Drafted
-- **GitHub publication:** Not started
+- **Issue planning:** Published
+- **GitHub publication:** Complete

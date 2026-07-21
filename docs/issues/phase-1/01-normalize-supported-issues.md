@@ -5,8 +5,8 @@ readiness: "Ready"
 phase: "phase-1"
 sequence: "01"
 depends_on: ""
-github_issue_number: ""
-github_issue_url: ""
+github_issue_number: "8"
+github_issue_url: "https://github.com/ilmfeemster/ai-harness/issues/8"
 ---
 
 # Phase 1: Normalize supported GitHub Issue forms

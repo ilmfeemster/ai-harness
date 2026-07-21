@@ -5,8 +5,8 @@ readiness: "Ready"
 phase: "phase-1"
 sequence: "03"
 depends_on: "01,02"
-github_issue_number: ""
-github_issue_url: ""
+github_issue_number: "10"
+github_issue_url: "https://github.com/ilmfeemster/ai-harness/issues/10"
 ---
 
 # Phase 1: Generate guarded Draft slices

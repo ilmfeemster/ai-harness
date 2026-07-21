@@ -1,8 +1,8 @@
 ---
 phase: "phase-1"
 roadmap_phase: "Phase 1 — Context and slice assistance"
-status: "Draft"
-publication: "Not published"
+status: "Published"
+publication: "Published"
 design: "docs/design/phase-1-context-and-slice-assistance.md"
 ---
 
@@ -77,13 +77,17 @@ Later drafts are publishable as Ready because their prerequisite outcomes and ex
 
 ## Approval
 
-- **Status:** Draft
-- **Approved by:** Not approved
-- **Approval basis:** Pending human review of the Issue sequence, dependencies, and coverage.
+- **Status:** Approved
+- **Approved by:** User
+- **Approval basis:** Explicit Phase 1 approval and publication authorization on 2026-07-21.
 
 ## Publication summary
 
-- **Status:** Not published
+- **Status:** Published
 - **Repository:** `ilmfeemster/ai-harness`
-- **Published Issues:** None
+- **Published Issues:**
+  - #8 — [Phase 1: Normalize supported GitHub Issue forms](https://github.com/ilmfeemster/ai-harness/issues/8)
+  - #9 — [Phase 1: Assemble bounded context manifests](https://github.com/ilmfeemster/ai-harness/issues/9)
+  - #10 — [Phase 1: Generate guarded Draft slices](https://github.com/ilmfeemster/ai-harness/issues/10)
+  - #11 — [Phase 1: Deliver the manual slice-preparation workflow](https://github.com/ilmfeemster/ai-harness/issues/11)
 - **Partial failures:** None
