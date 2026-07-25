@@ -52,9 +52,32 @@ Use:
 
 Allowed differences are `None`, `Implementation refinement within authority`, or an unresolved conflict that blocks preparation.
 
+
+
+## Automated-classification boundary
+
+Preparation may introduce implementation policy needed to execute the approved outcome, but it must distinguish between:
+
+- **implementation policy** (interfaces, ordering, parsing, data flow, error handling, deterministic behavior), which this skill should resolve; and
+- **product or semantic policy** (what is relevant, applicable, equivalent, or authoritative), which must come from approved sources or remain explicit assumptions.
+
+When introducing a material automated classification (for example applicability, relevance, compatibility, authority selection, or dependency satisfaction):
+
+- identify the evidence used to make the classification;
+- prefer explicit repository metadata or approved contracts when available;
+- if evidence is insufficient, either record an explicit assumption, warning, or blocker rather than silently inventing a durable semantic rule.
+
+This does **not** prohibit creating implementation policy. It only requires that new semantic policy be explicit and reviewable rather than hidden inside implementation details.
+
 ## Deterministic interface requirement
 
 When work changes a parser, command, generated document, manifest, schema, persisted record, or serialized output, specify internal inputs, external invocation, accepted syntax, normalization, validation, ordering, duplicate handling, output schema, empty-state rendering, overwrite/idempotency, side effects, and sanitized failures.
+
+Prefer the smallest stable external interface.
+
+Do not introduce operator-facing parameters, configuration, extension points, or abstractions solely to support tests or hypothetical reuse. Keep fixed repository conventions fixed unless the Issue or governing design requires configurability.
+
+When tests need isolation or substitution, prefer internal function parameters, dependency injection, fixtures, or temporary paths over expanding the public command interface.
 
 ## Documentation-impact assessment
 
@@ -116,7 +139,11 @@ Verify Issue meaning is preserved, acceptance is covered, rules are reconciled, 
 
 The implementation agent must be able to identify the integration point, file responsibilities, governing branches, inputs/outputs/order/side effects/failures, tests, documentation updates, acceptance coverage, and completion condition.
 
-Fail when broad discovery, material design interpretation, policy invention, architecture choice, interface guessing, test-matrix invention, or semantic gap filling remains.
+Fail when broad discovery, material design interpretation, undocumented policy invention, architecture choice, interface guessing, test-matrix invention, or semantic gap filling remains.
+
+Material implementation policy may be created during preparation when required to execute the approved outcome, but new semantic or product policy should be made explicit as an assumption, warning, blocker, or proposed refinement rather than remaining implicit.
+
+Fail when the slice introduces unnecessary public configurability or exposes a test-only seam through the operator interface without governing justification.
 
 ## Required outputs
 
