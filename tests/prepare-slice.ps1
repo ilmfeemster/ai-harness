@@ -52,6 +52,7 @@ function Assert-Throws {
 
 $fixtureDirectory = Join-Path $PSScriptRoot 'fixtures/issues'
 $contextFixtureDirectory = Join-Path $PSScriptRoot 'fixtures/context'
+$testRepositoryRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 
 $implementation = Invoke-IssueNormalization -FixturePath (Join-Path $fixtureDirectory 'implementation.json')
 Assert-Equal $implementation.IssueType 'Implementation' 'Implementation fixture type'
@@ -160,6 +161,114 @@ try {
 }
 finally {
     if (Test-Path -LiteralPath $contextRepository) { Remove-Item -LiteralPath $contextRepository -Recurse -Force }
+}
+
+$draftRepository = Join-Path ([IO.Path]::GetTempPath()) ('draft-slice-tests-' + [guid]::NewGuid().ToString('N'))
+New-Item -ItemType Directory -Path $draftRepository -Force | Out-Null
+Copy-Item -LiteralPath (Join-Path $contextFixtureDirectory 'repository') -Destination $draftRepository -Recurse
+
+try {
+    $draftRoot = Join-Path $draftRepository 'repository'
+    $draftCurrentSlice = Join-Path $draftRoot 'docs/current-slice.md'
+    New-Item -ItemType Directory -Path (Join-Path $draftRoot 'templates/docs') -Force | Out-Null
+    Copy-Item -LiteralPath (Join-Path $testRepositoryRoot 'templates/docs/current-slice.md') -Destination (Join-Path $draftRoot 'templates/docs/current-slice.md')
+    [IO.File]::WriteAllText($draftCurrentSlice, "## Status`nComplete`n", (New-Object Text.UTF8Encoding($false)))
+    $normalized10 = Get-NormalizedIssueContractFromFile -Path (Join-Path $contextFixtureDirectory 'normalized/issue-10.json')
+    $draftManifest = Resolve-ContextManifest -NormalizedIssue $normalized10 -RepositoryRoot $draftRoot -OutputPath 'docs/context-manifests/10.md'
+    Write-ContextManifest -Manifest $draftManifest -ManifestOutputRoot (Join-Path $draftRoot 'docs/context-manifests') | Out-Null
+    $dependencyNumbers = New-Object 'System.Collections.Generic.List[int]'
+    $dependencyReader = {
+        param($number)
+        $dependencyNumbers.Add([int]$number)
+        return 'CLOSED'
+    }
+
+    $generated = Invoke-DraftSliceGeneration `
+        -NormalizedIssueJsonPath (Join-Path $contextFixtureDirectory 'normalized/issue-10.json') `
+        -ContextManifestPath 'docs/context-manifests/10.md' `
+        -RepositoryRoot $draftRoot `
+        -DependencyStateReader $dependencyReader
+    Assert-True $generated.Generated 'A valid bounded context should generate a Draft slice.'
+    Assert-Equal (Get-DraftCurrentSliceState -RepositoryRoot $draftRoot -FileReader $null).Status 'Draft' 'Generated slice should have Draft status.'
+    $generatedContent = Get-Content -Raw -LiteralPath $draftCurrentSlice
+    Assert-True ($generatedContent -match 'The current phase needs guarded drafting.') 'Generated slice should preserve the normalized Context.'
+    Assert-True ($generatedContent -match '(?m)^- \*\*Issue:\*\* #10 - Draft a bounded slice$') 'Generated slice should retain source Issue traceability.'
+    Assert-True ($generatedContent -match '(?m)^- `AGENTS.md`$') 'Generated slice should retain selected governing documents.'
+    Assert-True (($dependencyNumbers -join ',') -eq '8,9') 'Dependencies should normalize, deduplicate, and resolve in sequence order.'
+    $updatedManifest = Get-Content -Raw -LiteralPath (Join-Path $draftRoot 'docs/context-manifests/10.md')
+    Assert-True ($updatedManifest -match '(?m)^-\s+Draft output status:\s+Draft\.$') 'Successful generation should record Draft output in the matching manifest.'
+
+    $priorDraft = Get-Content -Raw -LiteralPath $draftCurrentSlice
+    [IO.File]::WriteAllText($draftCurrentSlice, "## Status`nApproved`n", (New-Object Text.UTF8Encoding($false)))
+    $blocked = Invoke-DraftSliceGeneration `
+        -NormalizedIssueJsonPath (Join-Path $contextFixtureDirectory 'normalized/issue-10.json') `
+        -ContextManifestPath 'docs/context-manifests/10.md' `
+        -RepositoryRoot $draftRoot `
+        -DependencyStateReader $dependencyReader
+    Assert-True (-not $blocked.Generated) 'An unresolved current slice should block replacement.'
+    Assert-True ((Get-Content -Raw -LiteralPath $draftCurrentSlice) -match '(?m)^Approved$') 'A blocked generation must preserve the active slice.'
+    Assert-True (@($blocked.Blockers | Where-Object { $_.Category -eq 'Active slice' }).Count -eq 1) 'Blocked generation should report the active-slice guard.'
+    $blockedManifest = Get-Content -Raw -LiteralPath (Join-Path $draftRoot 'docs/context-manifests/10.md')
+    Assert-True ($blockedManifest -match '(?m)^-\s+Draft output status:\s+Blocked\.$') 'Blocked generation should update only the matching manifest result.'
+
+    [IO.File]::WriteAllText($draftCurrentSlice, $priorDraft, (New-Object Text.UTF8Encoding($false)))
+    $openDependencyReader = { param($number) if ([int]$number -eq 9) { return 'OPEN' } return 'CLOSED' }
+    $dependencyBlocked = Invoke-DraftSliceGeneration `
+        -NormalizedIssueJsonPath (Join-Path $contextFixtureDirectory 'normalized/issue-10.json') `
+        -ContextManifestPath 'docs/context-manifests/10.md' `
+        -RepositoryRoot $draftRoot `
+        -DependencyStateReader $openDependencyReader
+    Assert-True (-not $dependencyBlocked.Generated) 'An open dependency should block generation.'
+    Assert-True (@($dependencyBlocked.Blockers | Where-Object { $_.Category -eq 'Dependency state' }).Count -eq 1) 'Open dependencies should produce a dependency-state blocker.'
+
+    $resetManifestContent = ConvertTo-ManifestMarkdown -Manifest $draftManifest
+    [IO.File]::WriteAllText((Join-Path $draftRoot 'docs/context-manifests/10.md'), $resetManifestContent, (New-Object Text.UTF8Encoding($false)))
+    [IO.File]::WriteAllText($draftCurrentSlice, "## Status`nComplete`n", (New-Object Text.UTF8Encoding($false)))
+    $closedSource = $normalized10 | ConvertTo-Json -Depth 10 | ConvertFrom-Json
+    $closedSource.Source.State = 'CLOSED'
+    $closedPath = Join-Path $draftRepository 'closed-source.json'
+    [IO.File]::WriteAllText($closedPath, ($closedSource | ConvertTo-Json -Depth 10), (New-Object Text.UTF8Encoding($false)))
+    $closedBlocked = Invoke-DraftSliceGeneration `
+        -NormalizedIssueJsonPath $closedPath `
+        -ContextManifestPath 'docs/context-manifests/10.md' `
+        -RepositoryRoot $draftRoot `
+        -DependencyStateReader $dependencyReader
+    Assert-True (@($closedBlocked.Blockers | Where-Object { $_.Category -eq 'Source Issue' }).Count -eq 1) 'A closed normalized source Issue should block generation.'
+
+    [IO.File]::WriteAllText((Join-Path $draftRoot 'docs/context-manifests/10.md'), $resetManifestContent, (New-Object Text.UTF8Encoding($false)))
+    $uncheckedSource = $normalized10 | ConvertTo-Json -Depth 10 | ConvertFrom-Json
+    $uncheckedSource.Readiness[0].Checked = $false
+    $uncheckedPath = Join-Path $draftRepository 'unchecked-source.json'
+    [IO.File]::WriteAllText($uncheckedPath, ($uncheckedSource | ConvertTo-Json -Depth 10), (New-Object Text.UTF8Encoding($false)))
+    $uncheckedBlocked = Invoke-DraftSliceGeneration `
+        -NormalizedIssueJsonPath $uncheckedPath `
+        -ContextManifestPath 'docs/context-manifests/10.md' `
+        -RepositoryRoot $draftRoot `
+        -DependencyStateReader $dependencyReader
+    Assert-True (@($uncheckedBlocked.Blockers | Where-Object { $_.Category -eq 'Readiness' }).Count -eq 1) 'An unchecked readiness confirmation should block generation.'
+
+    $manifestWithMissingPath = $resetManifestContent -replace '(?m)^- \*\*docs/testing\.md\*\*.*$', '- **docs/missing.md** - selected'
+    [IO.File]::WriteAllText((Join-Path $draftRoot 'docs/context-manifests/10.md'), $manifestWithMissingPath, (New-Object Text.UTF8Encoding($false)))
+    $missingDocumentBlocked = Invoke-DraftSliceGeneration `
+        -NormalizedIssueJsonPath (Join-Path $contextFixtureDirectory 'normalized/issue-10.json') `
+        -ContextManifestPath 'docs/context-manifests/10.md' `
+        -RepositoryRoot $draftRoot `
+        -DependencyStateReader $dependencyReader
+    Assert-True (@($missingDocumentBlocked.Blockers | Where-Object { $_.Category -eq 'Selected document' }).Count -eq 1) 'A missing selected document should block generation.'
+
+    [IO.File]::WriteAllText((Join-Path $draftRoot 'docs/context-manifests/10.md'), $resetManifestContent, (New-Object Text.UTF8Encoding($false)))
+    foreach ($unresolvedStatus in @('Draft', 'Approved', 'In progress', 'Blocked', 'Ready for review')) {
+        [IO.File]::WriteAllText($draftCurrentSlice, "## Status`n$unresolvedStatus`n", (New-Object Text.UTF8Encoding($false)))
+        $statusBlocked = Invoke-DraftSliceGeneration `
+            -NormalizedIssueJsonPath (Join-Path $contextFixtureDirectory 'normalized/issue-10.json') `
+            -ContextManifestPath 'docs/context-manifests/10.md' `
+            -RepositoryRoot $draftRoot `
+            -DependencyStateReader $dependencyReader
+        Assert-True (@($statusBlocked.Blockers | Where-Object { $_.Category -eq 'Active slice' }).Count -eq 1) "Active slice status '$unresolvedStatus' should block replacement."
+    }
+}
+finally {
+    if (Test-Path -LiteralPath $draftRepository) { Remove-Item -LiteralPath $draftRepository -Recurse -Force }
 }
 
 Write-Output 'Prepare-slice parser tests passed.'

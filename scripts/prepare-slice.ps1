@@ -11,13 +11,21 @@ param(
     [switch]$ContextManifest,
 
     [Parameter(ParameterSetName = 'ContextManifest')]
+    [Parameter(ParameterSetName = 'DraftSlice')]
     [string]$NormalizedIssueJsonPath,
 
     [Parameter(ParameterSetName = 'ContextManifest')]
+    [Parameter(ParameterSetName = 'DraftSlice')]
     [string]$RepositoryRoot,
 
     [Parameter(ParameterSetName = 'ContextManifest')]
     [string]$ManifestOutputRoot,
+
+    [Parameter(ParameterSetName = 'DraftSlice')]
+    [switch]$GenerateDraftSlice,
+
+    [Parameter(ParameterSetName = 'DraftSlice')]
+    [string]$ContextManifestPath,
 
     [switch]$NoRun
 )
@@ -972,8 +980,700 @@ function Invoke-ContextManifest {
     }
 }
 
+function New-DraftBlocker {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Category,
+
+        [Parameter(Mandatory = $true)]
+        [string]$Message,
+
+        [AllowNull()]
+        [string]$Path,
+
+        [AllowNull()]
+        [int]$IssueNumber
+    )
+
+    [pscustomobject]@{
+        Category = $Category
+        Message = $Message
+        Path = $Path
+        IssueNumber = if ($IssueNumber -gt 0) { $IssueNumber } else { $null }
+    }
+}
+
+function Get-DraftResult {
+    param(
+        [Parameter(Mandatory = $true)]
+        [int]$IssueNumber,
+
+        [Parameter(Mandatory = $true)]
+        [bool]$Generated,
+
+        [Parameter(Mandatory = $true)]
+        [string]$ManifestPath,
+
+        [AllowNull()]
+        [string]$OutputPath,
+
+        [object[]]$Blockers
+    )
+
+    $safeBlockers = @($Blockers | ForEach-Object {
+        [pscustomobject]@{
+            Category = Get-SafeManifestText -Value ([string]$_.Category)
+            Message = Get-SafeManifestText -Value ([string]$_.Message)
+            Path = if ($null -ne $_.Path) { Get-SafeManifestText -Value ([string]$_.Path) } else { $null }
+            IssueNumber = $_.IssueNumber
+        }
+    })
+    [pscustomobject]@{
+        IssueNumber = $IssueNumber
+        Generated = $Generated
+        Blocked = -not $Generated
+        BlockerCount = $safeBlockers.Count
+        Blockers = $safeBlockers
+        OutputPath = $OutputPath
+        ManifestPath = $ManifestPath
+    }
+}
+
+function Get-DraftFullPath {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$RepositoryRoot,
+
+        [Parameter(Mandatory = $true)]
+        [string]$Path
+    )
+
+    if ([IO.Path]::IsPathRooted($Path)) {
+        return [IO.Path]::GetFullPath($Path)
+    }
+    return [IO.Path]::GetFullPath((Join-Path $RepositoryRoot $Path))
+}
+
+function Test-DraftPathUnderRoot {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Root,
+
+        [Parameter(Mandatory = $true)]
+        [string]$Path
+    )
+
+    $rootFull = [IO.Path]::GetFullPath($Root).TrimEnd('\', '/')
+    $pathFull = [IO.Path]::GetFullPath($Path)
+    return $pathFull.Equals($rootFull, [StringComparison]::OrdinalIgnoreCase) -or
+        $pathFull.StartsWith($rootFull + [IO.Path]::DirectorySeparatorChar, [StringComparison]::OrdinalIgnoreCase) -or
+        $pathFull.StartsWith($rootFull + [IO.Path]::AltDirectorySeparatorChar, [StringComparison]::OrdinalIgnoreCase)
+}
+
+function Read-DraftUtf8Text {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Path,
+
+        [AllowNull()]
+        [scriptblock]$FileReader
+    )
+
+    if ($null -ne $FileReader) {
+        return [string](& $FileReader $Path)
+    }
+    if (-not (Test-Path -LiteralPath $Path -PathType Leaf)) {
+        throw 'file is missing or inaccessible'
+    }
+    return [IO.File]::ReadAllText($Path, [Text.UTF8Encoding]::new($false))
+}
+
+function Write-DraftUtf8Atomic {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Path,
+
+        [Parameter(Mandatory = $true)]
+        [string]$Content
+    )
+
+    $directory = Split-Path -Parent $Path
+    if (-not (Test-Path -LiteralPath $directory -PathType Container)) {
+        New-Item -ItemType Directory -Path $directory -Force | Out-Null
+    }
+    $temporary = Join-Path $directory ('.' + [IO.Path]::GetFileName($Path) + '.' + [guid]::NewGuid().ToString('N') + '.tmp')
+    try {
+        [IO.File]::WriteAllText($temporary, $Content, [Text.UTF8Encoding]::new($false))
+        Move-Item -LiteralPath $temporary -Destination $Path -Force
+    }
+    finally {
+        if (Test-Path -LiteralPath $temporary) {
+            Remove-Item -LiteralPath $temporary -Force
+        }
+    }
+}
+
+function Get-DraftManifestSection {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Content,
+
+        [Parameter(Mandatory = $true)]
+        [string]$Heading
+    )
+
+    $match = [regex]::Match($Content, '(?ms)^##\s+' + [regex]::Escape($Heading) + '\s*\r?\n(?<section>.*?)(?=^##\s+|\z)')
+    if (-not $match.Success) {
+        return $null
+    }
+    return $match.Groups['section'].Value.Trim()
+}
+
+function Format-DraftBlockerLine {
+    param(
+        [Parameter(Mandatory = $true)]
+        [psobject]$Blocker
+    )
+
+    $category = Get-SafeManifestText -Value ([string]$Blocker.Category)
+    $message = Get-SafeManifestText -Value ([string]$Blocker.Message)
+    $path = if ($null -ne $Blocker.Path) { Get-SafeManifestText -Value ([string]$Blocker.Path) } else { $null }
+    $issue = if ($null -ne $Blocker.IssueNumber) { "Issue #$($Blocker.IssueNumber)" } else { $null }
+    $parts = @("**$category**")
+    if ($null -ne $path) { $parts += "path: $path" }
+    if ($null -ne $issue) { $parts += $issue }
+    $parts += $message
+    return '- ' + ($parts -join '; ') + '.'
+}
+
+function Update-DraftManifestResult {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$ManifestPath,
+
+        [Parameter(Mandatory = $true)]
+        [string]$ManifestContent,
+
+        [Parameter(Mandatory = $true)]
+        [string]$DraftStatus,
+
+        [Parameter(Mandatory = $true)]
+        [AllowEmptyCollection()]
+        [object[]]$Blockers
+    )
+
+    $blockerSection = Get-DraftManifestSection -Content $ManifestContent -Heading 'Blockers'
+    if ($null -eq $blockerSection) {
+        throw 'context manifest is missing its Blockers section'
+    }
+    $existingLines = @()
+    if (-not [string]::IsNullOrWhiteSpace($blockerSection) -and $blockerSection.Trim() -ne '- None.') {
+        $existingLines = @($blockerSection.Trim() -split '\r?\n')
+    }
+    $newLines = @($Blockers | ForEach-Object { Format-DraftBlockerLine -Blocker $_ })
+    $combinedLines = @($existingLines + $newLines)
+    if ($combinedLines.Count -eq 0) {
+        $combinedLines = @('- None.')
+    }
+    $newBlockerSection = "## Blockers`n`n" + ($combinedLines -join "`n") + "`n`n"
+    $updated = [regex]::Replace($ManifestContent, '(?ms)^##\s+Blockers\s*\r?\n.*?(?=^##\s+|\z)', $newBlockerSection, 1)
+
+    $outputSection = Get-DraftManifestSection -Content $updated -Heading 'Output'
+    if ($null -eq $outputSection) {
+        throw 'context manifest is missing its Output section'
+    }
+    $outputLines = @($outputSection -split '\r?\n' | Where-Object { $_ -notmatch '^\s*-\s*Draft output status:' -and $_ -notmatch '^\s*-\s*Draft output path:' })
+    $outputLines += "- Draft output status: $DraftStatus."
+    $outputLines += if ($DraftStatus -eq 'Draft') { '- Draft output path: docs/current-slice.md.' } else { '- Draft output path: Not written.' }
+    $newOutputSection = "## Output`n`n" + (($outputLines | Where-Object { -not [string]::IsNullOrWhiteSpace($_) }) -join "`n") + "`n`n"
+    $updated = [regex]::Replace($updated, '(?ms)^##\s+Output\s*\r?\n.*?(?=^##\s+|\z)', $newOutputSection, 1)
+    Write-DraftUtf8Atomic -Path $ManifestPath -Content $updated
+}
+
+function Get-DraftManifestInput {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$RepositoryRoot,
+
+        [Parameter(Mandatory = $true)]
+        [string]$ManifestPath,
+
+        [Parameter(Mandatory = $true)]
+        [int]$IssueNumber,
+
+        [AllowNull()]
+        [scriptblock]$FileReader
+    )
+
+    $manifestRoot = Join-Path $RepositoryRoot 'docs/context-manifests'
+    $fullPath = Get-DraftFullPath -RepositoryRoot $RepositoryRoot -Path $ManifestPath
+    $relativePath = if ([IO.Path]::IsPathRooted($ManifestPath)) { $ManifestPath } else { $ManifestPath.Replace('\', '/') }
+    $blockers = @()
+    $canUpdate = $false
+    $content = $null
+    if (-not (Test-DraftPathUnderRoot -Root $manifestRoot -Path $fullPath)) {
+        $blockers += New-DraftBlocker -Category 'Context manifest' -Path $relativePath -Message 'manifest path is outside docs/context-manifests and cannot be safely updated.'
+        return [pscustomobject]@{ CanUpdate = $false; FullPath = $fullPath; RelativePath = $relativePath; Content = $null; SelectedPaths = @(); Blockers = @($blockers) }
+    }
+    if ([IO.Path]::GetFileNameWithoutExtension($fullPath) -ne [string]$IssueNumber) {
+        $blockers += New-DraftBlocker -Category 'Context manifest' -Path $relativePath -Message 'manifest filename does not match the source Issue number.'
+        return [pscustomobject]@{ CanUpdate = $false; FullPath = $fullPath; RelativePath = $relativePath; Content = $null; SelectedPaths = @(); Blockers = @($blockers) }
+    }
+    try {
+        $content = Read-DraftUtf8Text -Path $fullPath -FileReader $FileReader
+    }
+    catch {
+        $blockers += New-DraftBlocker -Category 'Context manifest' -Path $relativePath -Message 'matching context manifest is missing or inaccessible; no manifest can be safely updated.'
+        return [pscustomobject]@{ CanUpdate = $false; FullPath = $fullPath; RelativePath = $relativePath; Content = $null; SelectedPaths = @(); Blockers = @($blockers) }
+    }
+
+    $header = "# Context Manifest $([char]0x2014) Issue #$IssueNumber"
+    if ($content -notmatch '(?m)^' + [regex]::Escape($header) + '\s*$') {
+        $blockers += New-DraftBlocker -Category 'Context manifest' -Path $relativePath -Message 'manifest source identity does not match the normalized Issue; no manifest can be safely updated.'
+    }
+    $blockerSection = Get-DraftManifestSection -Content $content -Heading 'Blockers'
+    if ($null -eq $blockerSection) {
+        $blockers += New-DraftBlocker -Category 'Context manifest' -Path $relativePath -Message 'manifest is missing its Blockers section.'
+    }
+    elseif ($blockerSection.Trim() -ne '- None.') {
+        $blockers += New-DraftBlocker -Category 'Context manifest' -Path $relativePath -Message 'context assembly reported blockers; resolve them before generating a Draft slice.'
+    }
+    if ($content -notmatch '(?mi)^-\s+Downstream-ready:\s*True\s*$') {
+        $blockers += New-DraftBlocker -Category 'Context manifest' -Path $relativePath -Message 'context manifest is not downstream-ready.'
+    }
+
+    $selectedSection = Get-DraftManifestSection -Content $content -Heading 'Selected governing documents'
+    $selectedPaths = @()
+    if ($null -ne $selectedSection) {
+        $selectedPaths = @([regex]::Matches($selectedSection, '(?m)^-\s+\*\*(?<path>[^*]+)\*\*') | ForEach-Object { $_.Groups['path'].Value.Trim() })
+    }
+    foreach ($mandatory in @('AGENTS.md', 'docs/project.md', 'docs/architecture.md', 'docs/decisions.md', 'docs/testing.md', 'docs/current-slice.md')) {
+        if (@($selectedPaths | Where-Object { $_.ToLowerInvariant() -eq $mandatory.ToLowerInvariant() }).Count -eq 0) {
+            $blockers += New-DraftBlocker -Category 'Context manifest' -Path $mandatory -Message 'mandatory selected authority is absent from the manifest.'
+        }
+    }
+    $safeSelected = @()
+    foreach ($selectedPath in $selectedPaths) {
+        $normalizedPath = $selectedPath.Replace('\', '/')
+        if ($normalizedPath -match '^(?:[a-z][a-z0-9+.-]*:|/|\\)' -or ($normalizedPath -split '/') -contains '..') {
+            $blockers += New-DraftBlocker -Category 'Context manifest' -Path $normalizedPath -Message 'manifest selected path is not a safe repository-relative path.'
+            continue
+        }
+        $safeSelected += $normalizedPath
+        $status = Get-ContextFileStatus -RepositoryRoot $RepositoryRoot -RelativePath $normalizedPath -FileReader $FileReader
+        if (-not $status.Available) {
+            $blockers += New-DraftBlocker -Category 'Selected document' -Path $normalizedPath -Message 'manifest-selected document is missing or inaccessible.'
+        }
+    }
+    $canUpdate = $content -match '(?m)^' + [regex]::Escape($header) + '\s*$'
+    [pscustomobject]@{
+        CanUpdate = $canUpdate
+        FullPath = $fullPath
+        RelativePath = $relativePath
+        Content = $content
+        SelectedPaths = @($safeSelected | Select-Object -Unique)
+        Blockers = @($blockers)
+    }
+}
+
+function Get-DraftPhaseRecords {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$RepositoryRoot,
+
+        [AllowNull()]
+        [scriptblock]$FileReader
+    )
+
+    $root = Join-Path $RepositoryRoot 'docs/issues'
+    $records = @()
+    if (-not (Test-Path -LiteralPath $root -PathType Container)) {
+        return @($records)
+    }
+    foreach ($phaseDirectory in @(Get-ChildItem -LiteralPath $root -Directory | Sort-Object Name)) {
+        foreach ($draft in @(Get-ChildItem -LiteralPath $phaseDirectory.FullName -File -Filter '*.md' | Sort-Object Name)) {
+            try { $content = Read-DraftUtf8Text -Path $draft.FullName -FileReader $FileReader } catch { continue }
+            $number = Get-FrontMatterValue -Content $content -Name 'github_issue_number'
+            if ([string]::IsNullOrWhiteSpace($number)) { continue }
+            $records += [pscustomobject]@{
+                Path = $draft.FullName
+                Number = $number
+                Phase = Get-FrontMatterValue -Content $content -Name 'phase'
+                Sequence = Get-FrontMatterValue -Content $content -Name 'sequence'
+                DependsOn = Get-FrontMatterValue -Content $content -Name 'depends_on'
+                Readiness = Get-FrontMatterValue -Content $content -Name 'readiness'
+            }
+        }
+    }
+    return @($records)
+}
+
+function Get-DraftDependencyState {
+    param(
+        [Parameter(Mandatory = $true)]
+        [int]$IssueNumber,
+
+        [AllowNull()]
+        [scriptblock]$DependencyStateReader
+    )
+
+    try {
+        if ($null -ne $DependencyStateReader) {
+            return ([string](& $DependencyStateReader $IssueNumber)).ToUpperInvariant()
+        }
+        if ($null -eq (Get-Command gh -ErrorAction SilentlyContinue)) {
+            throw 'GitHub CLI is unavailable'
+        }
+        $json = & gh issue view $IssueNumber --json state
+        if ($LASTEXITCODE -ne 0) { throw 'GitHub Issue state could not be read' }
+        return ([string](($json | ConvertFrom-Json).state)).ToUpperInvariant()
+    }
+    catch {
+        throw 'dependency Issue state is unreadable'
+    }
+}
+
+function Get-DraftCurrentSliceState {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$RepositoryRoot,
+
+        [AllowNull()]
+        [scriptblock]$FileReader
+    )
+
+    $path = Join-Path $RepositoryRoot 'docs/current-slice.md'
+    if (-not (Test-Path -LiteralPath $path -PathType Leaf)) {
+        return [pscustomobject]@{ Status = 'Empty'; Content = '' }
+    }
+    $content = Read-DraftUtf8Text -Path $path -FileReader $FileReader
+    if ([string]::IsNullOrWhiteSpace($content)) {
+        return [pscustomobject]@{ Status = 'Empty'; Content = $content }
+    }
+    $match = [regex]::Match($content, '(?ms)^##\s+Status\s*\r?\n(?<status>[^\r\n]+)')
+    if (-not $match.Success) {
+        return [pscustomobject]@{ Status = 'Invalid'; Content = $content }
+    }
+    return [pscustomobject]@{ Status = $match.Groups['status'].Value.Trim(); Content = $content }
+}
+
+function Get-DraftGeneratedSection {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Content,
+
+        [Parameter(Mandatory = $true)]
+        [string]$Heading
+    )
+
+    $match = [regex]::Match($Content, '(?ms)^##\s+' + [regex]::Escape($Heading) + '\s*\r?\n(?<section>.*?)(?=^##\s+|\z)')
+    if (-not $match.Success) { return $null }
+    return $match.Groups['section'].Value.Trim()
+}
+
+function ConvertTo-DraftSliceMarkdown {
+    param(
+        [Parameter(Mandatory = $true)]
+        [psobject]$NormalizedIssue,
+
+        [Parameter(Mandatory = $true)]
+        [string[]]$SelectedPaths
+    )
+
+    $title = [string]$NormalizedIssue.Source.Title
+    $lines = @(
+        "# $title",
+        '',
+        '> **Project-owned operational state:** This generated execution package is a Draft. Human review and explicit approval are required before implementation.',
+        '',
+        '## Status',
+        '',
+        'Draft',
+        '',
+        '## Source Issue',
+        '',
+        "- **Issue:** #$($NormalizedIssue.Source.Number) - $title",
+        "- **URL:** $($NormalizedIssue.Source.Url)",
+        '',
+        '## Context',
+        '',
+        [string]$NormalizedIssue.Context,
+        '',
+        '## Goal',
+        '',
+        [string]$NormalizedIssue.Goal,
+        '',
+        '## Scope',
+        '',
+        [string]$NormalizedIssue.Scope,
+        '',
+        '## Non-goals',
+        '',
+        [string]$NormalizedIssue.NonGoals,
+        '',
+        '## Acceptance criteria',
+        '',
+        [string]$NormalizedIssue.AcceptanceCriteria,
+        '',
+        '## Governing-rule reconciliation',
+        '',
+        '| Rule | Governing source | Slice interpretation | Difference |',
+        '| --- | --- | --- | --- |',
+        '| Issue contract preservation | Normalized source Issue | Preserve Context, Goal, Scope, Non-goals, and Acceptance criteria exactly. | None |',
+        '| Bounded context | Matching context manifest | Use only selected governing document references; do not rediscover or infer relevance. | None |',
+        '| Human approval boundary | `AGENTS.md` and approved design | Generated status is Draft and approval/completion evidence remains pending. | None |',
+        '',
+        '## Implementation plan',
+        '',
+        '1. Use the normalized Issue contract and selected governing-document references as the bounded preparation inputs.',
+        '2. Identify and refine file-level implementation detail during human review only where the selected authorities support it; do not infer product, semantic, API, or relevance policy from free text.',
+        '3. Implement the Issue outcome within the approved scope, then run the declared validation and review workflow.',
+        '',
+        '## Expected files',
+        '',
+        '- Human review must identify the concrete implementation files; this preparation path does not infer them from free text.',
+        '',
+        '## Documentation impact',
+        '',
+        '| Source | Impact | Required action |',
+        '| --- | --- | --- |',
+        '| `README.md` | None | None |',
+        '| `docs/project.md` | None | None |',
+        '| `docs/architecture.md` | None | None |',
+        '| `docs/decisions.md` | None | None |',
+        '| `docs/design/*.md` | None | None |',
+        '| `docs/testing.md` | None | None |',
+        '',
+        '## Validation plan',
+        '',
+        'Run from repository root:',
+        '',
+        '```powershell',
+        'powershell -NoProfile -ExecutionPolicy Bypass -File tests/prepare-slice.ps1',
+        'powershell -NoProfile -ExecutionPolicy Bypass -File scripts/validate.ps1',
+        'powershell -NoProfile -ExecutionPolicy Bypass -File tests/validate-structure.ps1',
+        '```',
+        '',
+        'Manual checks:',
+        '',
+        '- Confirm the generated source sections preserve the normalized contract and selected-document references remain bounded.',
+        '- Confirm unresolved active-slice, dependency, manifest, readiness, and required-document guards prevent replacement and record sanitized blockers.',
+        '- Confirm no generation path approves, implements, changes GitHub state, or replaces an unresolved active slice.',
+        '',
+        '## Failure conditions',
+        '',
+        'Stop and revise before approval or implementation if a required source, dependency, document, guard, interface, or semantic decision cannot be verified from the bounded inputs.',
+        '',
+        '## Review checklist',
+        '',
+        '- Does the generated slice preserve the source contract without claiming semantic equivalence?',
+        '- Are selected documents, warnings, blockers, side effects, and lifecycle boundaries explicit?',
+        '- Are human decisions surfaced rather than inferred by the generator?',
+        '',
+        '## Approval evidence',
+        '',
+        '**Slice approval:** Pending.',
+        '',
+        '**Slice approved by:** Pending.',
+        '',
+        '**Slice approval basis:** Pending.',
+        '',
+        '**Slice approved at:** Pending.',
+        '',
+        '**Final approval:** Pending.',
+        '',
+        '**Final approved by:** Pending.',
+        '',
+        '**Final approval basis:** Pending.',
+        '',
+        '**Final approved at:** Pending.',
+        '',
+        '## Completion evidence',
+        '',
+        '**Implementation status:** Pending.',
+        '',
+        '**Acceptance-criteria status:** Pending.',
+        '',
+        '**Files changed:** Pending.',
+        '',
+        '**Validation results:** Not run.',
+        '',
+        '**Manual checks:** Pending.',
+        '',
+        '**Documentation-impact result:** Pending.',
+        '',
+        '**Review result:** Pending.',
+        '',
+        '**Implementation adjustments or deviations:** None.',
+        '',
+        '**Known limitations or follow-up Issues:** Human review must resolve any file-level plan that selected documents do not establish.',
+        '',
+        '**Issue closure:** Pending.',
+        '',
+        '**Implementation summary:** Generated Draft from normalized Issue and bounded context manifest. Approval and implementation have not begun.'
+    )
+    $lines += @('', '## Dependencies', '', [string]$NormalizedIssue.Dependencies, '', '## Relevant documents', '')
+    if (@($SelectedPaths).Count -eq 0) { $lines += '- None.' } else { $lines += @($SelectedPaths | ForEach-Object { '- `' + $_ + '`' }) }
+    $lines += @('', '## Generation warnings', '', '- File-level expected files and semantic equivalence are not inferred automatically; human review owns those judgments.', '')
+    return ($lines -join "`n")
+}
+
+function Test-DraftGeneratedSlice {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Content,
+
+        [Parameter(Mandatory = $true)]
+        [psobject]$NormalizedIssue
+    )
+
+    $errors = @()
+    foreach ($heading in @('## Status', '## Source Issue', '## Context', '## Goal', '## Scope', '## Non-goals', '## Acceptance criteria', '## Governing-rule reconciliation', '## Implementation plan', '## Expected files', '## Documentation impact', '## Validation plan', '## Failure conditions', '## Review checklist', '## Approval evidence', '## Completion evidence')) {
+        if ($Content -notmatch '(?m)^' + [regex]::Escape($heading) + '\s*$') {
+            $errors += "generated Draft is missing required heading '$heading'"
+        }
+    }
+    if ($Content -notmatch '(?ms)^##\s+Status\s*\r?\nDraft\s*$') { $errors += 'generated slice status is not Draft' }
+    if ($Content -notmatch '(?m)^-\s+\*\*Issue:\*\*\s+#' + [int]$NormalizedIssue.Source.Number + '\s+-\s+') { $errors += 'generated slice source Issue traceability is missing' }
+    if ($Content -notmatch '(?m)^-\s+\*\*URL:\*\*\s+' + [regex]::Escape([string]$NormalizedIssue.Source.Url) + '\s*$') { $errors += 'generated slice source Issue URL traceability is missing' }
+    $sectionMap = @{
+        Context = 'Context'
+        Goal = 'Goal'
+        Scope = 'Scope'
+        NonGoals = 'Non-goals'
+        AcceptanceCriteria = 'Acceptance criteria'
+    }
+    foreach ($property in $sectionMap.Keys) {
+        $actual = Get-DraftGeneratedSection -Content $Content -Heading $sectionMap[$property]
+        if ($null -eq $actual -or $actual -cne ([string]$NormalizedIssue.$property).Trim()) {
+            $errors += "generated section '$($sectionMap[$property])' does not preserve the normalized source contract"
+        }
+    }
+    foreach ($placeholder in @('\[Work Item Title\]', '\[Brief execution background\]', '\[Singular expected outcome preserved from the Issue\.\]', '\[Included work\]', '\[Explicitly excluded work\]')) {
+        if ($Content -match $placeholder) { $errors += "generated slice contains neutral-schema placeholder '$placeholder'" }
+    }
+    return @($errors)
+}
+
+function Invoke-DraftSliceGeneration {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$NormalizedIssueJsonPath,
+
+        [Parameter(Mandatory = $true)]
+        [string]$ContextManifestPath,
+
+        [Parameter(Mandatory = $true)]
+        [string]$RepositoryRoot,
+
+        [AllowNull()]
+        [scriptblock]$DependencyStateReader,
+
+        [AllowNull()]
+        [scriptblock]$FileReader
+    )
+
+    $root = (Resolve-Path -LiteralPath $RepositoryRoot).Path
+    $normalized = $null
+    try {
+        $normalized = Get-NormalizedIssueContractFromFile -Path $NormalizedIssueJsonPath
+    }
+    catch {
+        return Get-DraftResult -IssueNumber 0 -Generated $false -ManifestPath $ContextManifestPath -Blockers @(
+            (New-DraftBlocker -Category 'Normalized contract' -Message 'normalized Issue contract is missing or invalid; no active slice was written.')
+        )
+    }
+    $issueNumber = [int]$normalized.Source.Number
+    $manifest = Get-DraftManifestInput -RepositoryRoot $root -ManifestPath $ContextManifestPath -IssueNumber $issueNumber -FileReader $FileReader
+    $blockers = @($manifest.Blockers)
+
+    if ($normalized.Source.PSObject.Properties['State'] -and [string]$normalized.Source.State -ne 'OPEN') {
+        $blockers += New-DraftBlocker -Category 'Source Issue' -IssueNumber $issueNumber -Message 'normalized source Issue is not open.'
+    }
+    $readiness = @($normalized.Readiness)
+    foreach ($confirmation in @($readiness | Where-Object { -not $_.Checked })) {
+        $blockers += New-DraftBlocker -Category 'Readiness' -IssueNumber $issueNumber -Message "readiness confirmation '$($confirmation.Label)' is unchecked."
+    }
+
+    $phaseRecords = Get-DraftPhaseRecords -RepositoryRoot $root -FileReader $FileReader
+    $sourceDrafts = @($phaseRecords | Where-Object { $_.Number -eq [string]$issueNumber })
+    if ($sourceDrafts.Count -ne 1) {
+        $blockers += New-DraftBlocker -Category 'Dependency mapping' -IssueNumber $issueNumber -Message 'exactly one local phase draft must map to the source Issue.'
+    }
+    else {
+        $sourceDraft = $sourceDrafts[0]
+        if ($sourceDraft.Readiness -ne 'Ready') { $blockers += New-DraftBlocker -Category 'Readiness' -Path $sourceDraft.Path -Message 'local phase draft is not marked Ready.' }
+        $tokens = @()
+        if (-not [string]::IsNullOrWhiteSpace($sourceDraft.DependsOn)) {
+            $tokens = @($sourceDraft.DependsOn -split ',' | ForEach-Object { $_.Trim() } | Where-Object { $_ } | Select-Object -Unique)
+        }
+        foreach ($token in $tokens) {
+            $matches = @($phaseRecords | Where-Object { $_.Phase -eq $sourceDraft.Phase -and $_.Sequence -eq $token })
+            if ($matches.Count -ne 1) {
+                $blockers += New-DraftBlocker -Category 'Dependency mapping' -Path $token -Message 'dependency sequence does not map to exactly one local phase draft.'
+                continue
+            }
+            try { $dependencyState = Get-DraftDependencyState -IssueNumber ([int]$matches[0].Number) -DependencyStateReader $DependencyStateReader }
+            catch { $blockers += New-DraftBlocker -Category 'Dependency state' -IssueNumber ([int]$matches[0].Number) -Message 'dependency Issue state is unreadable.'; continue }
+            if ($dependencyState -ne 'CLOSED') {
+                $blockers += New-DraftBlocker -Category 'Dependency state' -IssueNumber ([int]$matches[0].Number) -Message 'mapped dependency Issue is not closed.'
+            }
+        }
+    }
+
+    try {
+        $sliceState = Get-DraftCurrentSliceState -RepositoryRoot $root -FileReader $FileReader
+        if ($sliceState.Status -notin @('Empty', 'Complete')) {
+            $blockers += New-DraftBlocker -Category 'Active slice' -Path 'docs/current-slice.md' -Message "existing active slice status '$($sliceState.Status)' is unresolved and cannot be replaced."
+        }
+    }
+    catch {
+        $blockers += New-DraftBlocker -Category 'Active slice' -Path 'docs/current-slice.md' -Message 'existing active slice is missing or inaccessible.'
+    }
+    if (-not (Test-Path -LiteralPath (Join-Path $root 'templates/docs/current-slice.md') -PathType Leaf)) {
+        $blockers += New-DraftBlocker -Category 'Schema' -Path 'templates/docs/current-slice.md' -Message 'neutral current-slice schema is missing or inaccessible.'
+    }
+
+    $outputPath = Join-Path $root 'docs/current-slice.md'
+    if ($blockers.Count -gt 0) {
+        if ($manifest.CanUpdate) {
+            try { Update-DraftManifestResult -ManifestPath $manifest.FullPath -ManifestContent $manifest.Content -DraftStatus 'Blocked' -Blockers $blockers } catch { }
+        }
+        return Get-DraftResult -IssueNumber $issueNumber -Generated $false -ManifestPath $manifest.RelativePath -OutputPath 'docs/current-slice.md' -Blockers $blockers
+    }
+
+    $draftContent = ConvertTo-DraftSliceMarkdown -NormalizedIssue $normalized -SelectedPaths $manifest.SelectedPaths
+    $selfCheck = @(Test-DraftGeneratedSlice -Content $draftContent -NormalizedIssue $normalized)
+    if ($selfCheck.Count -gt 0) {
+        $blockers = @($selfCheck | ForEach-Object { New-DraftBlocker -Category 'Generated slice' -Message $_ })
+        if ($manifest.CanUpdate) {
+            try { Update-DraftManifestResult -ManifestPath $manifest.FullPath -ManifestContent $manifest.Content -DraftStatus 'Blocked' -Blockers $blockers } catch { }
+        }
+        return Get-DraftResult -IssueNumber $issueNumber -Generated $false -ManifestPath $manifest.RelativePath -OutputPath 'docs/current-slice.md' -Blockers $blockers
+    }
+
+    $oldExists = Test-Path -LiteralPath $outputPath -PathType Leaf
+    $oldContent = if ($oldExists) { Read-DraftUtf8Text -Path $outputPath -FileReader $FileReader } else { $null }
+    try {
+        Write-DraftUtf8Atomic -Path $outputPath -Content $draftContent
+        Update-DraftManifestResult -ManifestPath $manifest.FullPath -ManifestContent $manifest.Content -DraftStatus 'Draft' -Blockers @()
+    }
+    catch {
+        if ($oldExists) { Write-DraftUtf8Atomic -Path $outputPath -Content $oldContent } elseif (Test-Path -LiteralPath $outputPath) { Remove-Item -LiteralPath $outputPath -Force }
+        $blockers = @(New-DraftBlocker -Category 'Draft generation' -Message 'Draft or matching manifest write failed; the prior active slice was restored.')
+        return Get-DraftResult -IssueNumber $issueNumber -Generated $false -ManifestPath $manifest.RelativePath -OutputPath 'docs/current-slice.md' -Blockers $blockers
+    }
+    return Get-DraftResult -IssueNumber $issueNumber -Generated $true -ManifestPath $manifest.RelativePath -OutputPath 'docs/current-slice.md' -Blockers @()
+}
+
 if (-not $NoRun) {
-    if ($ContextManifest) {
+    if ($GenerateDraftSlice) {
+        if ([string]::IsNullOrWhiteSpace($NormalizedIssueJsonPath) -or [string]::IsNullOrWhiteSpace($ContextManifestPath) -or [string]::IsNullOrWhiteSpace($RepositoryRoot)) {
+            throw 'Draft-generation mode requires NormalizedIssueJsonPath, ContextManifestPath, and RepositoryRoot.'
+        }
+        Invoke-DraftSliceGeneration -NormalizedIssueJsonPath $NormalizedIssueJsonPath -ContextManifestPath $ContextManifestPath -RepositoryRoot $RepositoryRoot | ConvertTo-Json -Depth 8 -Compress
+    }
+    elseif ($ContextManifest) {
         if ([string]::IsNullOrWhiteSpace($NormalizedIssueJsonPath) -or [string]::IsNullOrWhiteSpace($RepositoryRoot)) {
             throw 'Context-manifest mode requires NormalizedIssueJsonPath and RepositoryRoot.'
         }

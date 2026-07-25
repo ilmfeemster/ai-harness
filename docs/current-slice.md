@@ -1,10 +1,10 @@
 # Phase 1: Generate guarded Draft slices
 
-> **Project operational state:** This is a Draft execution package for GitHub Issue #10. It preserves the Issue outcome and does not approve or authorize implementation.
+> **Project operational state:** This is the Complete execution package for GitHub Issue #10. Final approval is recorded and the source Issue is closed.
 
 ## Status
 
-Approved
+Complete
 
 ## Source Issue
 
@@ -35,11 +35,11 @@ Generate a complete, structurally checked Draft active slice from a passing norm
 
 ## Acceptance criteria
 
-- [ ] A passing normalized Issue and manifest produce a complete `docs/current-slice.md` with status `Draft`, source traceability, and no unresolved scaffold markers.
-- [ ] The generated slice preserves the source Issue's context, goal, scope, non-goals, and acceptance criteria without omission or material alteration.
-- [ ] An unchecked readiness item, unresolved dependency, missing required document, closed Issue, or unresolved active slice prevents active-slice replacement and records the blocker in the manifest.
-- [ ] Structural and source-to-slice checks identify missing required headings, invalid status, broken traceability, and altered or omitted contract sections.
-- [ ] Tests demonstrate that preparation does not approve a slice, begin implementation, or write to GitHub.
+- [x] A passing normalized Issue and manifest produce a complete `docs/current-slice.md` with status `Draft`, source traceability, and no unresolved scaffold markers.
+- [x] The generated slice preserves the source Issue's context, goal, scope, non-goals, and acceptance criteria without omission or material alteration.
+- [x] An unchecked readiness item, unresolved dependency, missing required document, closed Issue, or unresolved active slice prevents active-slice replacement and records the blocker in the manifest.
+- [x] Structural and source-to-slice checks identify missing required headings, invalid status, broken traceability, and altered or omitted contract sections.
+- [x] Tests demonstrate that preparation does not approve a slice, begin implementation, or write to GitHub.
 
 ## Governing-rule reconciliation
 
@@ -209,37 +209,37 @@ Stop and revise before approval or implementation if:
 
 **Slice approved at:** 2026-07-25.
 
-**Final approval:** Pending.
+**Final approval:** Approved.
 
-**Final approved by:** Pending.
+**Final approved by:** Repository owner.
 
-**Final approval basis:** Pending.
+**Final approval basis:** Explicit user authorization to finalize after implementation, formal validation, and independent review passed.
 
-**Final approved at:** Pending.
+**Final approved at:** 2026-07-25 11:31 -07:00.
 
 ## Completion evidence
 
-**Implementation status:** Pending approval and separate implementation authorization.
+**Implementation status:** Complete; implementation, validation, review, final approval, and Issue closure completed.
 
-**Acceptance-criteria status:** Pending.
+**Acceptance-criteria status:** All five acceptance criteria demonstrated by focused fixture tests and formal structural validation.
 
-**Files changed:** `docs/current-slice.md` only, to replace the completed Issue #9 package with this Draft.
+**Files changed:** `scripts/prepare-slice.ps1`, `tests/prepare-slice.ps1`, and `tests/fixtures/context/repository/docs/issues/phase-1/issue-8.md`, `issue-9.md`, and `issue-10.md`.
 
-**Validation results:** Not run; formal validation belongs after implementation.
+**Validation results:** Passed the documented Draft-mode parameter-binding check using `scripts/prepare-slice.ps1` with `-GenerateDraftSlice -NoRun`, `tests/prepare-slice.ps1`, `scripts/validate.ps1`, `tests/validate-structure.ps1`, and `git diff --check`. Focused tests demonstrate successful Draft generation, exact source-section preservation, source/readiness, dependency normalization and closed-state, missing-document, unresolved active-slice, and sanitized matching-manifest guards.
 
-**Manual checks:** GitHub Issue #10 is open with all seven readiness confirmations checked; local phase sequence identifies #10 as `03`; GitHub Issues #8 and #9 are closed; the approved design, existing script/test seam, neutral schema, and structural-validator expectations were inspected during preparation.
+**Manual checks:** Temporary-repository end-to-end generation produced a `Draft` with required headings, source traceability, selected-document links, and pending approval/completion evidence. Guarded runs preserved the unresolved active slice and recorded only the matching manifest result; all five unresolved lifecycle statuses were exercised. The public Draft-mode parameter set binds successfully. GitHub mutation and lifecycle-transition paths remain absent from the implementation. Existing project/design/architecture/decision/testing documents were unchanged.
 
-**Documentation-impact result:** No governing-document update is expected for Issue #10; confirm during implementation and validation.
+**Documentation-impact result:** No governing-document update is required; the implementation consumes the existing neutral schema and approved design, and the project, architecture, decisions, design, testing, and operator-guidance authorities remain current.
 
-**Review result:** Advisory planning review passed on 2026-07-25. The initial finding—unsafe manifest-result updates when no readable source-matching manifest exists—was corrected in this Draft. No remaining blocker, unsupported semantic assumption, missing material implementation decision, scope expansion, lifecycle violation, or insufficient validation branch was identified. This is a pre-implementation planning review only; formal `review-slice` remains a post-validation operation.
+**Review result:** Formal implementation review passed on 2026-07-25. No critical, high, medium, or low findings remain. The review verified Issue #10 traceability, approved-slice scope, governing-rule provenance, deterministic command and guard behavior, exact source-contract preservation, test coverage, sanitized failure handling, lifecycle boundaries, and documentation currency. The Draft-mode parameter-set binding correction found during review was implemented and revalidated; no scope or approved-contract change was required.
 
-**Implementation adjustments or deviations:** None.
+**Implementation adjustments or deviations:** Added an internal empty-collection binding allowance for successful manifest updates, fixture-only dependency metadata required to exercise the approved guard contract, and the missing Draft-mode parameter-set bindings found during independent review. No approved behavior or scope changed.
 
 **Known limitations or follow-up Issues:** Issue #11 owns the integrated operator workflow and its user-facing documentation.
 
-**Issue closure:** Pending.
+**Issue closure:** GitHub Issue #10 closed and verified `CLOSED` on 2026-07-25.
 
-**Implementation summary:** Draft prepared from GitHub Issue #10. No implementation, validation, review of implemented work, approval, or Issue-state change has occurred.
+**Implementation summary:** Implemented and finalized guarded Draft-slice generation for GitHub Issue #10. The command consumes the normalized Issue and matching context manifest, accumulates sanitized ordered blockers, preserves unresolved active slices, writes only permitted UTF-8 Draft output after self-checks, and updates only the matching manifest result.
 
 ## Dependencies and assumptions
 
