@@ -1,0 +1,21 @@
+{
+  "SchemaVersion": 1,
+  "IssueType": "Implementation",
+  "Source": {
+    "Number": 9,
+    "Title": "Phase 1: Assemble bounded context manifests",
+    "Url": "https://github.com/ilmfeemster/ai-harness/issues/9",
+    "State": "OPEN",
+    "SnapshotIdentifier": "fixture-issue-9"
+  },
+  "Goal": "For a normalized Issue, discover its bounded local governing context and write an inspectable per-Issue context manifest.",
+  "Context": "The manifest records bounded local authority.",
+  "Scope": "Discover mandatory and explicitly linked local documents.",
+  "NonGoals": "Do not call GitHub or write the active slice.",
+  "AcceptanceCriteria": "Record selected and excluded documents with deterministic reasons.",
+  "Dependencies": "Issue 8 is complete.",
+  "RelevantDocuments": "- AGENTS.md\n- `docs/linked.md`\n- `docs/design/approved.md`\n- `docs/design/draft.md`\n- scripts/prepare-slice.ps1\n- https://example.test/context.md\n- ../escape.md\n- docs/linked.md",
+  "Readiness": [
+    { "Label": "Bounded", "Checked": true }
+  ]
+}

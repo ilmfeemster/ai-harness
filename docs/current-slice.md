@@ -4,7 +4,7 @@
 
 ## Status
 
-Draft
+In progress
 
 ## Source Issue
 
@@ -234,13 +234,13 @@ Stop and revise before approval or implementation if:
 
 ## Approval evidence
 
-**Slice approval:** Pending.
+**Slice approval:** Approved.
 
-**Slice approved by:** Pending.
+**Slice approved by:** Repository owner (explicit user request).
 
-**Slice approval basis:** Pending.
+**Slice approval basis:** Explicit user authorization to approve and implement the current slice.
 
-**Slice approved at:** Pending.
+**Slice approved at:** 2026-07-25.
 
 **Final approval:** Pending.
 
@@ -252,27 +252,27 @@ Stop and revise before approval or implementation if:
 
 ## Completion evidence
 
-**Implementation status:** Pending human approval and separate implementation authorization.
+**Implementation status:** In progress; bounded implementation authorized by the repository owner.
 
-**Acceptance-criteria status:** Pending.
+**Acceptance-criteria status:** Implementation completed for the declared manifest, selection, sanitization, overwrite, and fixture-test branches; formal validation remains next.
 
-**Files changed:** `docs/current-slice.md` only, to recreate this Draft.
+**Files changed:** `scripts/prepare-slice.ps1`, `tests/prepare-slice.ps1`, `tests/fixtures/context/`, and this lifecycle evidence in `docs/current-slice.md`.
 
-**Validation results:** Pending structural validation of the recreated Draft.
+**Validation results:** Focused parser and context-manifest tests passed; command-mode fixture run passed; `scripts/validate.ps1` and `tests/validate-structure.ps1` passed. Formal `validate-slice` remains next.
 
-**Manual checks:** Issue #9 readiness, Issue #8 closure, the approved design, existing normalizer seam, local phase traceability, and test conventions were inspected during preparation.
+**Manual checks:** Command mode consumed only the normalized local fixture, rendered all required headings, reported selected/considered/warning/blocker counts and downstream readiness, and wrote an isolated manifest outside the repository. No GitHub call or active-slice write was used.
 
 **Documentation-impact result:** No governing-document update is expected for Issue #9; confirm this during implementation and validation.
 
 **Review result:** Pending.
 
-**Implementation adjustments or deviations:** The prior phrase-match proposal remains removed. Under the updated preparation skill, Assumption A-1 is now explicit, reviewable semantic policy for the single active-phase expected-design branch; it is surfaced as a manifest warning rather than hidden as a heuristic. Other unlinked candidates remain non-governing.
+**Implementation adjustments or deviations:** No outcome or governing-rule deviation. Execution-only refinements suppress duplicate selected records when an Issue links a mandatory authority, sanitize rejected references and reader failures, and resolve relative manifest output roots beneath the explicit repository root. Assumption A-1 remains explicit, reviewable policy surfaced with a human-review warning; other unlinked candidates remain non-governing.
 
 **Known limitations or follow-up Issues:** Issue #10 owns guarded Draft-slice construction; Issue #11 owns the integrated operator workflow.
 
 **Issue closure:** Pending.
 
-**Implementation summary:** Fresh, decision-complete Draft prepared from GitHub Issue #9. No implementation has started.
+**Implementation summary:** Added local normalized-contract context-manifest mode with bounded path parsing, mandatory and linked-document classification, deterministic Approved/Draft/A-1 design resolution, sanitized warnings/blockers, Markdown rendering, isolated per-Issue overwrite, and deterministic fixture coverage. Slice remains `In progress` for formal validation.
 
 ## Dependencies and assumptions
 

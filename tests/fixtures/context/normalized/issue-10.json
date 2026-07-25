@@ -1,0 +1,20 @@
+{
+  "SchemaVersion": 1,
+  "IssueType": "Implementation",
+  "Source": {
+    "Number": 10,
+    "Title": "Draft a bounded slice",
+    "Url": "https://github.com/ilmfeemster/ai-harness/issues/10",
+    "State": "OPEN"
+  },
+  "Goal": "Draft one bounded slice.",
+  "Context": "The current phase needs guarded drafting.",
+  "Scope": "Consume the manifest.",
+  "NonGoals": "Do not implement the slice.",
+  "AcceptanceCriteria": "The draft is deterministic.",
+  "Dependencies": "Issue 9 is complete.",
+  "RelevantDocuments": "docs/project.md",
+  "Readiness": [
+    { "Label": "Bounded", "Checked": true }
+  ]
+}
