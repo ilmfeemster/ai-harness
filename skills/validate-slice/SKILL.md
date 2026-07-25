@@ -2,174 +2,78 @@
 
 ## Purpose
 
-Execute the slice's formal validation plan, evaluate its acceptance criteria, assemble completion evidence, and determine whether the implementation is ready for review.
+Execute the slice's formal validation plan, evaluate acceptance criteria, verify documentation impact, assemble completion evidence, and determine readiness for review.
 
-Validation establishes mechanical and observable evidence. It is not human approval.
+Validation establishes mechanical and observable evidence. It is not approval.
 
 ## When to use
 
-Use this skill when:
-
-- implementation of the active slice is complete;
-- the slice is `In progress`;
-- formal validation has been requested;
-- declared commands and manual checks are ready to run.
-
-It may also be used to rerun validation after explicitly authorized corrective implementation.
+Use when implementation is complete enough, status is `In progress`, formal validation is requested, and declared commands and manual checks are ready. It may rerun after authorized correction.
 
 ## Do not use when
 
-Do not use this skill to:
-
-- implement missing functionality;
-- repair failures automatically;
-- weaken tests;
-- rewrite acceptance criteria;
-- approve the result;
-- close the Issue;
-- validate a `Draft` or unapproved slice as completed work.
+Do not implement or repair, weaken tests, rewrite criteria, approve, close the Issue, or validate a Draft/unapproved slice as completed work.
 
 ## Authority and boundaries
 
-Read and obey `AGENTS.md` before using this skill.
+Read and obey `AGENTS.md`.
 
-The validation plan in the slice is primary for slice-specific checks. `docs/testing.md` supplies project-wide standards and does not replace the declared checks.
+The slice owns exact checks; `docs/testing.md` supplies project-wide standards.
 
-Do not:
-
-- hide failed commands;
-- omit exit codes;
-- convert failed checks into warnings without authority;
-- edit implementation while acting in validation mode;
-- treat test passage as review or approval;
-- set the slice to `Complete`.
-
-Corrective implementation requires a separate explicit handoff to `implement-slice`.
+Do not hide failures, omit exit codes, downgrade failures without authority, edit implementation, treat passage as approval, or set `Complete`.
 
 ## Required inputs
 
-- implemented `docs/current-slice.md`;
+- implemented current slice;
 - source acceptance criteria;
 - declared validation plan;
-- implementation diff or changed-file list.
+- changed-file list or diff;
+- declared documentation impact.
 
 ## Required context
 
-Load:
-
-1. validation commands and acceptance criteria from `docs/current-slice.md`;
-2. `docs/testing.md`;
-3. relevant test configuration;
-4. changed code and tests needed to understand the results.
-
-Load other sources only when a validation result reveals a material authority or scope conflict.
+Load validation commands and criteria, testing standards, relevant test configuration, changed code/tests/documents, and governing sources named in documentation impact or rule reconciliation.
 
 ## Preflight
 
-Before running commands:
-
-1. Verify the slice status is `In progress`.
-2. Verify implementation is declared complete enough for formal validation.
-3. Verify every acceptance criterion has an associated evidence method.
-4. Verify declared commands are concrete and safe to run.
-5. Identify required manual checks.
-6. Identify project-wide checks that supplement the slice plan.
-7. Stop if the validation plan is materially incomplete.
+1. Verify status `In progress`.
+2. Verify slice approval evidence.
+3. Verify implementation is ready for formal validation.
+4. Verify each criterion has an evidence method.
+5. Verify commands are concrete and safe.
+6. Identify manual and project-wide checks.
+7. Identify required document updates and evidence.
+8. Stop if validation or documentation-impact plans are incomplete.
 
 ## Procedure
 
-1. Run the most specific declared validation commands first.
-2. Record for every command:
-   - exact command;
-   - exit code;
-   - concise result;
-   - relevant failure output.
-3. Run broader project checks required by the slice or `docs/testing.md`.
-4. Perform declared manual checks.
-5. Record the method and result of each manual check.
-6. Evaluate every acceptance criterion individually as:
-   - passed;
-   - failed;
-   - not evaluated.
-7. Compare changed files and behavior with the approved scope.
-8. Identify:
-   - known limitations;
-   - deviations;
-   - unrelated failures;
-   - evidence gaps.
-9. Update completion evidence with:
-   - acceptance-criteria status;
-   - files changed;
-   - commands and results;
-   - manual checks;
-   - implementation adjustments;
-   - blockers or known limitations;
-   - follow-up Issue references or candidates;
-   - implementation summary.
-10. When all declared validation passes and every acceptance criterion is supported:
-    - set the slice status to `Ready for review`;
-    - stop for review and human approval.
-11. When any required validation fails:
-    - leave the slice `In progress`, unless an external dependency or unresolved decision makes it `Blocked`;
-    - report the failure;
-    - do not repair it in validation mode.
+1. Run specific declared commands first.
+2. Record exact command, exit code, concise result, and relevant failure output.
+3. Run broader required checks.
+4. Perform and record manual checks.
+5. Evaluate every acceptance criterion as `passed`, `failed`, or `not evaluated`.
+6. Compare changed files and behavior with scope.
+7. Verify each required document update exists and accurately describes current behavior.
+8. Confirm items marked `None` did not become stale due to the actual diff.
+9. Identify limitations, deviations, unrelated failures, evidence gaps, and documentation gaps.
+10. Update completion evidence.
+11. When commands, manual checks, criteria, scope, and documentation impact all pass, set `Ready for review` and stop.
+12. On failure, leave `In progress` unless a genuine blocker applies, report it, and do not repair.
 
 ## Validation result rules
 
-A validation pass requires:
+A pass requires all required commands and manual checks, sufficient evidence for every criterion, resolved documentation impact, no knowingly stale governing source, no unexplained deviation, no hidden failure, and complete evidence.
 
-- all required commands to complete successfully;
-- all required manual checks to pass;
-- every acceptance criterion to have sufficient evidence;
-- no unexplained scope deviation;
-- no hidden or ignored failure;
-- completion evidence to be complete.
-
-Passing a subset of checks is not a declared validation pass.
-
-Passing mechanical checks does not prove that the implementation is acceptable in review.
+Passing a subset is not a pass. Mechanical passage does not prove review acceptability.
 
 ## Required outputs
 
-Provide:
-
-- exact validation commands;
-- exit codes;
-- result summaries;
-- manual-check results;
-- acceptance-criteria status;
-- validation gaps;
-- known limitations;
-- completed completion evidence;
-- resulting slice status.
+Provide commands, exit codes, results, manual checks, acceptance status, documentation-impact status, gaps, limitations, completed evidence, and resulting status.
 
 ## Failure and escalation behavior
 
-Stop and report when:
-
-- a declared command fails;
-- required evidence cannot be collected;
-- implementation does not match the slice;
-- acceptance criteria cannot be evaluated;
-- validation reveals a material scope or authority conflict;
-- the validation plan itself is insufficient.
-
-Do not silently add corrective code.
-
-A failed result requiring code changes must return through an explicit `implement-slice` handoff.
+Stop and report command failures, missing evidence, slice mismatch, unevaluable criteria, stale required documentation, authority conflicts, or an insufficient validation plan. Corrective code requires a separate implementation handoff.
 
 ## Completion conditions
 
-This skill succeeds when:
-
-- all formal validation passes;
-- completion evidence is complete;
-- every acceptance criterion is supported;
-- the slice is `Ready for review`;
-- no approval or Issue closure has been claimed.
-
-This skill completes with failure when:
-
-- failures are accurately recorded;
-- the slice remains `In progress` or becomes appropriately `Blocked`;
-- the next required decision or corrective action is explicit.
+Success requires passing validation, resolved documentation impact, complete evidence, supported criteria, status `Ready for review`, and no approval or closure claim. Failure completion requires accurate evidence and an explicit next action.

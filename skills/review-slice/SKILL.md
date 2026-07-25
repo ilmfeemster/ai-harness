@@ -2,171 +2,104 @@
 
 ## Purpose
 
-Independently evaluate whether the implemented and validated slice is correct, in scope, structurally compatible, meaningfully tested, and maintainable for the project's current maturity.
+Independently evaluate whether an implemented and validated slice is correct, in scope, compatible with authority, meaningfully tested, documented accurately, maintainable for current maturity, and supported by a sufficiently prepared slice.
 
-Review is distinct from validation and final human approval.
+Review is distinct from validation and final approval.
 
 ## When to use
 
-Use this skill when:
-
-- the active slice is `Ready for review`;
-- the source Issue, implementation diff, and validation evidence are available;
-- a code or implementation review has been requested.
-
-An explicitly requested partial or advisory review may occur earlier, but it must be labeled partial and may not advance lifecycle state.
+Use when status is `Ready for review`, the Issue, diff, and validation evidence are available, and review is requested. Earlier advisory review must be labeled partial and cannot advance state.
 
 ## Do not use when
 
-Do not use this skill to:
-
-- implement fixes;
-- rerun formal validation unless separately requested;
-- rewrite the Issue or slice silently;
-- set the slice to `Complete`;
-- close the source Issue;
-- authorize another work item.
+Do not implement fixes, silently rewrite artifacts, set `Complete`, close the Issue, or authorize another work item.
 
 ## Authority and boundaries
 
-Read and obey `AGENTS.md` before using this skill.
+Read and obey `AGENTS.md`.
 
-Review evaluates the result against:
-
-- the source Issue;
-- the approved slice;
-- current project scope;
-- architecture;
-- durable decisions;
-- approved design;
-- testing standards;
-- actual implementation evidence.
+Review evaluates against the Issue, approved slice, project scope, architecture, decisions, approved design, testing standards, and implementation evidence.
 
 Do not infer approval from passing tests.
-
-Do not omit findings merely because they require another implementation handoff.
 
 ## Required inputs
 
 - source Issue;
-- `docs/current-slice.md`;
+- current slice;
 - changed files and diff;
 - formal validation results;
 - completion evidence.
 
-For lifecycle review, the slice must normally be `Ready for review`.
-
 ## Required context
 
-Load:
+Load the Issue, slice, diff, validation evidence, relevant architecture, decisions, design, testing standards, and documents named in documentation impact.
 
-1. source Issue;
-2. current slice;
-3. implementation diff and changed files;
-4. formal validation evidence;
-5. relevant architecture;
-6. relevant durable decisions;
-7. linked approved design;
-8. relevant testing standards.
-
-Expand context only when a changed dependency, referenced behavior, or apparent contradiction requires it.
+Expand only for changed dependencies, referenced behavior, contradictions, or documentation currency.
 
 ## Review procedure
 
-1. Verify source Issue and slice traceability.
-2. Verify the slice is in the expected review state.
-3. Read the diff before relying on the implementation summary.
-4. Evaluate correctness against each acceptance criterion.
-5. Check for:
-   - out-of-scope changes;
-   - missing required behavior;
-   - unsupported shortcuts;
-   - hardcoding or bypasses;
-   - weakened tests;
-   - architecture violations;
-   - decision or design conflicts;
-   - unnecessary abstractions;
-   - unrelated cleanup;
-   - dependency changes without need;
-   - unhandled failure paths;
-   - misleading completion evidence.
-6. Evaluate test quality, not only test passage.
-7. Confirm formal validation covers the meaningful risk.
-8. Assess maintainability relative to current project maturity.
-9. Record findings first, ordered by severity.
-10. For each finding, include:
-    - severity;
-    - affected location;
-    - problem;
-    - consequence;
-    - required or recommended correction.
-11. Report acceptance-criteria status.
-12. Report open questions, assumptions, and validation gaps.
-13. Provide a concise change summary.
-14. State whether the result appears ready for human approval.
-15. Do not change completion state.
+1. Verify traceability and expected state.
+2. Verify slice-approval evidence.
+3. Read the diff before summaries.
+4. Evaluate each acceptance criterion.
+5. Reconcile implemented decision behavior with governing-rule provenance.
+6. Check for out-of-scope changes, missing behavior, shortcuts, hardcoding, weakened tests, authority conflicts, rule narrowing/broadening, interface drift, unnecessary abstractions, unrelated cleanup, unnecessary dependencies, unhandled failures, stale documents, and misleading evidence.
+7. Evaluate test quality and validation risk coverage.
+8. Assess maintainability for current maturity.
+9. Assess slice quality:
+   - decisions implementation had to invent;
+   - broad discovery beyond the slice;
+   - inaccurate assumptions;
+   - unnecessary instructions;
+   - missing interface or test detail.
+10. Record findings first by severity.
+11. Report acceptance status, questions, assumptions, validation/documentation gaps, change summary, slice-quality assessment, and readiness for human approval.
+12. Do not change state.
 
 ## Severity guidance
 
-Use severity according to consequence:
+- **Critical** — unsafe or fundamentally invalid.
+- **High** — incorrect required behavior, serious scope/authority conflict, or stale governing documentation that misdirects future work.
+- **Medium** — meaningful defect, edge case, weak evidence, interface drift, or maintainability issue.
+- **Low** — limited-risk improvement.
+- **Observation** — non-blocking context.
 
-- **Critical** — unsafe or fundamentally invalid result; approval must not proceed.
-- **High** — incorrect required behavior, serious scope violation, or major architectural conflict.
-- **Medium** — meaningful defect, missing edge case, weak evidence, or maintainability issue requiring correction.
-- **Low** — limited risk or improvement that does not normally block acceptance.
-- **Observation** — contextual note or non-blocking follow-up.
+Do not inflate style preferences.
 
-Do not inflate stylistic preferences into blocking findings.
+## Slice-quality assessment
+
+Use:
+
+```markdown
+## Slice-quality assessment
+
+- **Missing execution decisions:** None | ...
+- **Incorrect assumptions:** None | ...
+- **Unnecessary instructions:** None | ...
+- **Discovery required beyond the slice:** None | ...
+- **Recommended preparation improvement:** None | ...
+```
+
+A process concern blocks approval only when it caused or conceals a material result problem.
 
 ## Validation of the review
 
-Before completing, verify that:
-
-- findings are supported by repository evidence;
-- acceptance criteria were checked individually;
-- tests were assessed for meaning, not only status;
-- scope and authority were reviewed;
-- assumptions are explicit;
-- no code or lifecycle state was changed;
-- absence of findings is not represented as human approval.
+Verify findings are evidence-based, criteria were checked individually, tests were assessed meaningfully, scope/authority/rule provenance/interfaces/document currency were reviewed, assumptions are explicit, no code or state changed, and no-findings is not represented as approval.
 
 ## Required outputs
 
-Use this order:
-
-1. findings ordered by severity;
-2. acceptance-criteria status;
-3. open questions and assumptions;
-4. validation gaps;
+1. findings by severity;
+2. acceptance status;
+3. questions and assumptions;
+4. validation and documentation gaps;
 5. concise change summary;
-6. readiness for human approval.
-
-When no findings exist, say so explicitly and still report acceptance and validation status.
+6. slice-quality assessment;
+7. readiness for human approval.
 
 ## Failure and escalation behavior
 
-Stop or qualify the review when:
-
-- the source Issue is unavailable;
-- the slice cannot be traced to the Issue;
-- the diff is incomplete;
-- validation evidence is missing or unreliable;
-- a material authority conflict prevents evaluation.
-
-When changes are required:
-
-- identify them precisely;
-- do not implement them;
-- do not change the slice status automatically;
-- require a separate `implement-slice` handoff.
-
-If corrective work changes the approved outcome, the Issue and slice must return through revision and human reapproval.
+Qualify or stop when the Issue, traceability, diff, validation, governing sources, or authority consistency is inadequate. Required changes use a separate implementation handoff.
 
 ## Completion conditions
 
-This skill is complete when:
-
-- the implementation has been evaluated independently;
-- findings and acceptance status are explicit;
-- human-approval readiness is stated;
-- no implementation, Issue closure, or `Complete` transition has occurred.
+Complete when implementation is independently evaluated, findings and acceptance are explicit, documentation currency and slice quality are assessed, approval readiness is stated, and no implementation, closure, or completion transition occurred.

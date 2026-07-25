@@ -161,7 +161,7 @@ This preserves a stable project work queue without forcing Issues to carry agent
 - Issue and slice drift must be reviewed.
 - One work item is represented in two linked artifacts for different purposes.
 
-## 2026-07-19 - Reusable slice scaffold is separate from active slice state
+## 2026-07-19 — Reusable slice scaffold is separate from active slice state
 
 ### Decision
 
@@ -177,13 +177,13 @@ The harness needs a reusable slice schema, but copying the active harness slice 
 - The scaffold and active slice need separate validation rules.
 - The active slice can prove the workflow without becoming template content.
 
-## 2026-07-19 - Slice lifecycle uses explicit approval states
+## 2026-07-19 — Slice lifecycle uses explicit approval states
 
 ### Decision
 
 Use only these active-slice status values: `Draft`, `Approved`, `In progress`, `Blocked`, `Ready for review`, and `Complete`.
 
-Promotion creates a `Draft` slice. Human approval changes it to `Approved` and authorizes implementation. Completed implementation and validation change it to `Ready for review`. Human approval and Issue closure are required before `Complete`.
+Promotion creates a `Draft` slice. Human approval changes it to `Approved`; implementation still requires a separately explicit authorization. Completed implementation and validation change it to `Ready for review`. Human approval and Issue closure are required before `Complete`.
 
 ### Reason
 
@@ -191,6 +191,40 @@ Future workflow tooling and manual review need unambiguous lifecycle boundaries.
 
 ### Tradeoffs
 
-- Status changes remain manual in Phase 0.
+- Status changes remain explicit operations.
 - The slice records lifecycle state in addition to the Issue lifecycle.
-- Automation added later must preserve the approval boundaries rather than compressing them.
+- Automation added later must preserve approval boundaries rather than compressing them.
+
+## 2026-07-24 — Human approval decisions are recorded as workflow state
+
+### Decision
+
+Use a dedicated `approve-slice` operation to verify and record explicit human approval and change a slice from `Draft` to `Approved`.
+
+Slice approval and implementation authorization remain separate decisions.
+
+### Reason
+
+The human owns the approval judgment, but the repository needs one explicit procedure to make that decision inspectable and prevent an unowned lifecycle mutation.
+
+### Tradeoffs
+
+- The workflow gains one small handoff.
+- Approval evidence must be maintained.
+- An approved slice still cannot begin implementation without a separate request.
+
+## 2026-07-24 — Governing documentation must remain current
+
+### Decision
+
+Every implementation slice must assess documentation impact. Validation, review, and finalization must prevent completion when required governing-document updates remain unresolved.
+
+### Reason
+
+A document-driven architecture fails when implemented behavior knowingly diverges from the documents future agents treat as authority.
+
+### Tradeoffs
+
+- Some slices include documentation changes.
+- Review must distinguish meaningful drift from harmless wording differences.
+- Work items may need revision when required documentation changes were not authorized.

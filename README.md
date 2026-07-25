@@ -1,6 +1,6 @@
 # AI Development Harness
 
-An opinionated, document-driven starting point for AI-assisted software development.
+An opinionated, document-driven starting point for high-quality AI-assisted software development.
 
 This repository has two roles:
 
@@ -9,9 +9,11 @@ This repository has two roles:
 
 It is not a central controller for other repositories.
 
-## Core principle
+## Core objective
 
-Project intelligence lives primarily in durable project documents, not repeated prompts.
+Project intelligence lives primarily in durable documents, not repeated prompts.
+
+The harness progressively moves reasoning upstream, preserves it in inspectable artifacts, and makes downstream execution more deterministic without removing meaningful human control.
 
 ```text
 project scope
@@ -20,11 +22,11 @@ architecture, decisions, and design when needed
 ↓
 GitHub Issue
 ↓
-current-slice.md
+decision-complete current-slice.md
 ↓
 implementation
 ↓
-validation and review
+validation and independent review
 ↓
 human approval
 ```
@@ -33,18 +35,15 @@ Not every change requires every layer.
 
 ## Template reuse model
 
-The future project template is not a byte-for-byte copy of this repository's current context.
-
 ### Copied as reusable workflow
 
 - `AGENTS.md`;
 - `skills/`;
 - `.github/ISSUE_TEMPLATE/`;
-- `templates/` neutral document and active-slice scaffolds;
-- `scripts/validate.ps1` and `tests/validate-structure.ps1`;
-- reusable headings and schemas for project documents.
+- neutral scaffolds under `templates/`;
+- reusable workflow scripts and validators.
 
-### Created from scaffolds, then filled with project context
+### Created from scaffolds and filled with project context
 
 - `README.md`;
 - `docs/project.md`;
@@ -53,67 +52,71 @@ The future project template is not a byte-for-byte copy of this repository's cur
 - `docs/decisions.md`;
 - `docs/testing.md`;
 - `docs/design/`;
+- `docs/context-manifests/`;
 - `docs/current-slice.md`, which starts empty until a Ready Issue is promoted.
 
-The current contents of those files describe the AI Development Harness project. Their structures may inform a new project, but their harness-specific content must not be carried over.
-
-The authoritative document-responsibility and reuse matrix is in `AGENTS.md`.
+Current project contents must not be copied into unrelated projects.
 
 ## Current maturity
 
-**Harness Phase 0 — Usable document-driven workflow template**
+**Harness Phase 1 — Context and slice assistance, in progress**
 
-Phase 0 is intentionally human-orchestrated. GitHub Issues are the authoritative project work queue, while `docs/current-slice.md` remains the single approved execution package.
+The complete Phase 0 workflow remains usable and human-operated. Phase 1 is adding a local preparation path that can normalize one explicit Ready Issue, assemble bounded context, produce an inspectable manifest, and generate a guarded Draft slice.
+
+Implementation, validation, review, approval, and finalization remain separately invoked operations.
 
 ## Repository map
 
-- `AGENTS.md` — reusable workflow constitution, Issue contract, and document-responsibility model.
-- `skills/` — repeatable operation procedures, including `skills/start-project/SKILL.md`.
-- `.github/ISSUE_TEMPLATE/` — reusable Issue forms for implementation work and bugs.
-- `templates/` — neutral scaffolds for project-owned documents and active slices.
-- `scripts/validate.ps1` — local structural validation for the source repository or a clean initialized project.
-- `tests/validate-structure.ps1` — deterministic validator behavior tests.
-- `docs/project.md` — current AI Development Harness scope and active phase.
-- `docs/roadmap.md` — future harness maturity direction.
-- `docs/architecture.md` — current architecture of the harness product.
-- `docs/decisions.md` — durable harness decisions and tradeoffs.
-- `docs/testing.md` — harness-specific testing and confidence standards.
-- `docs/current-slice.md` — the single bounded harness work package approved for implementation, created as project-owned state rather than copied as reusable content.
-- `docs/design/` — detailed harness designs when needed.
+- `AGENTS.md` — reusable workflow constitution and authority model.
+- `skills/` — one procedure per authorized workflow operation.
+- `.github/ISSUE_TEMPLATE/` — reusable implementation and bug contracts.
+- `templates/` — neutral project-document and slice scaffolds.
+- `scripts/validate.ps1` — structural and lifecycle-consistency validation.
+- `tests/validate-structure.ps1` — deterministic validator tests.
+- `scripts/prepare-slice.ps1` — Phase 1 local preparation entry point under development.
+- `tests/prepare-slice.ps1` — deterministic preparation-tool tests.
+- `docs/project.md` — current product and Phase 1 state.
+- `docs/roadmap.md` — future maturity direction.
+- `docs/architecture.md` — current architecture and preserved boundaries.
+- `docs/decisions.md` — durable decisions.
+- `docs/testing.md` — confidence standards.
+- `docs/design/` — approved detailed designs.
+- `docs/issues/` — phase plans and retained Issue-draft traceability.
+- `docs/context-manifests/` — per-Issue preparation traceability when produced.
+- `docs/current-slice.md` — the one active execution package.
 
 ## Starting a new project
 
-Use `skills/start-project/SKILL.md` for the human-operated initialization procedure. It separates reusable workflow assets from project-owned documents, initializes clean scaffolds, installs the Issue forms, and creates an empty `docs/current-slice.md`.
-
-Before starting, provide the target path, project purpose and users, current goals and scope, non-goals, initial roadmap direction, architecture constraints, testing expectations, and GitHub repository identity when Issues will be used. Run the clean-target validator from the initialized repository:
+Use `skills/start-project/SKILL.md`. It separates reusable mechanics from project-owned context, initializes clean scaffolds, installs Issue forms, and creates an empty active slice.
 
 ```powershell
 powershell -NoProfile -File scripts/validate.ps1 -InitializedProject -CleanInitialization
 powershell -NoProfile -File tests/validate-structure.ps1
 ```
 
-Initialization does not copy this repository's project documents or Issues, overwrite an existing project, promote work, or begin implementation.
+Initialization does not copy this repository's project context, promote work, or begin implementation.
 
-## Phase 0 operating model
+## Current operating model
 
-1. Define or update current project scope in `docs/project.md`.
-2. Update architecture, decisions, or design only when the work requires them.
-3. Create project-specific work through the reusable GitHub Issue forms.
-4. Promote exactly one ready Issue into `docs/current-slice.md`.
-5. Review and approve the slice.
-6. Manually invoke an implementation agent.
-7. Run the slice validation commands.
-8. Review the result and decide whether to approve, repair, or revise.
-9. Close the Issue only after approval.
-10. Do not automatically begin the next Issue.
+1. Maintain project state in `docs/project.md`.
+2. Update architecture, decisions, or design only when required.
+3. Create bounded work through GitHub Issues.
+4. Prepare exactly one Ready Issue into a complete Draft slice.
+5. Review and explicitly approve the slice.
+6. Separately authorize implementation.
+7. Run formal validation.
+8. Review independently.
+9. Explicitly approve the completed result.
+10. Finalize and close the Issue.
+11. Do not automatically begin the next Issue.
 
-## Phase 0 non-goals
+## Current non-goals
 
-- Autonomous Issue selection.
-- Automatic implementation.
-- Automatic repair loops.
+- Automatic Issue selection.
+- Automatic implementation or repair.
 - Multi-agent coordination.
-- A central controller for other repositories.
+- Cross-repository control.
+- Hosted orchestration.
 - Generic abstractions not proven through use.
 
-The first integration testbed is `live-draft-tool-v2`.
+The first external integration testbed is `live-draft-tool-v2`.

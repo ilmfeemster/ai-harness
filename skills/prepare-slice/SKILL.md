@@ -2,280 +2,131 @@
 
 ## Purpose
 
-Translate one Ready GitHub Issue into one complete, bounded, reviewable, implementation-ready `docs/current-slice.md` execution package.
+Translate one Ready GitHub Issue into one complete, bounded, reviewable, implementation-ready `docs/current-slice.md`.
 
 Promotion adds implementation specificity. It does not change the approved outcome.
 
-The prepared slice must absorb the material planning and repository-interpretation work needed so that implementation can proceed without broad reinterpretation.
-
 ## When to use
 
-Use this skill when asked to:
-
-- promote a Ready Issue;
-- prepare the next current slice;
-- translate an Issue into file-level implementation steps;
-- draft `docs/current-slice.md` for human approval.
+Use to promote one Ready Issue, prepare the next slice, translate it into file-level steps, or draft the current slice for approval.
 
 ## Do not use when
 
-Do not use this skill when:
-
-- the source Issue is not Ready;
-- another unresolved slice already occupies `docs/current-slice.md`;
-- the work requires changing the Issue outcome before it can be executed;
-- implementation has already been authorized and the request is to edit code;
-- the request merely asks to create an Issue.
+Do not use when the Issue is not Ready, another unresolved slice exists, the outcome must change, implementation is already requested, or the request is only to create an Issue.
 
 ## Authority and boundaries
 
-Read and obey `AGENTS.md` before using this skill.
+Read and obey `AGENTS.md`.
 
-The source Issue governs the required outcome. The slice may specify how to produce that outcome but may not silently change:
+The Issue governs outcome. The slice may not silently change goal, scope, non-goals, acceptance criteria, project scope, architecture, decisions, approved design, or testing standards.
 
-- goal;
-- scope;
-- non-goals;
-- acceptance criteria;
-- project scope;
-- architecture;
-- durable decisions;
-- approved design;
-- project-wide testing standards.
+Preparation creates `Draft`. Only `approve-slice` may record approval.
 
-Promotion creates a `Draft` slice. Only explicit human approval may change it to `Approved`.
-
-Do not:
-
-- modify implementation code;
-- modify unrelated project documents;
-- create a second slice;
-- begin implementation;
-- close the Issue;
-- mark the Issue Active before the slice is approved;
-- delegate unresolved product, architecture, design, lifecycle, or policy interpretation to the implementation agent.
+Do not edit implementation, create a second slice, begin implementation, close the Issue, mark it Active before approval, or delegate unresolved product, architecture, design, lifecycle, or policy interpretation downstream.
 
 ## Required inputs
 
-- one Ready GitHub Issue;
-- its number, title, and URL;
-- its approved goal, scope, non-goals, and acceptance criteria.
+One Ready Issue with number, title, URL, goal, scope, non-goals, and acceptance criteria.
 
 ## Required context
 
-Load:
+Load the Issue, every selected approved design, `docs/project.md`, relevant architecture and decisions, and testing rules.
 
-1. the source Issue;
-2. its linked approved design, when one exists;
-3. `docs/project.md`;
-4. relevant portions of `docs/architecture.md`;
-5. relevant entries in `docs/decisions.md`;
-6. relevant rules from `docs/testing.md`.
+When existing behavior changes, inspect relevant code, tests, fixtures, and configuration. Identify the existing entry point, responsibilities, interfaces, outputs, test conventions, and implementation constraints.
 
-When the Issue modifies existing behavior, inspecting the relevant implementation, tests, fixtures, and configuration is mandatory. Do not prepare an implementation plan solely from the Issue and design when an existing implementation seam is available.
+Inspect the current slice before replacing it. Expand context only for plan accuracy, conflicts, documentation impact, or real dependencies.
 
-Inspect enough existing code to identify:
+## Governing-rule reconciliation
 
-- the current entry point or integration seam;
-- the files and responsibilities already present;
-- existing data structures, command interfaces, and output behavior;
-- the nearest tests and fixture conventions;
-- constraints that affect how the change must be implemented.
+For every material deterministic rule:
 
-Inspect the existing `docs/current-slice.md` before replacing or repurposing it.
+1. identify governing source and concern;
+2. state the slice interpretation;
+3. identify any difference;
+4. verify the interpretation does not narrow, broaden, or replace authority.
 
-Expand beyond this bounded context only when required to make the plan accurate, resolve a material contradiction, or understand a real dependency.
+Use:
+
+| Rule | Governing source | Slice interpretation | Difference |
+| --- | --- | --- | --- |
+
+Allowed differences are `None`, `Implementation refinement within authority`, or an unresolved conflict that blocks preparation.
+
+## Deterministic interface requirement
+
+When work changes a parser, command, generated document, manifest, schema, persisted record, or serialized output, specify internal inputs, external invocation, accepted syntax, normalization, validation, ordering, duplicate handling, output schema, empty-state rendering, overwrite/idempotency, side effects, and sanitized failures.
+
+## Documentation-impact assessment
+
+For README, project, architecture, decisions, design, testing, and operator guidance, record `None`, `Update required in this slice`, or `Requires upstream Issue revision`.
 
 ## Procedure
 
-1. Verify the Issue satisfies every readiness requirement.
-2. Inspect the existing current slice.
-3. Stop when it contains another unresolved work item in any of these states:
-   - `Draft`;
-   - `Approved`;
-   - `In progress`;
-   - `Blocked`;
-   - `Ready for review`.
-4. Confirm that the Issue fits one independently reviewable slice.
-5. Copy the source traceability:
-   - Issue number;
-   - Issue title;
-   - Issue URL.
-6. Preserve the Issue's:
-   - context;
-   - goal;
-   - scope;
-   - non-goals;
-   - acceptance criteria.
-7. Identify the existing implementation seam by inspecting the relevant code, tests, fixtures, and configuration.
-8. Translate the approved outcome into a decision-complete implementation plan. Resolve every material execution choice supported by the governing documents and existing repository structure.
-9. Include, when applicable:
-   - the existing integration point;
-   - ordered file-level changes;
-   - proposed component, function, script, or module responsibilities;
-   - relevant input and output contracts;
-   - deterministic decision rules;
-   - warning, blocker, and error-handling behavior;
-   - persistence, overwrite, idempotency, or side-effect rules;
-   - fixtures and assertions for every material behavior branch;
-   - acceptance-criterion-to-validation mapping;
-   - explicitly marked assumptions;
-   - unresolved questions that require human judgment.
-10. Do not merely restate the Issue or approved design as implementation steps. Convert governing requirements into executable repository changes.
-11. When a material implementation decision cannot be resolved from authority and existing behavior:
-    - do not invent it;
-    - record the decision as a blocker;
-    - return to the relevant planning or work-item operation when needed.
-12. Include all required slice sections, even when later-stage evidence is marked pending.
-13. Include optional sections when they add operational value, especially an existing implementation seam, decision table, file-by-file plan, or acceptance mapping.
-14. Check that expected files and steps do not include unrelated cleanup.
-15. Check that the validation plan is sufficient to evaluate every acceptance criterion and material decision branch.
-16. Set status to `Draft`.
-17. Present or write the complete slice when authorized.
-18. Stop for human approval.
+1. Verify readiness.
+2. Inspect the current slice and stop on any unresolved state.
+3. Confirm one independently reviewable outcome.
+4. Preserve source traceability and Issue sections.
+5. Load and reconcile governing rules.
+6. Identify the existing implementation seam.
+7. Produce a decision-complete implementation plan.
+8. Include applicable integration points, file changes, responsibilities, interfaces, decision and failure rules, side effects, fixtures, tests, acceptance mapping, assumptions, and blockers.
+9. Define deterministic interfaces when applicable.
+10. Assess documentation impact.
+11. Do not restate design as broad steps; translate it into executable repository changes.
+12. Block instead of inventing a material decision.
+13. Include all required sections.
+14. Check for unrelated cleanup and incomplete validation.
+15. Set `Draft`, write or present the complete slice when authorized, and stop for approval.
 
 ## Implementation-plan requirements
 
-The implementation plan must be specific enough that an implementation agent can work primarily by following the slice and inspecting only the files named or clearly required by it.
+For each material step state where it belongs, what existing behavior it extends, responsibility, inputs, outputs, side effects, branches, failures, tests, and required document updates.
 
-For each material step, specify as applicable:
-
-- where the change belongs;
-- what existing behavior or structure it extends;
-- what responsibility is added or changed;
-- what inputs it consumes;
-- what outputs or side effects it produces;
-- what decision branches it must implement;
-- how failures are surfaced;
-- which tests demonstrate the step is correct.
-
-Use function or component names when they are already established or when naming a proposed responsibility materially reduces ambiguity. Proposed names are instructions, not new architecture, unless the governing design requires them.
-
-Do not require the implementation agent to rediscover:
-
-- the governing design algorithm;
-- warning-versus-blocker classification;
-- lifecycle ownership;
-- repository boundaries;
-- acceptance coverage;
-- the intended integration seam;
-- fixture scenarios already knowable during preparation.
+Do not require implementation to rediscover design algorithms, warning/blocker classifications, lifecycle, repository boundaries, rule provenance, acceptance coverage, interface contracts, fixture scenarios, or documentation impact.
 
 ## Required slice sections
 
-The prepared slice must contain:
-
-- work-item title;
+- title;
 - status;
-- source Issue number, title, and URL;
+- source Issue;
 - context;
 - goal;
 - scope;
 - non-goals;
 - acceptance criteria;
+- governing-rule reconciliation;
 - implementation plan;
 - expected files;
+- documentation impact;
 - validation plan;
 - failure conditions;
 - review checklist;
+- approval evidence;
 - completion evidence.
-
-Before implementation, completion evidence may state that evidence is pending.
 
 ## Optional sections
 
-Add when useful:
-
-- dependencies and assumptions;
-- relevant project documents;
-- linked design documents;
-- implementation constraints;
-- existing implementation seam;
-- component or responsibility map;
-- deterministic decision table;
-- file-by-file change plan;
-- acceptance-criterion mapping;
-- implementation adjustments;
-- blockers and known limitations;
-- rollback or migration notes.
-
-Do not duplicate large portions of upstream documents. Summarize or translate the governing rule and cite its source path.
+Dependencies, relevant documents, constraints, existing seam, component map, decision table, interface contracts, file plan, acceptance mapping, adjustments, blockers, rollback, or migration notes.
 
 ## Validation
 
-Before presenting the slice, verify that:
-
-- the Issue remains unchanged in meaning;
-- every acceptance criterion is represented;
-- every implementation step belongs to the Issue scope;
-- expected files are accurate, plausible, and bounded;
-- validation commands are concrete;
-- failure conditions explain when work must stop;
-- review checks include scope, architecture, testing, and unsupported shortcuts;
-- no unresolved scaffold placeholder remains except explicitly pending lifecycle evidence;
-- status is `Draft`.
+Verify Issue meaning is preserved, acceptance is covered, rules are reconciled, steps are in scope, expected files are bounded, interfaces are specified, documentation impact is explicit, commands are concrete, failure and review checks are meaningful, placeholders are resolved except pending lifecycle evidence, and status is `Draft`.
 
 ### Executability gate
 
-The slice is incomplete unless an implementation agent can:
+The implementation agent must be able to identify the integration point, file responsibilities, governing branches, inputs/outputs/order/side effects/failures, tests, documentation updates, acceptance coverage, and completion condition.
 
-- identify the existing integration point;
-- identify where each material step belongs;
-- implement each decision branch without inventing policy;
-- determine expected inputs, outputs, side effects, and failure behavior;
-- create the required tests without designing the test matrix from scratch;
-- map the implementation and validation back to every acceptance criterion;
-- determine when in-scope implementation is complete.
-
-Fail this gate when implementation would still require:
-
-- broad repository discovery;
-- material design interpretation;
-- invention of warning, blocker, lifecycle, or policy rules;
-- choosing among materially different architectures;
-- guessing which files or test scenarios are intended;
-- filling a known semantic gap during implementation.
-
-Minor local coding choices may remain open when they do not affect the approved outcome, architecture, decision rules, validation behavior, or reviewability.
+Fail when broad discovery, material design interpretation, policy invention, architecture choice, interface guessing, test-matrix invention, or semantic gap filling remains.
 
 ## Required outputs
 
-Provide:
-
-- complete `docs/current-slice.md`;
-- source Issue traceability;
-- readiness verification result;
-- the existing implementation seam inspected;
-- any assumptions used to add execution detail;
-- any unresolved decision classified as a blocker;
-- an explicit statement that implementation is not yet authorized.
+Provide the complete Draft slice, traceability, readiness result, inspected seam, rule reconciliation, interface contracts when applicable, documentation impact, assumptions, blockers, and explicit notice that approval and implementation are not authorized.
 
 ## Failure and escalation behavior
 
-Stop when:
-
-- the Issue is not Ready;
-- the Issue outcome is not singular;
-- an unresolved dependency or authority conflict exists;
-- the work cannot fit one slice;
-- another current slice is unresolved;
-- the slice would have to change the Issue instead of refining execution;
-- validation cannot be specified meaningfully;
-- the existing implementation cannot be inspected sufficiently to produce an accurate plan;
-- a material execution decision would have to be invented;
-- the resulting plan would still require broad reinterpretation.
-
-When the Issue requires a material correction, return to `create-work-item` or the relevant planning operation. Do not repair the Issue silently inside the slice.
+Stop when readiness, boundedness, authority, dependencies, validation, implementation inspection, interfaces, documentation authorization, or executability are inadequate. Return to the relevant upstream operation rather than repairing the Issue silently.
 
 ## Completion conditions
 
-This skill is complete when:
+Complete when one traceable, decision-complete `Draft` exists with explicit rule provenance, interfaces when applicable, documentation impact, bounded tests and validation, and no implementation begun.
 
-- one complete slice exists with status `Draft`;
-- it is traceable to one Ready Issue;
-- it identifies the existing implementation seam when modifying existing behavior;
-- it is executable without broad reinterpretation;
-- no material implementation choice is left unresolved merely because it could be discovered during implementation;
-- its test and validation expectations cover the acceptance criteria and material behavior branches;
-- it awaits explicit human approval;
-- no implementation has begun.

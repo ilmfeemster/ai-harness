@@ -1,208 +1,136 @@
 # Testing and Validation
 
-> **Project-context document:** This file defines confidence standards for the AI Development Harness project. A future project may reuse its structure and general concepts, but must specialize the actual commands, test levels, and acceptance standards for that project.
+> **Project-context document:** This file defines confidence standards for the current project. Future projects may reuse its structure but must specialize commands and evidence requirements.
 
 ## Goal
 
-Define the confidence required before harness work is considered complete.
+Define the confidence required before harness work is complete.
 
-This document separates:
+This document separates structural validation, behavioral testing, workflow validation, documentation-currency checks, independent review, and future automated evaluation.
 
-- structural validation;
-- behavioral testing;
-- workflow validation;
-- human review;
-- future automated evaluation.
-
-Slice-specific commands and results belong in `docs/current-slice.md`. This document owns project-wide standards.
+Slice-specific commands and results belong in `docs/current-slice.md`.
 
 ## Testing philosophy
 
-Prioritize confidence and correctness over test count.
+Prioritize confidence and correctness over test count. Prefer checks that detect meaningful workflow failure. Mechanical validation must not claim semantic judgment.
 
-Prefer checks that detect meaningful workflow failure rather than proving that files merely exist.
+## Current validation priorities
 
-Testing depth should increase with harness maturity.
+The retained Phase 0 workflow must prove:
 
-## Phase 0 validation priorities
+- reusable assets remain separate from project context;
+- clean initialization does not inherit source state;
+- required project documents and workflow skills exist;
+- Issue forms preserve readiness;
+- one Ready Issue becomes one bounded slice;
+- Issue outcome and execution remain aligned;
+- validation and review remain separate.
 
-Phase 0 should prove that:
+Phase 1 must additionally prove:
 
-- reusable workflow assets are distinguishable from project-context documents;
-- a new project can be initialized without inheriting harness-specific context;
-- neutral document scaffolds remain free of source-project state;
-- a fresh initialized project starts with an empty active slice;
-- required project documents exist;
-- reusable Issue forms exist and require the readiness contract;
-- submitted Issues remain project-specific work state;
-- one ready Issue can be promoted into a bounded slice;
-- Issue outcome and slice execution detail remain aligned;
-- the slice contains all required sections;
-- declared validation commands are usable;
-- implementation completion is reviewable;
-- the workflow can be exercised on a real project.
+- supported Issue forms normalize deterministically;
+- incomplete or unknown forms fail clearly;
+- bounded discovery excludes unrelated content;
+- selected designs follow approved rules;
+- Draft and ambiguous designs do not silently govern;
+- context manifests are deterministic, safe, and isolated per Issue;
+- generated Drafts preserve source Issue sections;
+- material rules are traceable to authority;
+- parser and generated-artifact interfaces are deterministic;
+- unresolved active slices are never replaced;
+- Draft approval is separate from implementation authorization;
+- lifecycle status and evidence cannot contradict;
+- documentation impact is resolved before review readiness and completion.
 
 ## Validation versus review
 
 ### Validation
 
-Mechanical evidence such as:
+Mechanical or observable evidence:
 
-- required files and sections;
-- valid Issue-form YAML structure;
-- no unresolved placeholders;
+- required files, sections, and complete skill inventory;
+- valid Issue-form YAML;
+- no placeholders;
 - parseable configuration;
+- deterministic parser and manifest fixtures;
 - command exit codes;
-- automated test results;
-- formatting checks.
+- automated tests;
+- lifecycle/evidence consistency;
+- required document changes present.
 
 ### Review
 
-Judgment about whether:
+Judgment about Issue satisfaction, readiness, rule provenance, bounded scope, architecture, decisions, design, documentation currency, test meaning, unsupported shortcuts, maintainability, and whether the slice moved reasoning upstream.
 
-- the source Issue is actually satisfied;
-- the Issue was ready before promotion;
-- the slice preserves the Issue outcome;
-- scope remained bounded;
-- architecture and decisions were preserved;
-- tests are meaningful;
-- the implementation used unsupported shortcuts;
-- the result is maintainable for the current maturity.
+Passing validation does not imply approval.
 
-Passing validation does not automatically imply approval.
-
-### Local structural validation
-
-The Phase 0 structural validator is a local, deterministic check. Run it from the repository root:
+## Local structural validation
 
 ```powershell
 powershell -NoProfile -File scripts/validate.ps1
 ```
 
-It checks required repository paths, active-slice sections and traceability when the active slice is non-empty, Issue-template fields, neutral scaffold headings, unresolved scaffold placeholders, practical local references, declared validation commands, and obvious harness-specific state in reusable assets. For a newly initialized project, run it with `-InitializedProject -CleanInitialization` to check project-owned document leakage and the empty active slice. Failures must identify the failed check and its actionable cause.
+It checks required paths and skills, active-slice headings and traceability, lifecycle states, approval evidence, status/evidence consistency, Issue-template fields, neutral scaffolds, placeholders, local references, reusable-asset leakage, and clean-initialization leakage.
 
-The validator does not assess semantic implementation quality, invoke models, perform repair, or replace human review. Its deterministic behavior is tested separately:
+For a clean initialized project:
+
+```powershell
+powershell -NoProfile -File scripts/validate.ps1 -InitializedProject -CleanInitialization
+```
+
+Validator behavior:
 
 ```powershell
 powershell -NoProfile -File tests/validate-structure.ps1
 ```
 
-Both commands are local and replaceable. A passing command provides mechanical evidence only; the active slice still requires validation evidence, independent review where appropriate, and explicit human approval.
+These are mechanical checks only.
 
 ## Project-wide standards versus slice checks
 
-`docs/testing.md` defines the level and type of evidence the project generally requires.
+This document owns general evidence standards. The active slice declares exact commands, manual checks, acceptance mapping, interface branches, and documentation impact for one work item.
 
-`docs/current-slice.md` identifies the exact commands, manual checks, and acceptance criteria required for one work item.
+A slice may add stricter checks but may not weaken project-wide standards.
 
-A slice may add stricter checks. It may not weaken project-wide standards merely to pass.
-
-## Phase 0 test levels
+## Test levels
 
 ### Structural tests
 
-Validate the harness and generated project structure:
-
-- required files exist;
-- required headings exist;
-- referenced paths are valid where practical;
-- reusable assets do not contain harness-only project state;
-- project-context scaffolds can be initialized without carrying source-project content;
-- clean initialized project documents do not contain source-project names, URLs, phases, or active state;
-- both reusable Issue forms exist;
-- blank Issues are disabled so work uses the defined contract;
-- Issue forms contain outcome, scope, non-goal, acceptance, dependency, document, and readiness fields;
-- readiness boxes can remain unchecked for draft backlog Issues;
-- a non-empty `current-slice.md` includes a source Issue and validation commands;
-- a fresh initialized `current-slice.md` is empty until Issue promotion;
-- approved slices contain no unresolved template markers;
-- active slices use only valid status values: `Draft`, `Approved`, `In progress`, `Blocked`, `Ready for review`, or `Complete`;
-- promoted active slices include the source Issue number, title, and URL;
-- reusable slice scaffolds contain every required active-slice heading;
-- reusable slice scaffolds contain no source-project active state such as project phase, Issue URL, validation result, or completion claim.
-
-Slice structural checks should confirm these required headings in the reusable scaffold and in active slices:
-
-- work-item title;
-- `## Status`;
-- `## Source Issue`;
-- `## Context`;
-- `## Goal`;
-- `## Scope`;
-- `## Non-goals`;
-- `## Acceptance criteria`;
-- `## Implementation plan`;
-- `## Expected files`;
-- `## Validation plan`;
-- `## Failure conditions`;
-- `## Review checklist`;
-- `## Completion evidence`.
+Required paths and skills, neutral assets, project isolation, slice schema, Issue traceability, lifecycle/evidence consistency, approval evidence, placeholders, and practical local references.
 
 ### Unit tests
 
-When local scripts are added, test deterministic parsing and validation behavior.
+Deterministic parsing, classification, rendering, normalization, ordering, validation, and failures.
 
 ### Integration tests
 
-Exercise complete local commands against fixture repositories or temporary directories.
+Complete local commands against fixtures or temporary repositories.
+
+Phase 1 integration tests cover normalized Issue input to manifest, deterministic rendering and overwrite isolation, guarded Draft generation, no GitHub writes, and no active-slice replacement on blockers.
 
 ### Workflow tests
-
-Run a real work item through:
 
 ```text
 GitHub Issue
 → readiness review
-→ current-slice.md
+→ Draft slice
+→ explicit slice approval
+→ separate implementation authorization
 → implementation
 → validation
 → review
-→ approval
+→ final approval
 → Issue closure
 ```
 
-The fantasy-football repository is the first testbed.
-
 ### Manual QA
 
-Confirm that:
-
-- document loading is understandable;
-- reusable workflow rules and project context are not mixed;
-- a new project can be initialized from neutral scaffolds without copying source context;
-- the initial active slice is empty and safe until a Ready Issue is promoted;
-- Issue forms are useful without excessive ceremony;
-- labels are not required to infer readiness;
-- the slice is appropriately bounded;
-- implementation can proceed without repeated clarification;
-- completion output is easy to review;
-- the workflow does not create unnecessary overhead.
+Confirm understandable context loading, separated mechanics/context, explainable selection, sufficiently specific execution detail, clear approvals, current documentation, reviewable completion, and justified overhead.
 
 ## Acceptance standard
 
-A harness slice is not complete until:
-
-- its acceptance criteria are met;
-- relevant automated checks pass;
-- manual workflow validation is completed when appropriate;
-- no test was weakened merely to pass;
-- completion notes accurately describe the result;
-- human review approves the outcome.
-
-The source Issue is closed only after this standard is met.
+A slice is not complete until criteria are met, automated and manual checks pass, tests were not weakened, documentation impact is resolved, evidence is accurate, independent review has no blocker, a human explicitly approves the completed result, and finalization closes the Issue.
 
 ## Future evaluation
 
-Independent automated evaluation is planned for Phase 3.
-
-It should compare:
-
-- source Issue;
-- approved slice;
-- relevant project documents;
-- implementation diff;
-- changed tests;
-- validation results;
-- implementation report.
-
-Phase 0 should not pretend that mechanical tests already provide this evaluation layer.
+Later independent evaluation should compare Issue, approved slice, governing documents, implementation diff, changed tests and documents, validation results, and implementation report. Current mechanical tests must not pretend to provide semantic evaluation.

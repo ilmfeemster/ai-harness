@@ -1,6 +1,6 @@
 # Project
 
-> **Project-context document:** This file describes the current AI Development Harness product and phase. A future project may reuse the scaffold, but must replace this content with its own scope and state.
+> **Project-context document:** This file describes the current product and phase. A future project may reuse the scaffold but must replace this content.
 
 ## Product
 
@@ -12,104 +12,113 @@ AI Development Harness
 
 ## Vision
 
-Create a reusable project starting point that helps produce consistently high-quality AI-assisted software development through durable documentation, bounded execution packages, deterministic validation, and explicit human approval.
+Create a reusable project starting point that consistently produces high-quality AI-assisted software development through durable documentation, bounded execution packages, deterministic validation, independent review, and explicit human approval.
 
 The long-term workflow is:
 
 ```text
 Select a work item
-→
-load the correct documentation
-→
-generate a bounded execution package
-→
-produce implementation output
-→
-validate and evaluate
-→
-repair if necessary
-→
-present a near-complete result for approval
+→ load the correct documentation
+→ generate a bounded execution package
+→ produce implementation output
+→ validate and evaluate
+→ repair if necessary
+→ present a near-complete result for approval
 ```
 
 The objective is quality and leverage, not autonomy for its own sake.
 
+A central design principle is to resolve expensive reasoning upstream, preserve it in inspectable artifacts, and reduce rediscovery during implementation.
+
 ## Current Phase 1 goal
 
-Enable a Ready GitHub Issue to become a high-quality `docs/current-slice.md` with little repetitive prompting, reducing manual orchestration and preparing future controlled execution loops.
+Enable one explicitly selected Ready GitHub Issue to become a high-quality `docs/current-slice.md` with little repetitive prompting while preserving manual approval and implementation boundaries.
 
-Phase 1 should assist the human-operated workflow by assembling the relevant project context, identifying missing information, and producing a structurally and scope-checked slice draft. Implementation remains a separately invoked manual operation.
+Phase 1 normalizes the Issue contract, assembles relevant project context, identifies missing information, writes an inspectable context manifest, and produces a structurally and scope-checked Draft slice.
+
+Implementation remains separately authorized.
 
 ## Target user
 
-Initially, the template is optimized for the repository owner's workflow as a solo developer using AI planning and implementation agents.
-
-It is not yet intended to be a universal development framework.
+Initially optimized for the repository owner's solo workflow using AI planning and implementation agents. It is not yet a universal framework.
 
 ## Phase 1 scope
 
 - Local document discovery.
-- Parsing the reusable GitHub Issue forms into an execution-ready work-item contract.
-- Context manifests that make selected and missing context inspectable.
-- Selection of relevant approved design documents.
-- Drafting `docs/current-slice.md` from a Ready Issue and assembled context.
-- Structural and scope checks for the proposed slice.
+- Parsing supported Issue forms into a normalized work-item contract.
+- Context manifests recording selected, excluded, missing, warning, and blocker information.
+- Explainable selection of relevant approved designs.
+- Drafting `docs/current-slice.md` from one Ready Issue and assembled context.
+- Structural, traceability, lifecycle-consistency, and bounded scope checks.
 - Missing-information warnings.
-- Explicit human approval before a drafted slice becomes executable.
+- Explicit human approval before a Draft becomes executable.
 
 ## Phase 1 non-goals
 
-- Automatic issue selection.
-- Automatic implementation or automatic model invocation for implementation.
-- Automatic repair.
+- Automatic Issue selection.
+- Automatic implementation or repair.
 - Automatic commits or pull requests.
 - Multi-agent coordination.
 - Cross-repository control.
-- A hosted service or dashboard.
+- Hosted service or dashboard.
 - Generic plugin architecture.
-- Changing GitHub Issues as the authoritative work queue or `docs/current-slice.md` as the active execution package.
-- Replacing the required human approval for a Draft slice.
+- Replacing Issues as the work queue or the slice as the execution package.
+- Removing human approval.
+- Automatically advancing to later work.
 
 ## Product principles
 
 1. Intelligence lives in project documents.
-2. Reusable workflow mechanics remain separate from project context.
+2. Reusable mechanics remain separate from project context.
 3. Each project remains self-contained.
-4. Human approval remains explicit.
-5. Work is executed in small, bounded slices.
-6. Validation and review are separate concepts.
-7. Reusable mechanics are extracted only after proven repetition.
-8. Every phase must leave the harness usable.
+4. Human approval remains explicit and inspectable.
+5. Work is executed in bounded slices.
+6. Reasoning is resolved by the stage that owns it.
+7. Validation and review are separate.
+8. Governing documents remain current with behavior.
+9. Reusable mechanics are extracted only after proven repetition.
+10. Every phase leaves the harness usable.
 
 ## Current Phase 1 exit criteria
 
 Phase 1 is complete when:
 
-- a Ready GitHub Issue can be interpreted into a complete, inspectable work-item contract;
-- relevant local project documents and approved designs can be discovered and recorded in a context manifest;
-- the harness can produce a Draft `docs/current-slice.md` that preserves the source Issue's outcome, scope, non-goals, and acceptance criteria;
-- structural and scope checks identify invalid drafts and missing information before approval;
-- a human can review and explicitly approve a proposed slice before implementation begins;
-- the existing manual implementation, validation, review, approval, and finalization boundaries remain intact.
+- a Ready Issue becomes a complete normalized contract;
+- relevant local documents and approved designs are recorded in a context manifest;
+- a complete Draft slice preserves Issue outcome, scope, non-goals, and criteria;
+- generated deterministic rules remain traceable to authority;
+- structural and scope checks detect invalid drafts, lifecycle contradictions, and missing information;
+- a human explicitly approves a proposed slice before separately authorizing implementation;
+- implementation, validation, review, final approval, and finalization remain distinct;
+- one representative end-to-end preparation path is exercised.
 
 ## Phase 1 constraints and preserved behavior
 
-- The Phase 0 document-driven workflow remains usable throughout Phase 1.
-- GitHub Issues remain the authoritative work queue; local retained drafts remain traceability only.
-- `docs/current-slice.md` remains the single bounded execution package, and at most one active implementation effort is allowed.
-- All project intelligence remains local to the project repository.
-- Deterministic structural validation and human review remain distinct from semantic judgment and approval.
+- The complete Phase 0 workflow remains usable.
+- GitHub Issues remain authoritative.
+- Local Issue drafts remain traceability only.
+- One current slice and one implementation effort remain active.
+- Project intelligence remains local.
+- Mechanical validation remains distinct from semantic judgment.
+- Phase 1 does not write GitHub state, approve, or start implementation.
+- Reusable assets remain project-neutral.
 
 ## Phase 1 dependencies and open questions
 
-- Phase 0 is complete, as confirmed by the user on 2026-07-20.
-- The approved Phase 1 design must determine the local interfaces and data contracts for Issue parsing, document discovery, manifests, design selection, draft generation, and warnings.
-- The design must specify how tooling reads GitHub Issue information while preserving the existing authority and approval boundaries.
+- Phase 0 is complete, confirmed on 2026-07-20.
+- The Phase 1 design is approved at `docs/design/phase-1-context-and-slice-assistance.md`.
+- Phase 1 Issue planning is published.
+- Issue #8, normalized Issue parsing, is complete.
+- Issue #9, context-manifest assembly, is the active Draft slice.
+- Issue #10 owns guarded Draft-slice generation.
+- Issue #11 owns the coherent manual end-to-end preparation workflow.
+- Ambiguous active-phase design applicability must be surfaced rather than guessed.
 
 ## Phase preparation
 
 - **Design requirement:** Required
-- **Design basis:** Phase 1 introduces shared contracts and workflow behavior for Issue parsing, context manifests, design selection, slice drafting, and structural and scope warnings. These must be decided consistently before Phase work can be divided into independent Issues.
+- **Design basis:** Shared contracts are required for Issue parsing, context manifests, design selection, Draft generation, warnings, blockers, and scope checks.
 - **Expected design:** `docs/design/phase-1-context-and-slice-assistance.md`
+- **Design status:** Approved
 - **Issue planning:** Published
 - **GitHub publication:** Complete

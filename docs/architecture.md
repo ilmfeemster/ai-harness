@@ -1,197 +1,165 @@
 # Architecture
 
-> **Project-context document:** This file describes the architecture of the AI Development Harness project. A future project may reuse its headings or scaffold, but must replace the harness-specific content. Reusable workflow governance and document responsibilities live in `AGENTS.md`.
+> **Project-context document:** This file describes the current architecture. Future projects may reuse its scaffold but must replace this content. Reusable governance belongs in `AGENTS.md`.
 
 ## Current architecture stage
 
-Phase 0 is a document-first project template with lightweight local tooling.
+Phase 1 is in progress.
 
-The harness must remain usable without a hosted service, central controller, database, or autonomous agent system.
+The complete Phase 0 document-first workflow remains usable. Phase 1 is adding one project-local foreground preparation tool and deterministic data formats around Issue normalization, bounded context manifests, and guarded Draft-slice generation.
+
+The harness remains usable without a hosted service, central controller, database, background worker, or autonomous agent system.
 
 ## Core boundary
 
-Each project created from the harness is self-contained.
+Each project is self-contained.
 
 ```text
 project repository
 ├── reusable workflow assets
-├── project-owned documents
+├── project-owned governing documents
 ├── project-specific GitHub Issues
-├── active execution package
+├── optional context manifests
+├── one active execution package
 ├── source code
 ├── tests
-└── validation history
+└── validation and review evidence
 ```
 
-The harness repository is the source and test project for the template. It is not a runtime control plane for other repositories.
+The source repository is the design and test project for the template, not a runtime control plane.
 
 ## Template composition
 
-The template has two distinct output categories.
-
 ### Reusable workflow assets
 
-These encode workflow mechanics rather than product knowledge:
+- `AGENTS.md`;
+- `skills/`;
+- Issue forms;
+- neutral templates;
+- structural validators;
+- proven local workflow mechanics.
 
-- the default `AGENTS.md` constitution;
-- `skills/`, including the human-operated project-start procedure;
-- `.github/ISSUE_TEMPLATE/` Issue forms;
-- `templates/`, neutral scaffolds for project-owned documents and active slices;
-- `scripts/validate.ps1`, the local structural-validation entry point;
-- `tests/validate-structure.ps1`, deterministic tests for validator behavior;
-- reusable schemas or starter headings.
+### Project-owned intelligence and state
 
-These assets should remain project-neutral unless a project intentionally changes its workflow.
+- README;
+- project and roadmap;
+- architecture and decisions;
+- designs and testing strategy;
+- Issues and context manifests;
+- active slice;
+- code and tests.
 
-The Issue forms define a reusable contract. They do not contain a project's backlog. Submitted Issues remain project-owned state.
+Current harness contents are not reusable project content.
 
-### Initialized project-owned documents
+## Current slice and approval model
 
-These are created from scaffolds but populated with the new project's intelligence and state:
+```text
+Ready Issue
+↓
+complete Draft slice
+↓
+explicit human approval recorded
+↓
+Approved slice
+↓
+separate implementation authorization
+↓
+In progress
+```
 
-- project README;
-- current project scope;
-- project roadmap;
-- project architecture;
-- durable project decisions;
-- detailed designs;
-- project testing strategy;
-- GitHub Issue contents;
-- active slice, initialized empty until a Ready Issue is promoted;
-- source code and tests.
+Approval recording changes lifecycle state but does not implement or change GitHub state.
 
-The current harness contents of these sources are development context, not reusable project content.
+## Phase 1 preparation model
 
-The reusable slice scaffold and `docs/current-slice.md` must never be treated as the same substantive content. The scaffold defines neutral structure; the active slice records one project's selected Issue, execution plan, validation evidence, and lifecycle state.
+```text
+explicit Issue number
+↓
+read-only Issue snapshot
+↓
+normalized contract
+↓
+bounded local authority discovery
+↓
+per-Issue context manifest
+↓
+guarded Draft current slice
+↓
+human review
+```
 
-## Source-repository dual role
+The path does not select work, write GitHub state, approve, invoke implementation, or control another repository.
 
-This repository uses the same document paths that future projects will use because the harness must prove its own workflow through real development.
+## Authority and rule translation
 
-That does not mean project creation should copy all files verbatim.
+Authority is determined by concern.
 
-A future project-start process must:
+A slice may translate authority into execution rules, but each material deterministic rule remains traceable to its source. Implementation refinements cannot narrow or broaden approved behavior.
 
-1. follow `skills/start-project/SKILL.md` and confirm the target is new or empty;
-2. copy reusable workflow assets;
-3. create project-document paths from neutral scaffolds;
-4. remove source-project content and operational state;
-5. initialize those documents with the new project's context;
-6. initialize the reusable Issue forms in the new GitHub repository;
-7. create an empty active-slice path until a Ready Issue is promoted;
-8. preserve project self-containment.
+Parsers, commands, manifests, generated documents, and serialized artifacts require explicit deterministic contracts before implementation.
 
-The exact initialization procedure belongs in `skills/start-project/SKILL.md`. This architecture defines the boundary that procedure must preserve.
+## Documentation currency
 
-## GitHub work-item model
+Project documents are architecture inputs, not commentary.
 
-GitHub Issues are the project-owned work queue. The reusable Issue forms require enough information to determine whether one outcome is ready for promotion.
-
-Workflow state is deliberately not encoded in custom labels during Phase 0:
-
-- readiness is established by the Issue contract;
-- active work is identified by `docs/current-slice.md`;
-- completion is represented by human approval followed by Issue closure;
-- labels may classify work but are not authoritative state.
-
-This avoids coupling the reusable template to a repository-specific label inventory.
+Every slice assesses impact on project state, architecture, decisions, design, testing, and operator guidance. Required in-scope updates are implemented and validated with behavior changes. Completion is blocked when governing authority is knowingly stale.
 
 ## Project-local intelligence
 
-The following remain local to each project:
+Product vision, roadmap, architecture, decisions, domain knowledge, designs, Issues, manifests, current slice, testing strategy, code, and tests remain local to each project.
 
-- product vision and current scope;
-- roadmap;
-- architecture;
-- durable decisions;
-- domain knowledge;
-- detailed designs;
-- submitted GitHub Issues;
-- active slice;
-- testing strategy;
-- source code and tests.
-
-Project intelligence must not be embedded in a central harness service or silently inherited from an unrelated source project.
-
-## Potential shared mechanics, later
-
-Only after repeated use may these be extracted into shared tooling:
-
-- structural document validation;
-- Issue parsing;
-- context assembly;
-- command execution;
-- run reporting;
-- model invocation adapters;
-- evaluation logic.
-
-Extraction should move mechanics, not project intelligence.
-
-## Phase 0 runtime model
-
-Phase 0 has no automated runtime orchestrator.
-
-The operating sequence is manually initiated:
+## Dependency direction
 
 ```text
-project documents
-↓
-ready GitHub Issue
-↓
-approved current slice
-↓
-implementation agent
-↓
-deterministic validation
-↓
-human review and approval
-↓
-Issue closure
+GitHub Issue outcome
+        |
+        v
+normalized contract
+        |
+        +-----------------------+
+        |                       |
+        v                       v
+local authority discovery   current-slice guard
+        |                       |
+        +-----------+-----------+
+                    v
+             context manifest
+                    |
+                    v
+             Draft current slice
+                    |
+                    v
+           explicit human approval
 ```
-
-Local scripts may validate document structure and execute declared commands. These tools must remain understandable and replaceable.
-
-Phase 0.6 adds a local structural validator and deterministic validator tests. They are workflow mechanics, not a runtime controller: they do not invoke models, evaluate implementation quality semantically, perform repair, or control another repository.
 
 ## Architecture principles
 
 - Documents before orchestration code.
+- Reasoning resolved by the owning stage.
 - Reusable mechanics separated from project context.
 - Project-local intelligence.
-- Human approval at phase boundaries.
-- One active implementation slice.
-- Explicit work modes.
+- Human approval at meaningful boundaries.
+- One active slice.
+- Explicit states and operations.
 - Selective context loading.
-- Deterministic mechanical validation.
-- Independent evaluation only after implementation automation exists.
-- Small vertical increments.
+- Deterministic validation.
+- Independent review.
+- Documentation currency.
+- Small increments.
 - Abstraction after demonstrated repetition.
 
 ## Non-goals
 
-Phase 0 does not include:
-
 - central project registration;
 - remote repository control;
 - queues or workers;
-- a workflow database;
-- a web dashboard;
+- workflow database;
+- web dashboard;
 - multi-agent negotiation;
 - provider-neutral model abstractions;
 - background execution;
-- automatic Git operations.
+- automatic Git operations;
+- automatic implementation or repair.
 
 ## Evolution constraints
 
-Future automation must preserve:
-
-- document authority;
-- the separation of reusable mechanics from project context;
-- project self-containment;
-- Issue-to-slice traceability;
-- bounded execution;
-- inspectable decisions;
-- deterministic validation;
-- explicit human approval.
-
-Automation that obscures these properties should be rejected even if it reduces manual steps.
+Future automation must preserve document authority and currency, project self-containment, Issue-to-slice traceability, rule provenance, bounded execution, inspectable approval evidence, deterministic validation, independent review, and explicit human control.

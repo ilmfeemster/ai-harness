@@ -1,6 +1,6 @@
 # [Work Item Title]
 
-> **Project-owned operational state:** This file is a scaffold for a project's active execution package. Initialize a fresh `docs/current-slice.md` from this scaffold, then replace placeholders with the active project's own Issue, scope, validation, and completion state.
+> **Project-owned operational state:** This scaffold defines one active execution package. Replace every placeholder with the active project's own Issue, rules, execution detail, validation, approval, and completion state.
 
 ## Status
 
@@ -22,11 +22,11 @@ Allowed values:
 
 ## Context
 
-[Briefly explain the background needed to execute this work item.]
+[Brief execution background.]
 
 ## Goal
 
-[State the singular expected outcome preserved from the source Issue.]
+[Singular expected outcome preserved from the Issue.]
 
 ## Scope
 
@@ -38,19 +38,38 @@ Allowed values:
 
 ## Acceptance criteria
 
-- [Observable criterion copied or faithfully preserved from the source Issue]
+- [Observable criterion preserved from the Issue]
+
+## Governing-rule reconciliation
+
+| Rule | Governing source | Slice interpretation | Difference |
+| --- | --- | --- | --- |
+| [Material rule] | [Authoritative source] | [Execution interpretation] | None |
 
 ## Implementation plan
 
-1. [Step]
+1. [Decision-complete step]
 
 ## Expected files
 
 - [Path expected to change or be created]
 
+## Documentation impact
+
+| Source | Impact | Required action |
+| --- | --- | --- |
+| `README.md` | None | None |
+| `docs/project.md` | None | None |
+| `docs/architecture.md` | None | None |
+| `docs/decisions.md` | None | None |
+| `docs/design/*.md` | None | None |
+| `docs/testing.md` | None | None |
+
+Use `None`, `Update required in this slice`, or `Requires upstream Issue revision`.
+
 ## Validation plan
 
-Run from the repository root:
+Run from repository root:
 
 ```sh
 [command]
@@ -64,11 +83,29 @@ Manual checks:
 
 Stop and revise before implementation or approval if:
 
-- [Condition that would invalidate the slice or require upstream clarification]
+- [Invalidating condition or upstream decision need]
 
 ## Review checklist
 
 - [Review question]
+
+## Approval evidence
+
+**Slice approval:** Pending.
+
+**Slice approved by:** Pending.
+
+**Slice approval basis:** Pending.
+
+**Slice approved at:** Pending.
+
+**Final approval:** Pending.
+
+**Final approved by:** Pending.
+
+**Final approval basis:** Pending.
+
+**Final approved at:** Pending.
 
 ## Completion evidence
 
@@ -82,20 +119,30 @@ Stop and revise before implementation or approval if:
 
 **Manual checks:** Pending.
 
+**Documentation-impact result:** Pending.
+
+**Review result:** Pending.
+
 **Implementation adjustments or deviations:** None.
 
 **Known limitations or follow-up Issues:** None identified.
+
+**Issue closure:** Pending.
 
 **Implementation summary:** Pending.
 
 ## Optional sections
 
-Add only when useful for the specific work item:
-
 - dependencies and assumptions;
 - relevant project documents;
-- linked design documents;
+- linked designs;
 - implementation constraints;
-- implementation adjustments;
+- existing implementation seam;
+- component and contract map;
+- deterministic decision rules;
+- interface contracts;
+- file-by-file change plan;
+- acceptance mapping;
+- adjustments;
 - blockers and known limitations;
 - rollback or migration notes.
