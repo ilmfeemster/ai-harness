@@ -340,7 +340,20 @@ Close an Issue only through `finalize-work-item`.
 
 `docs/current-slice.md` is the single bounded execution package for the active Issue.
 
-It may specify how to implement the Issue. It may not change the approved outcome.
+The slice must translate the Issue and governing documents into the file-level, decision-complete execution detail needed to implement the work without broad reinterpretation. It may refine implementation detail but may not change the approved outcome.
+
+The slice must resolve, when applicable:
+
+- the existing implementation seam and integration point;
+- ordered file-level changes;
+- component, function, script, or module responsibilities;
+- relevant input and output contracts;
+- deterministic decision, warning, blocker, and error-handling rules;
+- fixture and test expectations for material behavior branches;
+- acceptance-criterion-to-validation coverage;
+- assumptions and unresolved decisions that require human judgment.
+
+Do not delegate product, architecture, design, lifecycle, or policy interpretation to the implementation agent. When a governing source leaves a material choice unresolved, record it as a blocker or return to the appropriate planning operation rather than hiding it inside a broad implementation step.
 
 Every non-empty slice must include:
 
@@ -353,9 +366,9 @@ Every non-empty slice must include:
 - review checklist;
 - completion evidence.
 
-Optional sections may add dependencies, governing documents, constraints, adjustments, blockers, or migration notes when useful.
+Optional sections may add dependencies, governing documents, constraints, adjustments, blockers, migration notes, an existing implementation seam, decision tables, or acceptance-criterion mapping when useful.
 
-Do not duplicate substantial upstream documentation.
+Do not duplicate substantial upstream documentation. Translate governing requirements into concise execution instructions and reference the authoritative source.
 
 ### Slice states
 

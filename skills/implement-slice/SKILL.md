@@ -26,7 +26,8 @@ Do not use this skill when:
 - corrective work would materially change the approved outcome;
 - the requested work exceeds the approved scope;
 - the source Issue or required upstream context is unavailable;
-- the request is only to validate or review existing work.
+- the request is only to validate or review existing work;
+- the slice omits material execution detail and implementation would require broad reinterpretation.
 
 ## Authority and boundaries
 
@@ -54,7 +55,8 @@ Do not:
 - update dependencies unless required;
 - create or begin another Issue;
 - close the source Issue;
-- set the slice to `Ready for review` or `Complete`.
+- set the slice to `Ready for review` or `Complete`;
+- silently supply product, architecture, design, lifecycle, warning, blocker, or policy rules omitted from the slice.
 
 ## Lifecycle ownership
 
@@ -90,7 +92,7 @@ Load:
 1. `docs/current-slice.md`;
 2. the source Issue sufficiently to verify traceability;
 3. documents explicitly referenced by the slice;
-4. code, tests, and configuration named by or clearly required by the slice;
+4. code, tests, fixtures, and configuration named by or clearly required by the slice;
 5. the relevant blocker, validation result, or review finding for resumed or corrective work.
 
 Expand context only when:
@@ -119,9 +121,39 @@ Before editing:
 8. Verify required upstream sources are present.
 9. Verify no material conflict exists.
 10. Verify the work still fits the approved boundaries.
-11. Change the slice status to `In progress` when implementation begins.
+11. Verify the slice passes the implementation-readiness gate below.
+12. Change the slice status to `In progress` when implementation begins.
 
 If any check fails, do not edit implementation files.
+
+## Implementation-readiness gate
+
+Before editing, confirm the slice provides enough detail to identify:
+
+- the existing implementation seam or intended integration point;
+- the material file or component responsibilities;
+- the governing decision branches;
+- expected inputs, outputs, side effects, and failure behavior where relevant;
+- required fixtures and tests for material behavior;
+- validation coverage for the acceptance criteria.
+
+Stop and return the slice for refinement when implementation would require:
+
+- broad repository discovery;
+- material interpretation of the approved design;
+- invention of warning-versus-blocker behavior;
+- invention of lifecycle or policy rules;
+- choosing among materially different architectures;
+- guessing the intended integration point, expected files, or test matrix.
+
+Minor local coding choices do not require slice refinement when they preserve the approved outcome, existing architecture, explicit decision rules, and validation expectations.
+
+When the slice fails this gate:
+
+1. do not change status to `In progress`;
+2. do not edit implementation files;
+3. identify the missing execution detail precisely;
+4. return to `prepare-slice` for refinement and renewed human approval if the approved slice changes.
 
 ## Procedure
 
@@ -130,19 +162,23 @@ If any check fails, do not edit implementation files.
 3. Inspect existing behavior before modifying it.
 4. Prefer the smallest local change that satisfies the approved outcome.
 5. Preserve established boundaries and dependency direction.
-6. Add or update meaningful tests when required by the slice or testing standards.
-7. Run focused development checks as needed while implementing.
-8. Record meaningful execution-only refinements under implementation adjustments.
-9. Continue without reapproval only when the refinement does not change:
-   - required outcome;
-   - scope;
-   - non-goals;
-   - acceptance criteria.
-10. When newly discovered work is outside scope:
+6. Add or update meaningful tests required by the slice and testing standards.
+7. Implement the slice's declared decision branches and failure behavior without silently replacing them with new policy.
+8. Run focused development checks as needed while implementing.
+9. Record meaningful execution-only refinements under implementation adjustments.
+10. Continue without reapproval only when the refinement does not change:
+    - required outcome;
+    - scope;
+    - non-goals;
+    - acceptance criteria;
+    - architecture or durable decisions;
+    - governing decision rules;
+    - validation expectations.
+11. When newly discovered work is outside scope:
     - do not implement it;
     - record it as a follow-up candidate;
     - create a separate Issue only through an explicit `create-work-item` handoff.
-11. When implementation is complete:
+12. When implementation is complete:
     - review the diff for unintended changes;
     - list files changed;
     - summarize implementation adjustments;
@@ -173,11 +209,15 @@ Stop when:
 - required work exceeds the slice;
 - a required dependency or decision is missing;
 - an unrelated validation failure prevents trustworthy implementation;
-- the implementation plan is no longer viable without broad reinterpretation.
+- the implementation plan is no longer viable without broad reinterpretation;
+- a material decision rule, integration point, or test expectation is absent from the approved slice;
+- implementation would require inventing product, architecture, design, lifecycle, warning, blocker, or policy behavior.
 
-Set the slice to `Blocked` when implementation cannot continue because of a stated dependency, conflict, or decision.
+Set the slice to `Blocked` only when implementation has legitimately begun and cannot continue because of a newly discovered dependency, conflict, or decision.
 
-Record:
+Do not use `Blocked` to compensate for a slice that was never implementation-ready. Return an insufficient slice to `prepare-slice` before changing implementation state.
+
+When blocking active implementation, record:
 
 - the blocker;
 - evidence;
@@ -212,6 +252,7 @@ This skill is complete when:
 - all authorized in-scope implementation or corrective steps are complete;
 - the diff remains bounded;
 - required tests were added or updated;
+- declared decision branches and failure behavior were implemented;
 - meaningful adjustments are recorded;
 - the slice remains `In progress`;
 - formal validation is the next operation;
