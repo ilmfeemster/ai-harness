@@ -1,85 +1,78 @@
-# Phase 1: Assemble bounded context manifests
+# Phase 1: Generate guarded Draft slices
 
-> **Project operational state:** This is the completed execution package for GitHub Issue #9, retained as implementation, validation, review, approval, and closure evidence.
+> **Project operational state:** This is a Draft execution package for GitHub Issue #10. It preserves the Issue outcome and does not approve or authorize implementation.
 
 ## Status
 
-Complete
+Approved
 
 ## Source Issue
 
-- **Issue:** #9 - Phase 1: Assemble bounded context manifests
-- **URL:** https://github.com/ilmfeemster/ai-harness/issues/9
+- **Issue:** #10 - Phase 1: Generate guarded Draft slices
+- **URL:** https://github.com/ilmfeemster/ai-harness/issues/10
 
 ## Context
 
-An Issue parser alone does not identify the local documents that constrain later work. The approved Phase 1 design requires a project-local manifest that records selected documents, design-selection reasoning, candidate exclusions, missing paths, warnings, and blockers without becoming a database or loading unrelated repository content.
+Issue #8 already produces a normalized contract and Issue #9 produces a bounded Markdown context manifest. Phase 1 still needs a guarded local path that can consume those two artifacts, preserve the Issue contract, and replace only an empty or Complete active slice with a structurally valid Draft. The generator must surface missing information and guard failures rather than inventing semantic execution detail or changing workflow state.
 
 ## Goal
 
-For a normalized Issue, discover its bounded local governing context and write an inspectable per-Issue context manifest.
+Generate a complete, structurally checked Draft active slice from a passing normalized Issue and context manifest without replacing unresolved work or approving execution.
 
 ## Scope
 
-- Discover the mandatory Phase 1 authority documents and local documents explicitly referenced by a normalized Issue.
-- Enumerate local design documents and apply the approved-design selection rules.
-- Write `docs/context-manifests/<issue-number>.md` with source traceability, selection reasons, warnings, blockers, and draft-output status.
-- Add deterministic fixtures and tests for selection, exclusion, absent documents, Draft-design handling, and manifest overwrite behavior.
+- Enforce readiness, dependency, required-document, context-manifest, and unresolved-active-slice guards before active-slice replacement.
+- Generate every required slice section from the neutral schema and preserve the source Issue's context, goal, scope, non-goals, and acceptance criteria.
+- Add bounded execution detail, validation/review guidance, and manifest links only from selected governing documents.
+- Add deterministic structural, traceability, and source-to-slice scope checks, with fixtures for success and blocked cases.
 
 ## Non-goals
 
-- Do not parse or fetch the Issue contract beyond consuming Issue 01's normalized result.
-- Do not replace `docs/current-slice.md`, approve work, or start implementation.
-- Do not discover all repository files, sibling repositories, or remote project context.
-- Do not add a database, general run-record system, or automated retention process.
+- Do not fetch or parse Issue forms independently of Issue 01.
+- Do not perform broad document discovery independently of Issue 02.
+- Do not set a slice to `Approved`, mark an Issue Active, run implementation, or write to GitHub.
+- Do not claim semantic equivalence or replace human review with generated checks.
 
 ## Acceptance criteria
 
-- [ ] For a normalized Issue, the manifest records the mandatory authority sources, Issue-linked local documents, selected designs, and the reason for each selection.
-- [ ] Draft designs can be recorded as candidates but are excluded from governing context; approved applicable designs are selected according to the design rules.
-- [ ] Missing referenced local documents, inaccessible paths, and ambiguous selection conditions are reported as actionable warnings or blockers.
-- [ ] The manifest contains no credentials, tokens, or copied full Issue/document contents and is limited to the Issue's project-local traceability.
-- [ ] Deterministic tests cover bounded discovery, design selection, missing-path reporting, and repeat preparation for the same Issue.
+- [ ] A passing normalized Issue and manifest produce a complete `docs/current-slice.md` with status `Draft`, source traceability, and no unresolved scaffold markers.
+- [ ] The generated slice preserves the source Issue's context, goal, scope, non-goals, and acceptance criteria without omission or material alteration.
+- [ ] An unchecked readiness item, unresolved dependency, missing required document, closed Issue, or unresolved active slice prevents active-slice replacement and records the blocker in the manifest.
+- [ ] Structural and source-to-slice checks identify missing required headings, invalid status, broken traceability, and altered or omitted contract sections.
+- [ ] Tests demonstrate that preparation does not approve a slice, begin implementation, or write to GitHub.
 
 ## Governing-rule reconciliation
 
 | Rule | Governing source | Slice interpretation | Difference |
-| --- | --- | --- | --- |
-| Bounded local discovery | Approved Phase 1 design, **Local document inputs** | Read only the fixed authority set, Issue-linked allowed paths, and direct `docs/design/*.md` candidates. | None |
-| Design selection and semantic applicability | Approved Phase 1 design, **Local document inputs** and **Risks and open questions**; `skills/prepare-slice/SKILL.md`, **Automated-classification boundary** | An explicitly linked Approved design governs. For the active phase's expected design, use Assumption A-1 below when exact local phase traceability maps the source Issue to that phase; record the assumption prominently in the selection reason and warnings. All other unlinked candidates remain non-governing. | Implementation refinement within authority |
-| Draft designs | Approved Phase 1 design, **Local document inputs** | List a Draft design as considered when discovered or linked, emit a warning, and never select it as governing context. | None |
-| Missing or inaccessible governing input | Approved Phase 1 design, **Warnings and blockers** | Missing or inaccessible mandatory and allowed Issue-linked files are blockers. Invalid or out-of-bound Issue references are warnings because they are not eligible governing inputs. | Implementation refinement within authority |
-| Manifest safety and isolation | Approved Phase 1 design, **Context manifest** | Render references, metadata, classification, and short reasons only; overwrite only the file for the same Issue number. | None |
-| Lifecycle and external-state boundary | Issue #9 non-goals; `AGENTS.md` sections 5, 11, and 12 | Manifest mode consumes an already normalized contract and writes its manifest only. It neither calls GitHub nor changes the active slice, Issue state, approval state, or implementation state. | None |
+| --- | --- | --- |
+| Issue outcome and lifecycle boundary | GitHub Issue #10; `AGENTS.md` sections 5, 10, 11, and 12 | The generator consumes a normalized contract and may write only a `Draft` slice or update the matching context manifest with a sanitized guard result. It never approves, implements, changes Issue state, or writes GitHub state. | None |
+| Normalized Issue input | Approved Phase 1 design, **Inputs and normalized work-item contract**; Issue #8 outcome | Reuse `Get-NormalizedIssueContractFromFile` and the existing normalized-object shape. Draft generation neither calls the source-Issue reader nor parses an Issue form. | None |
+| Bounded context input | Approved Phase 1 design, **Local document inputs**, **Context manifest**, and **Preparation behavior and guards**; Issue #9 outcome | Require one matching Issue #9 manifest with no existing blockers and downstream-ready true; use only its selected local document references and do not rediscover the repository. A missing, unreadable, or source-mismatched manifest is command-reported only because no safe matching manifest exists to update. | Implementation refinement within authority |
+| Guarded active-slice replacement | Approved Phase 1 design, **Preparation behavior and guards**; Issue #10 scope | Permit replacement only when the existing active slice is empty or `Complete`. Treat `Draft`, `Approved`, `In progress`, `Blocked`, and `Ready for review` as blockers and preserve the existing file byte-for-byte. | None |
+| Readiness, source state, and dependencies | Approved Phase 1 design, **Preparation behavior and guards**; Issue #10 acceptance criterion 3; local phase-plan front matter | Require normalized source state `OPEN`, every readiness confirmation checked, and every sequence in the matching local phase draft's `depends_on` list to map to a closed GitHub Issue. Read dependency state only; do not fetch or parse dependency Issue forms. | Implementation refinement within authority |
+| Generated source contract | Approved Phase 1 design, **Draft-slice construction** and **Structural and scope checks**; Issue #10 acceptance criterion 2 | Render normalized `Context`, `Goal`, `Scope`, `NonGoals`, and `AcceptanceCriteria` verbatim in their corresponding slice sections. Structural comparison detects omission or alteration but does not claim semantic equivalence. | None |
+| Generated execution detail | Approved Phase 1 design, **Draft-slice construction** and **Warnings and blockers** | Generate only fixed, provenance-labeled preparation guidance and selected-document links. When selected sources do not establish file-level execution detail, render an explicit human-review warning instead of inferring APIs, relevance, or semantic policy. | Implementation refinement within authority |
+| Deterministic generated-artifact interface | `AGENTS.md` section 11; `skills/prepare-slice/SKILL.md`, **Deterministic interface requirement** | Define fixed command inputs, manifest validation, ordering, empty states, guard outcomes, UTF-8 output, overwrite behavior, and sanitized failure records. Keep fixture substitution internal rather than exposing test-only operator parameters. | None |
 
 ## Existing implementation seam
 
-- `scripts/prepare-slice.ps1` already owns Issue #8 normalization. Its `Get-NormalizedIssue` output supplies the in-memory contract for this Issue; manifest mode must not call its GitHub reader or re-parse an Issue form.
-- `tests/prepare-slice.ps1` dot-sources the script with `-NoRun` and tests public functions directly. Extend this focused suite rather than adding a second harness.
-- `tests/fixtures/issues/` supplies raw Issue snapshots. Add a distinct `tests/fixtures/context/` tree for normalized contracts and minimal synthetic repository roots, so manifest tests never depend on live GitHub state.
+- `scripts/prepare-slice.ps1` already separates Issue normalization (`Invoke-IssueNormalization`) from context-manifest mode (`Invoke-ContextManifest`) and supports dot-sourcing with `-NoRun`.
+- `Get-NormalizedIssueContractFromFile` validates the normalized contract that Issue #10 must consume; `Write-ContextManifest` provides the existing UTF-8, same-Issue manifest write boundary.
+- `templates/docs/current-slice.md` is the neutral required-heading schema. `scripts/validate.ps1` already defines structural current-slice checks and lifecycle/evidence consistency rules.
+- `tests/prepare-slice.ps1` is the focused PowerShell harness, and `tests/fixtures/context/` supplies normalized contracts plus minimal synthetic repositories without live GitHub dependence.
 
 ## Component and contract map
 
 | Responsibility | Location | Inputs | Output or side effect |
-| --- | --- | --- | --- |
-| Read normalized fixture | `scripts/prepare-slice.ps1` | `-NormalizedIssueJsonPath` | One normalized contract; no GitHub access |
-| Parse linked paths | `scripts/prepare-slice.ps1` | `RelevantDocuments` text | Ordered valid paths plus rejected-entry warnings |
-| Build bounded candidates | `scripts/prepare-slice.ps1` | Contract and explicit repository root | Mandatory, linked, and design candidate records |
-| Resolve context | `scripts/prepare-slice.ps1` | Candidates, active phase, and design metadata | Selected, excluded, warnings, blockers, and downstream-ready state |
-| Render and write | `scripts/prepare-slice.ps1` | Context model and output root | One deterministic manifest for the source Issue |
-| Verify behavior | `tests/prepare-slice.ps1` | Fixtures and temporary output directory | Assertions for every material branch |
-
-## Automated-classification evidence
-
-| Classification | Evidence source | Result when evidence is absent |
 | --- | --- | --- |
-| Mandatory authority | Fixed list in the approved design; local file existence | Missing or inaccessible path is a blocker. |
-| Issue-linked governing document | Exact allowed repository-relative path parsed from normalized `RelevantDocuments` | Invalid or missing reference is excluded and reported. |
-| Explicitly linked governing design | Exact Issue-linked design path plus `Approved` status in that design | Draft, missing, or unrecognized design is excluded and reported. |
-| Active-phase governing design | `Expected design` metadata in `docs/project.md` | Consider the candidate but do not select it automatically. |
-| Active expected design applicable to the source Issue | Assumption A-1: exact GitHub Issue-to-local phase-draft mapping plus matching active-phase metadata is sufficient phase-level applicability evidence for this Phase 1 implementation | Select with the assumption recorded as a warning for human review; do not use free-text similarity. |
-| Other unlinked design applicable to the source Issue | No approved structured capability mapping or explicit human confirmation exists in the current contract | Warning and non-governing candidate; do not infer applicability from free text. |
-| Dependency `01` complete | Local phase-plan mapping from sequence `01` to Issue #8 plus GitHub Issue #8 state `CLOSED` | Block promotion when completion cannot be verified. |
+| Draft-generation command mode | `scripts/prepare-slice.ps1` | `-GenerateDraftSlice`, normalized-contract path, matching context-manifest path, explicit repository root | One Draft-generation result object; no Issue-form parse or GitHub write |
+| Read and validate manifest | `scripts/prepare-slice.ps1` | UTF-8 Markdown manifest and normalized source number | Source-match, selected-path, readiness, blocker, and output-status records without loading unrelated files |
+| Guard evaluation | `scripts/prepare-slice.ps1` | Normalized contract, local phase draft, manifest, current slice, selected paths | Ordered sanitized blockers or permission to generate |
+| Dependency-state reader | `scripts/prepare-slice.ps1` | Mapped prerequisite Issue numbers | Read-only `gh issue view <number> --json state` result in command mode; internal injected reader in tests |
+| Slice renderer and writer | `scripts/prepare-slice.ps1` | Normalized contract, selected document records, guard result, neutral schema | UTF-8 `docs/current-slice.md` only after all guards and self-checks pass |
+| Manifest result update | `scripts/prepare-slice.ps1` | Existing matching manifest, generated/blocked result | Replace only the matching manifest's guard/result records; no source or full document content |
+| Structural and scope verification | `scripts/prepare-slice.ps1` | Generated Markdown and normalized contract | Required-heading, Draft-status, traceability, exact source-section, placeholder, and local-reference findings |
+| Focused verification | `tests/prepare-slice.ps1` | Existing and added context fixtures with temporary repository roots | Deterministic success, guard, preservation, manifest-update, and no-side-effect assertions |
 
 ## Interface contracts
 
@@ -87,104 +80,83 @@ For a normalized Issue, discover its bounded local governing context and write a
 
 ```powershell
 powershell -NoProfile -File scripts/prepare-slice.ps1 `
-  -ContextManifest `
-  -NormalizedIssueJsonPath "tests/fixtures/context/normalized/issue-9.json" `
-  -RepositoryRoot "." `
-  -ManifestOutputRoot "docs/context-manifests"
+  -GenerateDraftSlice `
+  -NormalizedIssueJsonPath "tests/fixtures/context/normalized/issue-10.json" `
+  -ContextManifestPath "docs/context-manifests/10.md" `
+  -RepositoryRoot "."
 ```
 
-- `-ContextManifest`, `-NormalizedIssueJsonPath`, and `-RepositoryRoot` are required together.
-- `-ManifestOutputRoot` defaults to `<RepositoryRoot>/docs/context-manifests`.
-- Context-manifest mode accepts a normalized-contract JSON file, not an Issue number or raw Issue snapshot.
-- Unit tests invoke object-based functions directly; command tests use only local fixture files.
-- Context-manifest mode must not invoke `gh`, `Get-IssueSnapshotFromGitHub`, `Invoke-IssueNormalization`, or Issue-form parsing.
+- `-GenerateDraftSlice`, `-NormalizedIssueJsonPath`, `-ContextManifestPath`, and `-RepositoryRoot` are required together and form a mutually exclusive parameter set with existing Issue-normalization and context-manifest modes.
+- The generated output path is fixed at `<RepositoryRoot>/docs/current-slice.md`; no output-path parameter is added.
+- The manifest path must resolve beneath `<RepositoryRoot>/docs/context-manifests/`, have the source Issue number as its filename, and contain a matching `# Context Manifest — Issue #<number>` header.
+- Command mode consumes only the local normalized JSON, matching local manifest, neutral schema, the manifest-selected local paths, current active slice, matching local phase draft, and read-only dependency states. It must not call `Get-IssueSnapshotFromGitHub`, `Invoke-IssueNormalization`, Issue-form parsing, or any GitHub mutation.
+- Command output is a compact object containing source Issue number, `Generated`, guard-blocker count, Draft output path when generated, manifest path, and sanitized blocker summaries. It never reports approval, implementation, or Issue-state changes.
 
-### Internal inputs and path parsing
+### Guard ordering and outcomes
 
-- `Get-RelevantDocumentPaths -RelevantDocuments <string>` returns ordered records with `Path`, `Original`, `Classification`, and optional `Reason`.
-- `Get-ContextCandidates -NormalizedIssue <psobject> -RepositoryRoot <path>` returns mandatory, Issue-linked, and design candidates without recursively enumerating the repository.
-- `Resolve-ContextManifest -NormalizedIssue <psobject> -RepositoryRoot <path>` returns selected, considered, warning, blocker, readiness, and output-model records.
-- `Write-ContextManifest -Manifest <psobject> -ManifestOutputRoot <path>` renders one file and returns its resolved path.
+1. Validate the normalized contract and require source state `OPEN` plus every readiness confirmation checked.
+2. Locate the matching local phase draft through exact `github_issue_number` front matter; parse its `phase`, `sequence`, and comma-delimited `depends_on` values. Treat an empty value as no dependencies; otherwise split on commas, trim each token, deduplicate case-insensitively while preserving first order, and require every retained token to map exactly to one `sequence` value in the same phase.
+3. Map each dependency sequence to exactly one local draft in the same phase and read only that mapped GitHub Issue's state. A missing mapping, unreadable state, or state other than `CLOSED` is a blocker.
+4. Read the supplied UTF-8 context manifest. Require matching source number, `Downstream-ready: True`, `## Blockers` rendered as `- None.`, and at least the fixed mandatory selected authorities. Every selected relative path must remain a readable local file.
+5. Read the current active-slice status. Empty or `Complete` is replaceable; every other recognized lifecycle status is a blocker. Missing, malformed, or unrecognized active-slice state is also a blocker.
+6. Verify the neutral schema and all fixed required local documents exist before rendering.
 
-For each non-empty `RelevantDocuments` line, remove one bullet marker (`-`, `*`, or `+`) and surrounding whitespace. Use the first complete backticked value when present; otherwise accept the trimmed line only if it contains no whitespace and resembles a relative file path. Normalize `\\` to `/`, reject empty values, URLs, rooted paths, drive-qualified paths, directories, and every `..` segment. Deduplicate accepted paths case-insensitively while preserving first spelling and order. Retain each rejected entry as a warning without reading it.
+All guard blockers are accumulated in the order above, rendered with category, repository-relative path or Issue number, and actionable sanitized message, then recorded in the matching manifest. A blocker prevents any write or replacement of `docs/current-slice.md`.
 
-The accepted Issue-linked set is root `AGENTS.md` and `README.md`, plus files under `docs/`, `templates/`, and `.github/ISSUE_TEMPLATE/`. Code, tests, scripts, skills, sibling repositories, and all other paths are warning-and-excluded records.
+### Generated slice and manifest records
 
-### Design status and applicability
-
-Enumerate only direct `*.md` children of `docs/design/` in ordinal path order. Read the first non-empty value under `## Status`; recognize `Approved` and `Draft` case-insensitively, and warn and exclude any missing or unrecognized status.
-
-An Approved design is selected when its exact repository-relative path is explicitly linked by the normalized Issue. `docs/project.md` may identify the active phase's expected design; the local phase draft may then map the source Issue number to a phase through its front matter.
-
-**Assumption A-1 — phase-level design applicability:** for this Phase 1 implementation, an open Ready Issue whose retained local phase draft has the exact source Issue number and the same `phase` value as the active phase is treated as applicable to that phase's `Expected design`, when the candidate design is `Approved`. The manifest selects that candidate with reason `approved active-phase design; Assumption A-1`, and adds a warning that A-1 requires human review. This is explicit semantic policy for the Draft, not an assertion that free-text similarity can establish relevance.
-
-An unlinked candidate outside A-1 remains considered-but-not-selected with an actionable warning. Do not add lexical, similarity, ranking, or inferred relevance matching. Draft and unrecognized-status designs are also non-governing candidates.
-
-### Manifest schema, ordering, and failures
-
-Render exactly these headings:
-
-```markdown
-# Context Manifest — Issue #<number>
-
-## Preparation
-## Source Issue
-## Readiness
-## Selected governing documents
-## Considered but not selected
-## Warnings
-## Blockers
-## Output
-```
-
-Order selected mandatory authorities as `AGENTS.md`, `docs/project.md`, `docs/architecture.md`, `docs/decisions.md`, `docs/testing.md`, and `docs/current-slice.md`; then Issue-linked paths in first-seen order; then selected designs by ordinal path. Order excluded design candidates by ordinal path and warnings/blockers by discovery order. Render every empty list as `- None.`
-
-The model records preparation timestamp, tool version, source number/title/URL, optional snapshot identifier, readiness summary, selected and considered records, warnings, blockers, downstream-ready state, and output path. `DownstreamReady` only says that context blockers do not prevent Issue #10 from consuming the manifest; it never asserts slice approval or implementation readiness. Sanitize inaccessible-path failures to a relative path, category, and actionable message; never render stack traces, credentials, tokens, absolute profile paths, or full Issue/document content.
+- Generate required headings in neutral-schema order. Render the exact normalized source Issue context, goal, scope, non-goals, and acceptance text without trimming content beyond the existing normalizer's contract values.
+- Set generated status to `Draft`, approval evidence to pending, and every completion-evidence field to pending/not run. Do not include approval or implementation claims.
+- Render selected governing document paths in manifest order, then generated fixed preparation guidance with an explicit warning when the selected documents do not justify file-level detail. Do not infer relevance, APIs, expected files, or semantic equivalence from free text.
+- Include the matching manifest path as traceability and list only existing selected documents. Render empty selected-document, warning, or blocker lists as `- None.`.
+- Validate the generated text before writing: all required headings, Draft status, source Issue identity, exact preserved source sections, required lifecycle evidence, no neutral-schema placeholders, and existing local references.
+- Write UTF-8 without BOM through a temporary sibling file only after validation. Replace a permitted existing target only after all guards and self-checks pass; a write failure leaves the prior target intact and records a sanitized manifest blocker when possible.
+- Update only a readable, source-matching supplied manifest's `## Blockers` and `## Output` result records. On success, record the Draft path and `Draft`; on a later guard failure, record `Blocked` plus sanitized blockers. When the manifest itself is missing, unreadable, outside the bounded location, or source-mismatched, preserve it and report that blocker only through the command result. Repeating the same successful invocation with identical inputs produces identical Draft content and updates no other Issue manifest.
 
 ## Deterministic decision rules
 
-| Condition | Classification | Manifest behavior | Test coverage |
+| Condition | Classification | Slice/manifest behavior | Test coverage |
 | --- | --- | --- | --- |
-| Mandatory authority exists | Selected | Fixed-path record with reason `mandatory authority` | Complete fixture root |
-| Mandatory authority missing or inaccessible | Blocker | Relative path and actionable reason; downstream-ready false | Missing and injected-reader-failure fixtures |
-| Allowed linked file exists | Selected | Reason `linked by source Issue` | First-seen and duplicate fixture |
-| Allowed linked file missing or inaccessible | Blocker | Relative path and reason | Missing linked-file fixture |
-| Linked entry is invalid or outside allowed set | Warning and excluded | Original entry and rejection reason; do not read it | URL, traversal, source-code, and duplicate fixtures |
-| Explicitly linked Approved design exists | Selected | Reason `approved design linked by source Issue` | Linked Approved fixture |
-| Active expected Approved design maps through A-1 | Selected with warning | Reason includes `Assumption A-1`; warning requires human review | Exact phase-mapped fixture |
-| Active expected design has no exact phase mapping | Warning and excluded | Record that A-1 evidence is incomplete | Missing or mismatched phase-mapping fixture |
-| Approved non-active design is unlinked | Considered and excluded | Record that no explicit link establishes governing relevance | Unlinked Approved-design fixture |
-| Linked or discovered Draft design | Warning and excluded | Record Draft status and exclusion reason | Draft-design fixture |
-| Same source Issue written again | Normal overwrite | Replace only `<output-root>/<issue-number>.md` | Repeat-write isolation fixture |
+| Open source and all readiness confirmations checked | Guard passes this branch | Continue to dependency and manifest guards | Passing normalized fixture |
+| Source state closed or a readiness confirmation unchecked | Blocker | Preserve active slice; update only matching manifest with sanitized guard record | Closed and unchecked-contract fixtures |
+| Local dependency mapping missing, ambiguous, unreadable, or mapped Issue not `CLOSED` | Blocker | Preserve active slice; report sequence and mapped Issue information without Issue body | Missing mapping, duplicate mapping, reader failure, and open-state fixtures |
+| Matching manifest is blocked, not downstream-ready, or has a selected path missing | Blocker | Preserve active slice; update only that matching manifest with an actionable result | Manifest validity and missing selected-path fixtures |
+| Manifest is missing, unreadable, outside the bounded location, or source-mismatched | Blocker | Preserve active slice and manifest; emit only a sanitized command result because no safe matching manifest can be updated | Missing, unreadable, outside-root, and source-mismatch fixtures |
+| Existing active slice is empty or `Complete` | Replaceable | Generate and self-check a new Draft | Empty and Complete active-slice fixtures |
+| Existing active slice is Draft, Approved, In progress, Blocked, or Ready for review | Blocker | Preserve target byte-for-byte and record blocker | One fixture for each unresolved status |
+| Neutral schema or selected required document missing/inaccessible | Blocker | Preserve target; record relative sanitized path | Missing schema and injected-reader failure fixtures |
+| Generated structural or source-contract comparison fails | Blocker | Do not replace target; record failed self-check | Missing heading, invalid status, broken traceability, and altered/omitted-section fixtures |
+| All guards and self-checks pass | Generated Draft | Write only `docs/current-slice.md`; update only same-Issue manifest output record | End-to-end deterministic success and repeat-write fixtures |
 
 ## Implementation plan
 
-1. Add a mutually exclusive context-manifest parameter set to `scripts/prepare-slice.ps1`. It must load a local normalized-contract JSON file, validate required contract properties, and preserve the existing Issue-number and raw-fixture normalization paths unchanged.
-2. Implement the path parser and bounded candidate builder using the accepted-path, normalization, rejection, ordering, and duplicate rules above. Do not enumerate source, test, skill, or sibling-repository content.
-3. Read active-phase expected-design metadata from `docs/project.md`, enumerate direct design files, and classify their statuses. Select exact Issue-linked Approved paths. For the expected design only, resolve the exact GitHub Issue-to-local-phase-draft mapping and apply Assumption A-1; record its warning. Keep every other unlinked applicability question non-governing.
-4. Build a manifest model that keeps selected and considered records separate, makes every selection reason inspectable, classifies blockers versus warnings, and calculates `DownstreamReady` only from context blockers.
-5. Add deterministic Markdown rendering and isolated writing to `docs/context-manifests/<issue-number>.md`. Render empty states and ordering exactly as specified; overwrite only the same source Issue's file.
-6. Extend `tests/prepare-slice.ps1` and add local fixtures for parser branches, mandatory and linked inputs, linked Approved and Draft designs, exact and missing A-1 phase mappings, unlinked non-active Approved candidates, sanitized inaccessible reads, deterministic rendering, secret/full-content exclusion, and same-Issue overwrite isolation.
-7. Keep command output limited to manifest counts, downstream-ready state, and output path. Do not report Draft-slice generation, approval, or implementation.
+1. Extend `scripts/prepare-slice.ps1` with a mutually exclusive `GenerateDraftSlice` parameter set and an `Invoke-DraftSliceGeneration` orchestration function. Reuse the normalized-contract reader and keep existing Issue-normalization and context-manifest invocations unchanged. Require local normalized JSON, matching manifest path, and repository root; keep output fixed to the active-slice path.
+2. Add bounded readers for the matching UTF-8 manifest, neutral schema, current slice, and local phase draft. Parse only the manifest headings/records and YAML front matter needed for the declared guards. Reuse repository-relative path validation; never crawl source, tests, skills, sibling repositories, or arbitrary Markdown.
+3. Implement ordered guard evaluation for source state/readiness, normalized exact local dependency mapping plus read-only dependency state, manifest source/readiness/blocker/selected-path integrity, current-slice replaceability, and required local inputs. Return accumulated sanitized blocker records; update a manifest only after its path and source identity are safely verified.
+4. Implement deterministic Draft rendering from the neutral schema plus normalized source contract. Preserve required source sections exactly; add provenance-labeled selected-document links, fixed validation/review guidance, and explicit human-review warnings for any execution detail not established by selected documents. Do not generate approval evidence, implementation status, or semantic assertions.
+5. Add generated-slice structural and source-to-slice comparison functions. Validate the Draft before writing and use a temporary sibling file plus replacement only after all guards and checks pass. On success, write UTF-8 without BOM to `docs/current-slice.md` and update the matching manifest's output record; on any failure, preserve the prior active slice and update only a safely identified matching manifest.
+6. Extend `tests/prepare-slice.ps1` and `tests/fixtures/context/` with normalized-contract, manifest, phase-draft, current-slice, schema, and dependency-reader branches. Cover every decision-table row, exact source preservation, deterministic repeat generation, target and cross-Issue manifest isolation, no GitHub mutation, and no approval/implementation transition.
+7. Keep command output limited to source Issue, generated/blocked state, counts, output path, manifest path, and sanitized blocker summaries. Do not modify `README.md` or governing project/design/architecture/decision/testing documents in this slice; Issue #11 owns the integrated operator workflow documentation.
 
 ## Expected files
 
 - `scripts/prepare-slice.ps1`
 - `tests/prepare-slice.ps1`
 - `tests/fixtures/context/`
-- `docs/context-manifests/` when manifest mode is explicitly run
-- `docs/current-slice.md` for lifecycle evidence only; manifest mode must not write it
+- `docs/current-slice.md` when Draft-generation mode is explicitly run against a permitted target
+- `docs/context-manifests/<issue-number>.md` when Draft-generation mode records its result
 
 ## Documentation impact
 
 | Source | Impact | Required action |
 | --- | --- | --- |
-| `README.md` | None | Issue #11 owns the documented end-to-end operator workflow. |
-| `docs/project.md` | None | The active Phase 1 scope and exit criteria already govern this capability. |
-| `docs/architecture.md` | None | The approved design and architecture already establish the dependency direction. |
-| `docs/decisions.md` | None | This slice makes no new durable product or workflow decision. |
-| `docs/design/*.md` | None | Implement the approved design; do not narrow or broaden it. |
-| `docs/testing.md` | None | Existing Phase 1 standards require the fixture and validation coverage in this slice. |
+| `README.md` | None | Issue #11 owns the end-to-end operator workflow documentation. |
+| `docs/project.md` | None | Current Phase 1 scope and exit criteria already govern this capability. |
+| `docs/architecture.md` | None | Existing project-local dependency direction already permits this extension. |
+| `docs/decisions.md` | None | This slice applies existing Issue, lifecycle, and documentation-currency decisions. |
+| `docs/design/phase-1-context-and-slice-assistance.md` | None | Implement the approved Draft-generation and guard design without narrowing or broadening it. |
+| `docs/testing.md` | None | Existing standards already require deterministic fixtures, command checks, structural validation, and separate review. |
+| `templates/docs/current-slice.md` | None | Consume the neutral schema; do not change its project-neutral contract. |
 
 ## Validation plan
 
@@ -198,92 +170,84 @@ powershell -NoProfile -ExecutionPolicy Bypass -File tests/validate-structure.ps1
 
 Manual checks:
 
-- Run manifest mode from a normalized Issue #9 fixture and inspect every required heading, selected reason, warning, blocker, count, downstream-ready value, and output path.
-- Confirm the Phase 1 design is selected because Issue #9 explicitly links it; separately verify that an exactly mapped active expected design is selected with the Assumption A-1 warning and that unmapped or non-active unlinked candidates remain non-governing.
-- Confirm Draft, invalid, outside-set, missing, and inaccessible inputs never govern and are classified as specified.
-- Repeat one Issue write and verify only that Issue's manifest changes; verify a second Issue manifest remains unchanged.
-- Inspect rendered output for credentials, tokens, full source text, absolute profile paths, and stack traces.
-- Confirm context-manifest mode makes no GitHub call, does not parse raw Issue forms, change `docs/current-slice.md`, approve a slice, or start implementation.
+- Run Draft-generation mode against a local passing normalized Issue #10 fixture and matching manifest in a temporary repository root; verify the resulting active slice is Draft, has every required heading, preserves every source contract section exactly, links only selected documents, and has pending approval/completion evidence.
+- Run each guarded failure branch and verify the pre-existing active-slice hash is unchanged while only the matching Issue manifest receives a relative, sanitized blocker/result record.
+- Confirm a complete prior slice may be replaced, every unresolved lifecycle state blocks replacement, and repeated success produces byte-identical Draft content without modifying a second Issue manifest.
+- Confirm dependency reads request state only, command mode makes no GitHub mutation, and no path approves a slice, begins implementation, or changes Issue state.
+- Inspect generated Draft and manifest output for credentials, tokens, Issue/document body copies beyond preserved contract sections, absolute profile paths, stack traces, and unapproved semantic relevance claims.
 
 ## Failure conditions
 
 Stop and revise before approval or implementation if:
 
-- the normalized contract lacks required source, goal, context, scope, non-goals, acceptance, dependency, document, or readiness data;
-- a material design-selection rule cannot be reconciled with the approved design, Assumption A-1 is not explicit and reviewable, or a lexical, similarity, ranking, or inferred applicability heuristic is introduced;
-- discovery expands into a whole-repository crawl or uses an unapproved linked path;
-- a Draft, unrecognized, or ambiguous design can govern;
-- path normalization, ordering, duplicate handling, output schema, overwrite behavior, or sanitized error handling is unspecified;
-- a missing mandatory or linked governing document can be silently selected;
-- manifest content can contain secrets, full Issue/document content, absolute profile paths, or stack traces;
-- manifest mode calls GitHub, re-parses an Issue form, writes the active slice, or changes approval/implementation state; or
-- a material decision branch lacks a deterministic local test.
+- the Ready Issue, normalized contract, matching manifest, approved design, dependency completion, or current-slice state cannot be verified;
+- a generated guard needs to infer dependency satisfaction, governing-document relevance, implementation files, API behavior, or semantic equivalence from free text;
+- manifest parsing or result update can alter another Issue's manifest, leak full content, credentials, absolute paths, or stack traces, or silently discard an existing blocker;
+- an unresolved active slice can be replaced, a failed generated-slice self-check can write output, a missing or source-mismatched manifest can be altered, or a failure can alter the prior active slice;
+- output status, ordering, empty-state rendering, source preservation, overwrite behavior, or sanitized failure behavior is unspecified;
+- tests depend on live GitHub bodies, mutate GitHub, or omit a material guard or source-to-slice comparison branch; or
+- implementing the generator requires a change to product scope, architecture, approved design, durable decision, or testing standard.
 
 ## Review checklist
 
-- Does the new parameter set preserve the Issue #8 normalizer and GitHub-read boundary?
-- Are all considered documents bounded, classified, and explained?
-- Do parser acceptance, rejection, normalization, ordering, and duplicate rules match this slice?
-- Does every selected design have an inspectable exact Issue-link or Assumption A-1 evidence plus Approved-status reason?
-- Is Assumption A-1 prominent, narrowly scoped, and suitable for human approval, while Draft and other unlinked candidates remain non-governing?
-- Are warning and blocker classifications actionable and sanitized?
-- Is the Markdown schema deterministic, including empty states and overwrite isolation?
-- Do fixtures cover every decision-table branch without live GitHub dependence?
-- Are active-slice, approval, Issue-state, and implementation boundaries preserved?
-- Does the documentation-impact assessment remain accurate after implementation?
+- Does the new mode consume Issue #8 and #9 artifacts rather than duplicating source-Issue parsing or broad document discovery?
+- Are source state, readiness, local dependency mapping, manifest integrity, selected-path availability, and active-slice replacement guards bounded, ordered, and testable?
+- Does every blocker preserve the active slice and update only the matching manifest with sanitized evidence?
+- Does the renderer preserve all five required Issue contract sections exactly, produce a complete Draft schema, and avoid automated approval or implementation claims?
+- Are generated execution notes strictly constrained to selected governing documents, with semantic gaps surfaced for human review rather than inferred?
+- Do structural and source-to-slice checks distinguish deterministic proof from semantic judgment?
+- Do fixture tests cover every decision-table branch, same-Issue idempotency, cross-Issue isolation, and no-GitHub-write behavior?
+- Does the documentation-impact assessment remain accurate and leave Issue #11 as owner of operator workflow guidance?
 
 ## Approval evidence
 
 **Slice approval:** Approved.
 
-**Slice approved by:** Repository owner (explicit user request).
+**Slice approved by:** Repository owner (explicit user approval).
 
-**Slice approval basis:** Explicit user authorization to approve and implement the current slice.
+**Slice approval basis:** Explicit user approval after the advisory planning review passed.
 
 **Slice approved at:** 2026-07-25.
 
-**Final approval:** Approved.
+**Final approval:** Pending.
 
-**Final approved by:** Repository owner (explicit user request).
+**Final approved by:** Pending.
 
-**Final approval basis:** Explicit user authorization to validate, review, and finalize the current completed slice.
+**Final approval basis:** Pending.
 
-**Final approved at:** 2026-07-25.
+**Final approved at:** Pending.
 
 ## Completion evidence
 
-**Implementation status:** Implemented, formally validated, independently reviewed, and finalized by explicit human approval.
+**Implementation status:** Pending approval and separate implementation authorization.
 
-**Acceptance-criteria status:** Passed. The manifest records mandatory, linked, selected, and considered documents with reasons; Draft designs remain excluded; missing and inaccessible inputs become sanitized warnings or blockers; rendered output excludes sensitive/full content; and deterministic fixtures cover bounded discovery, design selection, missing-path reporting, and same-Issue overwrite isolation.
+**Acceptance-criteria status:** Pending.
 
-**Files changed:** `scripts/prepare-slice.ps1`, `tests/prepare-slice.ps1`, `tests/fixtures/context/`, `docs/project.md` for lifecycle currency, and this lifecycle evidence in `docs/current-slice.md`.
+**Files changed:** `docs/current-slice.md` only, to replace the completed Issue #9 package with this Draft.
 
-**Validation results:** Formal revalidation on 2026-07-25 passed: `powershell -NoProfile -ExecutionPolicy Bypass -File tests/prepare-slice.ps1` exited 0 (`Prepare-slice parser tests passed.`); `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/validate.ps1` exited 0 (`Structural validation passed.`); and `powershell -NoProfile -ExecutionPolicy Bypass -File tests/validate-structure.ps1` exited 0 (`Validator tests passed.`). `git diff --check` also exited 0. The prior ASCII-hyphen heading failure is resolved; UTF-8 output now renders `# Context Manifest — Issue #9`.
+**Validation results:** Not run; formal validation belongs after implementation.
 
-**Manual checks:** Command mode consumed only the normalized local fixture, reported selected=8, considered=2, warnings=6, blockers=0, downstream-ready=true, wrote an isolated manifest beneath the supplied temporary repository root, and did not modify that fixture's active slice. All required headings, including the em-dash top-level heading, approved-design reason, safety exclusions, and no-GitHub/no-active-slice-write boundary passed.
+**Manual checks:** GitHub Issue #10 is open with all seven readiness confirmations checked; local phase sequence identifies #10 as `03`; GitHub Issues #8 and #9 are closed; the approved design, existing script/test seam, neutral schema, and structural-validator expectations were inspected during preparation.
 
-**Documentation-impact result:** Resolved. The approved design, architecture, decisions, testing standards, and operator guidance remain accurate. `docs/project.md` was updated to replace the stale active-Draft reference with Issue #9 completion and closure; this slice retains the corresponding lifecycle evidence.
+**Documentation-impact result:** No governing-document update is expected for Issue #10; confirm during implementation and validation.
 
-**Review result:** No findings. Independent review confirmed that all five Issue acceptance criteria are implemented and supported by deterministic fixture, command-mode, and structural-validation evidence; the manifest remains bounded, project-local, and non-governing for Draft or unlinked designs; warning/blocker sanitization and same-Issue overwrite isolation are covered; no GitHub or active-slice side effect was introduced; and the documentation-impact assessment remains accurate. No Critical, High, Medium, or Low findings. Readiness for final human approval: yes.
+**Review result:** Advisory planning review passed on 2026-07-25. The initial finding—unsafe manifest-result updates when no readable source-matching manifest exists—was corrected in this Draft. No remaining blocker, unsupported semantic assumption, missing material implementation decision, scope expansion, lifecycle violation, or insufficient validation branch was identified. This is a pre-implementation planning review only; formal `review-slice` remains a post-validation operation.
 
-**Slice-quality assessment:** Missing execution decisions: None. Incorrect assumptions: None; Assumption A-1 is explicitly constrained and warned. Unnecessary instructions: None. Discovery required beyond the slice: None beyond the declared local phase-draft mapping. Recommended preparation improvement: None.
+**Implementation adjustments or deviations:** None.
 
-**Implementation adjustments or deviations:** No outcome or governing-rule deviation. Corrective implementation now constructs the required top-level em dash as Unicode code point `0x2014` before UTF-8 output, avoiding source-file encoding ambiguity, and adds a focused assertion. Execution-only refinements also suppress duplicate selected records when an Issue links a mandatory authority, sanitize rejected references and reader failures, and resolve relative manifest output roots beneath the explicit repository root. Assumption A-1 remains explicit, reviewable policy surfaced with a human-review warning; other unlinked candidates remain non-governing.
+**Known limitations or follow-up Issues:** Issue #11 owns the integrated operator workflow and its user-facing documentation.
 
-**Known limitations or follow-up Issues:** Issue #10 owns guarded Draft-slice construction; Issue #11 owns the integrated operator workflow.
+**Issue closure:** Pending.
 
-**Issue closure:** GitHub Issue #9 closed as completed on 2026-07-25 at 17:50:38 UTC; verified through the GitHub Issue API.
-
-**Implementation summary:** Added local normalized-contract context-manifest mode with bounded path parsing, mandatory and linked-document classification, deterministic Approved/Draft/A-1 design resolution, sanitized warnings/blockers, Markdown rendering, isolated per-Issue overwrite, and deterministic fixture coverage. Formal revalidation and independent review passed; the repository owner gave final approval and GitHub Issue #9 is closed.
+**Implementation summary:** Draft prepared from GitHub Issue #10. No implementation, validation, review of implemented work, approval, or Issue-state change has occurred.
 
 ## Dependencies and assumptions
 
-- The local phase plan maps dependency sequence `01` to GitHub Issue #8; GitHub confirms #8 is closed.
-- GitHub Issue #9 is open, has all seven readiness confirmations checked, and remains authoritative for outcome.
+- GitHub Issue #10 is open and all seven readiness confirmations are checked.
+- Local phase sequence `01` maps to GitHub Issue #8 and sequence `02` maps to GitHub Issue #9; both are closed.
 - `docs/design/phase-1-context-and-slice-assistance.md` remains Approved.
-- The existing unapproved Draft was for this same Issue; the user explicitly requested that it be recreated.
-- **Assumption A-1:** exact local phase membership is sufficient evidence to treat the active phase's expected approved design as applicable to that phase's Issue. Human approval of this Draft accepts, rejects, or revises that assumption before implementation.
-- Inaccessible-read coverage may use an injected file-reader failure or equivalent deterministic test seam instead of changing file-system permissions.
+- Dependency-state reads are implementation plumbing for the explicit completion guard; they read only the mapped Issue state and do not parse a form or mutate GitHub.
+- The generator may report an explicit preparation warning when selected documents do not justify file-level execution detail. Human review, not generated inference, resolves that warning before a generated Draft is approved.
 
 ## Relevant project documents
 
@@ -293,15 +257,16 @@ Stop and revise before approval or implementation if:
 - `docs/decisions.md`
 - `docs/testing.md`
 - `docs/design/phase-1-context-and-slice-assistance.md`
-- `docs/issues/phase-1/02-assemble-context-manifest.md`
+- `docs/issues/phase-1/03-generate-guarded-draft-slice.md`
+- `templates/docs/current-slice.md`
 - `scripts/prepare-slice.ps1`
 - `tests/prepare-slice.ps1`
 - `skills/prepare-slice/SKILL.md`
 
 ## Implementation constraints
 
-- Preserve Issue #9's goal, scope, non-goals, and acceptance criteria.
+- Preserve GitHub Issue #10 goal, scope, non-goals, and acceptance criteria.
 - Keep all processing project-local, bounded, deterministic, and inspectable.
-- Consume Issue #8's normalized contract; do not duplicate Issue reading or form parsing.
-- Do not create a general database, run record, retention process, repository crawler, or automation controller.
-- This completed slice is retained for traceability; it does not select or begin another work item.
+- Consume Issue #8's normalized contract and Issue #9's context manifest; do not duplicate their source-Issue parser or broad document discovery responsibilities.
+- Do not create a database, run record, retention process, repository crawler, automatic Issue selection, GitHub write path, approval transition, or implementation controller.
+- This slice remains `Draft` until a separate approval operation records explicit human approval.
