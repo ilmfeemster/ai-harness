@@ -860,7 +860,7 @@ function ConvertTo-ManifestMarkdown {
     $warnings = @($Manifest.Warnings)
     $blockers = @($Manifest.Blockers)
     $lines = @(
-        "# Context Manifest - Issue #$($Manifest.Source.Number)",
+        "# Context Manifest $([char]0x2014) Issue #$($Manifest.Source.Number)",
         '',
         '## Preparation',
         '',

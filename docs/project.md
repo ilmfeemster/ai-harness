@@ -109,7 +109,7 @@ Phase 1 is complete when:
 - The Phase 1 design is approved at `docs/design/phase-1-context-and-slice-assistance.md`.
 - Phase 1 Issue planning is published.
 - Issue #8, normalized Issue parsing, is complete.
-- Issue #9, context-manifest assembly, is the active Draft slice.
+- Issue #9, context-manifest assembly, is complete and its GitHub Issue is closed.
 - Issue #10 owns guarded Draft-slice generation.
 - Issue #11 owns the coherent manual end-to-end preparation workflow.
 - Ambiguous active-phase design applicability must be surfaced rather than guessed.

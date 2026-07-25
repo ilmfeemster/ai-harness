@@ -1,10 +1,10 @@
 # Phase 1: Assemble bounded context manifests
 
-> **Project operational state:** This is a newly prepared Draft execution package for GitHub Issue #9. It preserves the Issue outcome and does not authorize approval or implementation.
+> **Project operational state:** This is the completed execution package for GitHub Issue #9, retained as implementation, validation, review, approval, and closure evidence.
 
 ## Status
 
-In progress
+Complete
 
 ## Source Issue
 
@@ -242,37 +242,39 @@ Stop and revise before approval or implementation if:
 
 **Slice approved at:** 2026-07-25.
 
-**Final approval:** Pending.
+**Final approval:** Approved.
 
-**Final approved by:** Pending.
+**Final approved by:** Repository owner (explicit user request).
 
-**Final approval basis:** Pending.
+**Final approval basis:** Explicit user authorization to validate, review, and finalize the current completed slice.
 
-**Final approved at:** Pending.
+**Final approved at:** 2026-07-25.
 
 ## Completion evidence
 
-**Implementation status:** In progress; bounded implementation authorized by the repository owner.
+**Implementation status:** Implemented, formally validated, independently reviewed, and finalized by explicit human approval.
 
-**Acceptance-criteria status:** Implementation completed for the declared manifest, selection, sanitization, overwrite, and fixture-test branches; formal validation remains next.
+**Acceptance-criteria status:** Passed. The manifest records mandatory, linked, selected, and considered documents with reasons; Draft designs remain excluded; missing and inaccessible inputs become sanitized warnings or blockers; rendered output excludes sensitive/full content; and deterministic fixtures cover bounded discovery, design selection, missing-path reporting, and same-Issue overwrite isolation.
 
-**Files changed:** `scripts/prepare-slice.ps1`, `tests/prepare-slice.ps1`, `tests/fixtures/context/`, and this lifecycle evidence in `docs/current-slice.md`.
+**Files changed:** `scripts/prepare-slice.ps1`, `tests/prepare-slice.ps1`, `tests/fixtures/context/`, `docs/project.md` for lifecycle currency, and this lifecycle evidence in `docs/current-slice.md`.
 
-**Validation results:** Focused parser and context-manifest tests passed; command-mode fixture run passed; `scripts/validate.ps1` and `tests/validate-structure.ps1` passed. Formal `validate-slice` remains next.
+**Validation results:** Formal revalidation on 2026-07-25 passed: `powershell -NoProfile -ExecutionPolicy Bypass -File tests/prepare-slice.ps1` exited 0 (`Prepare-slice parser tests passed.`); `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/validate.ps1` exited 0 (`Structural validation passed.`); and `powershell -NoProfile -ExecutionPolicy Bypass -File tests/validate-structure.ps1` exited 0 (`Validator tests passed.`). `git diff --check` also exited 0. The prior ASCII-hyphen heading failure is resolved; UTF-8 output now renders `# Context Manifest — Issue #9`.
 
-**Manual checks:** Command mode consumed only the normalized local fixture, rendered all required headings, reported selected/considered/warning/blocker counts and downstream readiness, and wrote an isolated manifest outside the repository. No GitHub call or active-slice write was used.
+**Manual checks:** Command mode consumed only the normalized local fixture, reported selected=8, considered=2, warnings=6, blockers=0, downstream-ready=true, wrote an isolated manifest beneath the supplied temporary repository root, and did not modify that fixture's active slice. All required headings, including the em-dash top-level heading, approved-design reason, safety exclusions, and no-GitHub/no-active-slice-write boundary passed.
 
-**Documentation-impact result:** No governing-document update is expected for Issue #9; confirm this during implementation and validation.
+**Documentation-impact result:** Resolved. The approved design, architecture, decisions, testing standards, and operator guidance remain accurate. `docs/project.md` was updated to replace the stale active-Draft reference with Issue #9 completion and closure; this slice retains the corresponding lifecycle evidence.
 
-**Review result:** Pending.
+**Review result:** No findings. Independent review confirmed that all five Issue acceptance criteria are implemented and supported by deterministic fixture, command-mode, and structural-validation evidence; the manifest remains bounded, project-local, and non-governing for Draft or unlinked designs; warning/blocker sanitization and same-Issue overwrite isolation are covered; no GitHub or active-slice side effect was introduced; and the documentation-impact assessment remains accurate. No Critical, High, Medium, or Low findings. Readiness for final human approval: yes.
 
-**Implementation adjustments or deviations:** No outcome or governing-rule deviation. Execution-only refinements suppress duplicate selected records when an Issue links a mandatory authority, sanitize rejected references and reader failures, and resolve relative manifest output roots beneath the explicit repository root. Assumption A-1 remains explicit, reviewable policy surfaced with a human-review warning; other unlinked candidates remain non-governing.
+**Slice-quality assessment:** Missing execution decisions: None. Incorrect assumptions: None; Assumption A-1 is explicitly constrained and warned. Unnecessary instructions: None. Discovery required beyond the slice: None beyond the declared local phase-draft mapping. Recommended preparation improvement: None.
+
+**Implementation adjustments or deviations:** No outcome or governing-rule deviation. Corrective implementation now constructs the required top-level em dash as Unicode code point `0x2014` before UTF-8 output, avoiding source-file encoding ambiguity, and adds a focused assertion. Execution-only refinements also suppress duplicate selected records when an Issue links a mandatory authority, sanitize rejected references and reader failures, and resolve relative manifest output roots beneath the explicit repository root. Assumption A-1 remains explicit, reviewable policy surfaced with a human-review warning; other unlinked candidates remain non-governing.
 
 **Known limitations or follow-up Issues:** Issue #10 owns guarded Draft-slice construction; Issue #11 owns the integrated operator workflow.
 
-**Issue closure:** Pending.
+**Issue closure:** GitHub Issue #9 closed as completed on 2026-07-25 at 17:50:38 UTC; verified through the GitHub Issue API.
 
-**Implementation summary:** Added local normalized-contract context-manifest mode with bounded path parsing, mandatory and linked-document classification, deterministic Approved/Draft/A-1 design resolution, sanitized warnings/blockers, Markdown rendering, isolated per-Issue overwrite, and deterministic fixture coverage. Slice remains `In progress` for formal validation.
+**Implementation summary:** Added local normalized-contract context-manifest mode with bounded path parsing, mandatory and linked-document classification, deterministic Approved/Draft/A-1 design resolution, sanitized warnings/blockers, Markdown rendering, isolated per-Issue overwrite, and deterministic fixture coverage. Formal revalidation and independent review passed; the repository owner gave final approval and GitHub Issue #9 is closed.
 
 ## Dependencies and assumptions
 
@@ -302,4 +304,4 @@ Stop and revise before approval or implementation if:
 - Keep all processing project-local, bounded, deterministic, and inspectable.
 - Consume Issue #8's normalized contract; do not duplicate Issue reading or form parsing.
 - Do not create a general database, run record, retention process, repository crawler, or automation controller.
-- This slice remains `Draft` until a separate approval operation records human approval.
+- This completed slice is retained for traceability; it does not select or begin another work item.

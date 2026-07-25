@@ -104,6 +104,7 @@ try {
     Assert-True ($manifest9.DownstreamReady) 'Complete context fixture should be downstream-ready.'
 
     $rendered9 = ConvertTo-ManifestMarkdown -Manifest $manifest9
+    Assert-True ($rendered9 -match [regex]::Escape("# Context Manifest $([char]0x2014) Issue #9")) 'Manifest should render the required em-dash top-level heading.'
     foreach ($heading in @('## Preparation', '## Source Issue', '## Readiness', '## Selected governing documents', '## Considered but not selected', '## Warnings', '## Blockers', '## Output')) {
         Assert-True ($rendered9 -match [regex]::Escape($heading)) "Manifest should render heading '$heading'."
     }
