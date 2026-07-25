@@ -1,59 +1,59 @@
-# Phase 1: Normalize supported GitHub Issue forms
+# Phase 1: Assemble bounded context manifests
 
-> **Project operational state:** This file is the active execution package for the AI Development Harness project. It implements the approved GitHub Issue #8 slice.
+> **Project operational state:** This file is the active execution package for the AI Development Harness project. It is a Draft translation of GitHub Issue #9 and does not authorize implementation.
 
 ## Status
 
-In progress
+Draft
 
 ## Source Issue
 
-- **Issue:** #8 - Phase 1: Normalize supported GitHub Issue forms
-- **URL:** https://github.com/ilmfeemster/ai-harness/issues/8
+- **Issue:** #9 - Phase 1: Assemble bounded context manifests
+- **URL:** https://github.com/ilmfeemster/ai-harness/issues/9
 
 ## Context
 
-Phase 1 preparation requires reliable Issue inputs before document discovery or slice drafting can occur. The approved design limits support to the repository's implementation and bug forms, preserves the authoritative source Issue, and requires clear failure when Issue data or expected fields cannot be read.
+An Issue parser alone cannot show which project documents constrain a future slice. The approved design requires a project-local manifest that records selected documents, design selection reasoning, candidate exclusions, missing paths, warnings, and blockers without becoming a database or loading unrelated repository content.
 
 ## Goal
 
-Provide a read-only local path that converts a human-selected supported GitHub Issue into a traceable normalized work-item contract.
+For a normalized Issue, discover its bounded local governing context and write an inspectable per-Issue context manifest.
 
 ## Scope
 
-- Read an explicitly supplied Issue through a read-only local GitHub CLI path.
-- Parse the rendered bodies of the bundled implementation and bug forms.
-- Normalize supported form fields into one contract while retaining Issue number, title, URL, state, and unparsed body traceability.
-- Provide fixtures and deterministic tests for valid supported forms and actionable failures for unsupported or incomplete forms.
+- Discover the mandatory Phase 1 authority documents and local documents explicitly referenced by a normalized Issue.
+- Enumerate local design documents and apply the approved-design selection rules.
+- Write one per-Issue Markdown manifest in the project-owned context-manifest directory, with source traceability, selection reasons, warnings, blockers, and draft-output status.
+- Add deterministic fixtures and tests for selection, exclusion, absent documents, Draft-design handling, and manifest overwrite behavior.
 
 ## Non-goals
 
-- Do not select an Issue, change GitHub state, or publish an Issue.
-- Do not support arbitrary third-party forms or label-based readiness.
-- Do not discover local documents, write manifests, generate slices, or start implementation.
-- Do not store credentials or issue content in a central service or database.
+- Do not parse or fetch the Issue contract beyond consuming Issue 01's normalized result.
+- Do not replace `docs/current-slice.md`, approve work, or start implementation.
+- Do not discover all repository files, sibling repositories, or remote project context.
+- Do not add a database, general run-record system, or automated retention process.
 
 ## Acceptance criteria
 
-- [ ] An explicitly supplied open implementation-form Issue is normalized with its required form fields, source number, title, URL, state, and unparsed-body traceability.
-- [ ] An explicitly supplied open bug-form Issue is normalized into the same contract without losing its observed, expected, evidence, or impact context.
-- [ ] Missing required fields, unsupported headings, unreadable Issue data, and closed Issues produce actionable failures without changing GitHub or local active-slice state.
-- [ ] Readiness confirmations are represented accurately for later preparation guards; labels do not establish readiness.
-- [ ] Fixtures and deterministic tests cover supported forms and the defined failure cases.
+- [ ] For a normalized Issue, the manifest records the mandatory authority sources, Issue-linked local documents, selected designs, and the reason for each selection.
+- [ ] Draft designs can be recorded as candidates but are excluded from governing context; approved applicable designs are selected according to the design rules.
+- [ ] Missing referenced local documents, inaccessible paths, and ambiguous selection conditions are reported as actionable warnings or blockers.
+- [ ] The manifest contains no credentials, tokens, or copied full Issue/document contents and is limited to the Issue's project-local traceability.
+- [ ] Deterministic tests cover bounded discovery, design selection, missing-path reporting, and repeat preparation for the same Issue.
 
 ## Implementation plan
 
-1. Define a small project-local normalized Issue-contract shape for the fields required by the implementation and bug forms, including source metadata and unparsed-body traceability.
-2. Add a read-only GitHub CLI adapter that accepts an explicit Issue number and returns only the Issue data needed for normalization; report unavailable CLI, authentication, fetch, and closed-Issue failures clearly.
-3. Parse the rendered markdown emitted by the two bundled forms into the normalized contract, preserving bug evidence fields and readiness confirmations without deriving readiness from labels.
-4. Add fixture-based deterministic tests for valid implementation and bug forms and for unsupported headings, missing required fields, unreadable Issue data, and closed Issues.
-5. Document the local command's read-only boundary and verify that the new path neither writes GitHub state nor changes the active slice.
+1. Extend the local preparation tool with a context-discovery boundary that consumes the normalized contract from Issue #8 rather than re-parsing or re-fetching an Issue.
+2. Define the bounded mandatory authority set, inspect Issue-linked local document paths, and enumerate only local design documents.
+3. Apply the approved-design selection rules, recording selected documents with reasons and Draft or irrelevant designs as candidates excluded from governing context.
+4. Write a concise per-Issue Markdown manifest containing source traceability, the normalized readiness result, selected and excluded documents, warnings, blockers, and Draft-output status; overwrite only the same Issue's prior manifest.
+5. Add fixture-based tests for bounded discovery, approved and Draft design treatment, missing paths, ambiguous design selection, and repeat writes; document that the operation neither changes GitHub nor replaces the active slice.
 
 ## Expected files
 
-- `scripts/prepare-slice.ps1` — read-only Issue normalization boundary.
-- `tests/prepare-slice.ps1` — deterministic parser and failure-path tests.
-- `tests/fixtures/issues/` — representative submitted Issue-form fixtures.
+- A context-discovery and manifest-writing extension to the local preparation script.
+- A deterministic manifest-discovery test script and repository fixtures.
+- A project-owned context-manifest directory created only by the explicit manifest operation.
 - `docs/current-slice.md` — this Draft slice and later execution evidence only.
 
 ## Validation plan
@@ -61,62 +61,62 @@ Provide a read-only local path that converts a human-selected supported GitHub I
 Run from the repository root after implementation:
 
 ```powershell
-powershell -NoProfile -File tests/prepare-slice.ps1
 powershell -NoProfile -File scripts/validate.ps1
 powershell -NoProfile -File tests/validate-structure.ps1
 ```
 
 Manual checks:
 
-- Use the local command with an explicit open Issue number and confirm its normalized output includes source number, title, URL, state, required form fields, readiness confirmations, and unparsed-body traceability.
-- Repeat with a supported bug-form Issue and confirm observed behavior, expected behavior, evidence, and impact remain available in the normalized result.
-- Confirm unsupported headings, missing required fields, unreadable Issue data, and a closed Issue report actionable failures.
-- Confirm the command performs no GitHub write, does not select an Issue, and does not replace `docs/current-slice.md`.
+- Run the deterministic context-manifest test command after it is added and record its exact command and result in this slice during implementation.
+- Provide a normalized Issue with explicit document references and confirm the manifest records the mandatory authorities, the references that exist locally, and a reason for every selected document.
+- Confirm an approved applicable design is selected while a Draft design is recorded as excluded from governing context.
+- Confirm missing paths and ambiguous selections become actionable warnings or blockers without writing an active slice or changing GitHub.
+- Repeat preparation for the same Issue and confirm only that Issue's manifest is overwritten, with no credentials, tokens, or copied full document contents.
 
 ## Failure conditions
 
 Stop and revise before implementation or approval if:
 
-- the implementation would need to support forms beyond the bundled implementation and bug forms;
-- normalization would infer required field values or readiness from labels, titles, or unrelated repository text;
-- the GitHub CLI adapter would write Issue state, store credentials, or require a hosted service;
-- the normalized contract cannot retain source traceability or bug evidence without changing the Issue outcome;
-- tests cannot exercise the parser and defined failures deterministically; or
-- the work expands into context manifests, document discovery, slice generation, or automatic Issue selection.
+- discovery expands to unrelated source files, sibling repositories, or a whole-repository crawl;
+- a Draft design influences governing context;
+- a required authority source or Issue-linked document is missing and the result would silently continue as complete;
+- the manifest would contain credentials, authentication tokens, full copied Issue bodies, or full copied document contents;
+- the work needs to re-parse Issue forms, write GitHub state, replace `docs/current-slice.md`, or create a general run-record system; or
+- design-selection ambiguity cannot be reported without inventing product requirements.
 
 ## Review checklist
 
-- Does the normalized contract retain all required fields and source metadata for both supported forms?
-- Are all GitHub interactions read-only and limited to an explicit Issue number?
-- Are readiness confirmations parsed from the Issue body rather than inferred from labels?
-- Do failure paths remain actionable without changing GitHub or active-slice state?
-- Are fixtures representative and deterministic, without credentials or remote test dependencies?
-- Does the work avoid Issue selection, context discovery, manifest generation, slice generation, and implementation automation?
-- Do tests and documentation preserve the Phase 1 architecture, project-local boundary, and human approval lifecycle?
+- Does discovery use only the mandatory authorities, Issue-linked local paths, and local design documents?
+- Is each selected or excluded document accompanied by an inspectable reason?
+- Are Draft designs excluded from governing context and recorded only as candidates when relevant?
+- Do missing paths and ambiguous selections produce actionable warnings or blockers?
+- Does the manifest omit secrets and copied full source content?
+- Are repeat writes limited to the same Issue's manifest, with no GitHub or active-slice write?
+- Do the fixtures demonstrate bounded selection and retain the Phase 1 project-local boundary?
 
 ## Completion evidence
 
-**Implementation status:** In progress. The bounded implementation is complete and awaits formal validation.
+**Implementation status:** Pending human approval and implementation authorization.
 
-**Acceptance-criteria status:** Not formally evaluated; focused development evidence is available.
+**Acceptance-criteria status:** Pending.
 
-**Files changed:** `docs/current-slice.md`, `scripts/prepare-slice.ps1`, `tests/prepare-slice.ps1`, and `tests/fixtures/issues/`.
+**Files changed:** `docs/current-slice.md` (Draft preparation only).
 
-**Validation results:** Development checks passed on 2026-07-21: `powershell -NoProfile -File scripts/prepare-slice.ps1 -IssueNumber 8`; `powershell -NoProfile -File tests/prepare-slice.ps1`; `powershell -NoProfile -File scripts/validate.ps1`; and `powershell -NoProfile -File tests/validate-structure.ps1`. Formal validation has not yet run.
+**Validation results:** Not run.
 
-**Manual checks:** GitHub Issue #8 was retrieved read-only on 2026-07-21. The normalizer returned its source number, title, URL, open state, unparsed body, all required implementation-form fields, and seven checked readiness confirmations. Fixture coverage confirmed equivalent bug-form preservation and defined error paths without live GitHub access.
+**Manual checks:** GitHub Issue #9 was retrieved read-only on 2026-07-24. It is open, contains all required Issue-contract sections, and has every readiness confirmation checked. GitHub Issue #8 is closed, satisfying the sole phase-local prerequisite.
 
-**Implementation adjustments or deviations:** The normalizer exposes a local JSON-fixture input solely for deterministic tests; normal operation requires an explicit Issue number and uses the read-only GitHub CLI path. The Draft slice's expected paths were made concrete after implementation so structural validation could verify them without placeholder files.
+**Implementation adjustments or deviations:** None.
 
-**Known limitations or follow-up Issues:** Context discovery and manifests are deferred to Issue #9; guarded slice generation is deferred to Issue #10; end-to-end workflow integration is deferred to Issue #11.
+**Known limitations or follow-up Issues:** Guarded Draft-slice generation remains deferred to Issue #10. End-to-end workflow integration remains deferred to Issue #11.
 
-**Implementation summary:** Added `scripts/prepare-slice.ps1`, which reads one explicit open GitHub Issue through `gh issue view` and normalizes only the supported implementation and bug forms. Added local submitted-form fixtures and `tests/prepare-slice.ps1` for valid and failure-path coverage. The tool performs no GitHub writes, Issue selection, document discovery, manifest generation, or slice generation.
+**Implementation summary:** Draft slice prepared from GitHub Issue #9. Implementation has not started.
 
 ## Dependencies and assumptions
 
-- **Phase-local prerequisites:** None (`depends_on: ""`).
+- **Phase-local prerequisite:** Issue #8 — Normalize supported GitHub Issue forms — is Complete and closed.
 - The approved Phase 1 design remains available at `docs/design/phase-1-context-and-slice-assistance.md`.
-- The GitHub CLI is expected to be available and authenticated only when the implemented read-only adapter runs; tests must not require live GitHub access.
+- Context discovery consumes the normalized contract supplied by Issue #8; it does not duplicate the Issue reader or parser.
 
 ## Relevant project documents
 
@@ -126,14 +126,13 @@ Stop and revise before implementation or approval if:
 - `docs/decisions.md`
 - `docs/testing.md`
 - `docs/design/phase-1-context-and-slice-assistance.md`
-- `.github/ISSUE_TEMPLATE/implementation.yml`
-- `.github/ISSUE_TEMPLATE/bug.yml`
+- `scripts/prepare-slice.ps1`
 - `skills/validate-slice/SKILL.md`
 
 ## Implementation constraints
 
-- Preserve GitHub Issue #8's goal, scope, non-goals, and acceptance criteria.
-- Keep all GitHub interactions read-only and initiated only for an explicit Issue number.
-- Keep parser fixtures local and deterministic; do not require a live GitHub account to run tests.
-- Do not create context manifests, alter GitHub Issues, or invoke implementation, validation, review, or finalization workflows from the new tool.
-- This slice is `In progress`; formal validation owns the later transition to `Ready for review`.
+- Preserve GitHub Issue #9's goal, scope, non-goals, and acceptance criteria.
+- Keep discovery project-local, bounded, and explainable; do not load unrelated repositories or all source files.
+- Treat approved applicable designs as governing input and Draft designs only as excluded candidates.
+- Do not replace the active slice, change GitHub state, approve work, or start implementation from the manifest operation.
+- This slice remains `Draft` until explicit human approval; implementation requires separate explicit authorization after approval.
