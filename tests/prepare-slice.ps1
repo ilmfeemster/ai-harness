@@ -271,4 +271,102 @@ finally {
     if (Test-Path -LiteralPath $draftRepository) { Remove-Item -LiteralPath $draftRepository -Recurse -Force }
 }
 
+$workflowRepository = Join-Path ([IO.Path]::GetTempPath()) ('manual-workflow-tests-' + [guid]::NewGuid().ToString('N'))
+New-Item -ItemType Directory -Path $workflowRepository -Force | Out-Null
+Copy-Item -LiteralPath (Join-Path $contextFixtureDirectory 'repository') -Destination $workflowRepository -Recurse
+
+try {
+    $workflowRoot = Join-Path $workflowRepository 'repository'
+    New-Item -ItemType Directory -Path (Join-Path $workflowRoot 'templates/docs') -Force | Out-Null
+    Copy-Item -LiteralPath (Join-Path $testRepositoryRoot 'templates/docs/current-slice.md') -Destination (Join-Path $workflowRoot 'templates/docs/current-slice.md')
+    Copy-Item -LiteralPath (Join-Path $workflowRoot 'docs/design/approved.md') -Destination (Join-Path $workflowRoot 'docs/design/phase-1-context-and-slice-assistance.md')
+    $workflowSlicePath = Join-Path $workflowRoot 'docs/current-slice.md'
+    [IO.File]::WriteAllText($workflowSlicePath, "## Status`nComplete`n", (New-Object Text.UTF8Encoding($false)))
+    New-Item -ItemType Directory -Path (Join-Path $workflowRoot 'docs/context-manifests') -Force | Out-Null
+    $otherManifestPath = Join-Path $workflowRoot 'docs/context-manifests/10.md'
+    [IO.File]::WriteAllText($otherManifestPath, 'issue-10-sentinel', (New-Object Text.UTF8Encoding($false)))
+    $otherManifestBefore = Get-Content -Raw -LiteralPath $otherManifestPath
+    $workflowIssueFixture = Join-Path $fixtureDirectory 'manual-workflow.json'
+    $workflowIssueReader = { param($number) Get-IssueSnapshotFromFile -Path $workflowIssueFixture }
+    $workflowDependencyReader = { param($number) return 'CLOSED' }
+    $workflowResult = Invoke-PreparationWorkflow `
+        -IssueNumber 11 `
+        -RepositoryRoot $workflowRoot `
+        -IssueSnapshotReader $workflowIssueReader `
+        -DependencyStateReader $workflowDependencyReader
+    Assert-True $workflowResult.Prepared 'Integrated workflow should prepare a valid explicit Issue.'
+    Assert-Equal $workflowResult.Stage 'Draft' 'Integrated success should report Draft stage.'
+    Assert-Equal $workflowResult.ManifestPath 'docs/context-manifests/11.md' 'Integrated success should report the matching manifest path.'
+    Assert-Equal $workflowResult.DraftPath 'docs/current-slice.md' 'Integrated success should report the fixed Draft path.'
+    Assert-Equal $workflowResult.BlockerCount 0 'Integrated success should have no blockers.'
+    Assert-True (Test-Path -LiteralPath (Join-Path $workflowRoot 'docs/context-manifests/11.md') -PathType Leaf) 'Integrated success should write the matching context manifest.'
+    Assert-Equal (Get-Content -Raw -LiteralPath $otherManifestPath) $otherManifestBefore 'Integrated success should not modify another Issue manifest.'
+    Assert-True ((Get-DraftCurrentSliceState -RepositoryRoot $workflowRoot -FileReader $null).Status -eq 'Draft') 'Integrated success should write a Draft active slice.'
+    Assert-True ((Get-Content -Raw -LiteralPath $workflowSlicePath) -match 'Deliver and exercise the single manually invoked Phase 1 workflow') 'Integrated success should preserve the normalized source contract.'
+    $firstWorkflowDraft = Get-Content -Raw -LiteralPath $workflowSlicePath
+
+    $priorWorkflowSlice = Get-Content -Raw -LiteralPath $workflowSlicePath
+    [IO.File]::WriteAllText($workflowSlicePath, "## Status`nApproved`n", (New-Object Text.UTF8Encoding($false)))
+    $workflowBlocked = Invoke-PreparationWorkflow `
+        -IssueNumber 11 `
+        -RepositoryRoot $workflowRoot `
+        -IssueSnapshotReader $workflowIssueReader `
+        -DependencyStateReader $workflowDependencyReader
+    Assert-True (-not $workflowBlocked.Prepared) 'Integrated workflow should block an unresolved active slice.'
+    Assert-Equal $workflowBlocked.Stage 'Draft' 'Active-slice failure should be reported by the Draft stage.'
+    Assert-True (@($workflowBlocked.Blockers | Where-Object { $_.Category -eq 'Active slice' }).Count -eq 1) 'Integrated active-slice failure should preserve the guard category.'
+    Assert-True ((Get-Content -Raw -LiteralPath $workflowSlicePath) -match '(?m)^Approved$') 'Integrated active-slice failure should preserve the prior slice.'
+
+    [IO.File]::WriteAllText($workflowSlicePath, "## Status`nComplete`n", (New-Object Text.UTF8Encoding($false)))
+    $workflowRepeat = Invoke-PreparationWorkflow `
+        -IssueNumber 11 `
+        -RepositoryRoot $workflowRoot `
+        -IssueSnapshotReader $workflowIssueReader `
+        -DependencyStateReader $workflowDependencyReader
+    Assert-True $workflowRepeat.Prepared 'Integrated workflow should succeed again after a permitted Complete reset.'
+    Assert-Equal (Get-Content -Raw -LiteralPath $workflowSlicePath) $firstWorkflowDraft 'Repeated integrated success should produce byte-identical Draft content.'
+    Assert-Equal (Get-Content -Raw -LiteralPath $otherManifestPath) $otherManifestBefore 'Repeated integrated success should preserve another Issue manifest.'
+
+    [IO.File]::WriteAllText($workflowSlicePath, $priorWorkflowSlice, (New-Object Text.UTF8Encoding($false)))
+    Remove-Item -LiteralPath (Join-Path $workflowRoot 'docs/testing.md') -Force
+    $workflowContextBlocked = Invoke-PreparationWorkflow `
+        -IssueNumber 11 `
+        -RepositoryRoot $workflowRoot `
+        -IssueSnapshotReader $workflowIssueReader `
+        -DependencyStateReader $workflowDependencyReader
+    Assert-True (-not $workflowContextBlocked.Prepared) 'Integrated workflow should block missing context authority.'
+    Assert-Equal $workflowContextBlocked.Stage 'Context' 'Missing context authority should be reported by the Context stage.'
+    Assert-True (@($workflowContextBlocked.Blockers | Where-Object { $_.Path -eq 'docs/testing.md' }).Count -ge 1) 'Integrated context failure should identify the missing authority.'
+    Assert-True ((Get-Content -Raw -LiteralPath $workflowSlicePath) -match '(?m)^Draft$') 'Integrated context failure should preserve the prior active slice.'
+
+    $failureRepository = Join-Path ([IO.Path]::GetTempPath()) ('manual-workflow-prerequisite-' + [guid]::NewGuid().ToString('N'))
+    New-Item -ItemType Directory -Path $failureRepository -Force | Out-Null
+    Copy-Item -LiteralPath (Join-Path $contextFixtureDirectory 'repository') -Destination $failureRepository -Recurse
+    try {
+        $failureRoot = Join-Path $failureRepository 'repository'
+        $failureReader = { param($number) throw 'fixture source unavailable' }
+        $failureResult = Invoke-PreparationWorkflow -IssueNumber 11 -RepositoryRoot $failureRoot -IssueSnapshotReader $failureReader
+        Assert-True (-not $failureResult.Prepared) 'Source prerequisite failure should not prepare a workflow.'
+        Assert-Equal $failureResult.Stage 'Normalization' 'Source prerequisite failure should report Normalization stage.'
+        Assert-True (-not (Test-Path -LiteralPath (Join-Path $failureRoot 'docs/context-manifests/11.md'))) 'Source prerequisite failure should not write a manifest.'
+        Assert-True ($failureResult.Blockers[0].Message -notmatch 'fixture source unavailable') 'Workflow failures should sanitize reader exception details.'
+
+        $parserReader = {
+            param($number)
+            return [pscustomobject]@{ number = 11; title = 'Invalid fixture'; url = 'https://github.com/ilmfeemster/ai-harness/issues/11'; state = 'OPEN'; body = '## Unsupported form`n`nNo supported headings.' }
+        }
+        $parserResult = Invoke-PreparationWorkflow -IssueNumber 11 -RepositoryRoot $failureRoot -IssueSnapshotReader $parserReader
+        Assert-True (-not $parserResult.Prepared) 'Parser failure should not prepare a workflow.'
+        Assert-Equal $parserResult.Stage 'Normalization' 'Parser failure should report Normalization stage.'
+        Assert-Equal $parserResult.Blockers[0].Category 'Parser' 'Parser failure should report the Parser category.'
+        Assert-True (-not (Test-Path -LiteralPath (Join-Path $failureRoot 'docs/context-manifests/11.md'))) 'Parser failure should not write a manifest.'
+    }
+    finally {
+        if (Test-Path -LiteralPath $failureRepository) { Remove-Item -LiteralPath $failureRepository -Recurse -Force }
+    }
+}
+finally {
+    if (Test-Path -LiteralPath $workflowRepository) { Remove-Item -LiteralPath $workflowRepository -Recurse -Force }
+}
+
 Write-Output 'Prepare-slice parser tests passed.'

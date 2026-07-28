@@ -108,6 +108,8 @@ Complete local commands against fixtures or temporary repositories.
 
 Phase 1 integration tests cover normalized Issue input to manifest, deterministic rendering and overwrite isolation, guarded Draft generation, no GitHub writes, and no active-slice replacement on blockers.
 
+The integrated Phase 1 workflow must additionally be exercised through its one explicit-Issue foreground command contract using temporary repository roots and injected read-only fixtures. Focused evidence must cover a successful manifest-plus-Draft result, a source prerequisite or parser failure with no artifact writes, a bounded-context failure with a matching manifest blocker, and an unresolved active-slice or Draft guard with byte-preserved active state. Tests must assert the compact sanitized result, same-Issue output isolation, no GitHub mutation, and the unchanged Draft approval and implementation boundaries.
+
 ### Workflow tests
 
 ```text

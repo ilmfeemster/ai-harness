@@ -61,7 +61,7 @@ Current project contents must not be copied into unrelated projects.
 
 **Harness Phase 1 — Context and slice assistance, in progress**
 
-The complete Phase 0 workflow remains usable and human-operated. Phase 1 is adding a local preparation path that can normalize one explicit Ready Issue, assemble bounded context, produce an inspectable manifest, and generate a guarded Draft slice.
+The complete Phase 0 workflow remains usable and human-operated. Phase 1 is adding a local preparation path that can normalize one explicit Ready Issue, assemble bounded context, produce an inspectable manifest, and generate a guarded Draft slice. The integrated path is invoked manually for one explicit Issue from the repository root.
 
 Implementation, validation, review, approval, and finalization remain separately invoked operations.
 
@@ -73,7 +73,7 @@ Implementation, validation, review, approval, and finalization remain separately
 - `templates/` — neutral project-document and slice scaffolds.
 - `scripts/validate.ps1` — structural and lifecycle-consistency validation.
 - `tests/validate-structure.ps1` — deterministic validator tests.
-- `scripts/prepare-slice.ps1` — Phase 1 local preparation entry point under development.
+- `scripts/prepare-slice.ps1` — Phase 1 local preparation entry point and integrated workflow.
 - `tests/prepare-slice.ps1` — deterministic preparation-tool tests.
 - `docs/project.md` — current product and Phase 1 state.
 - `docs/roadmap.md` — future maturity direction.
@@ -84,6 +84,18 @@ Implementation, validation, review, approval, and finalization remain separately
 - `docs/issues/` — phase plans and retained Issue-draft traceability.
 - `docs/context-manifests/` — per-Issue preparation traceability when produced.
 - `docs/current-slice.md` — the one active execution package.
+
+## Phase 1 manual preparation
+
+Run the integrated workflow from the repository root for one explicit Ready GitHub Issue:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/prepare-slice.ps1 -PrepareDraftSlice -IssueNumber 11
+```
+
+The GitHub CLI must be installed, authenticated, and able to read the selected Issue and its completed dependencies. The command does not select Issues, batch work, or change GitHub state. When all guards pass, it writes `docs/context-manifests/<issue-number>.md` and a status-`Draft` `docs/current-slice.md`. The JSON result identifies the stage, fixed artifact paths, and sanitized blockers. A blocked run preserves an unresolved active slice and updates only the matching manifest when its identity is safely known; source-read or parser failures write neither artifact.
+
+Review the manifest and Draft manually. The Draft is not approval or implementation authorization: use the separate slice-approval operation, then separately authorize implementation according to `AGENTS.md`.
 
 ## Starting a new project
 

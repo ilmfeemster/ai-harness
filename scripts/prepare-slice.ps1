@@ -1,6 +1,7 @@
 [CmdletBinding(DefaultParameterSetName = 'Issue')]
 param(
     [Parameter(ParameterSetName = 'Issue')]
+    [Parameter(ParameterSetName = 'PrepareDraftSlice', Mandatory = $true)]
     [ValidateRange(1, [int]::MaxValue)]
     [int]$IssueNumber,
 
@@ -26,6 +27,9 @@ param(
 
     [Parameter(ParameterSetName = 'DraftSlice')]
     [string]$ContextManifestPath,
+
+    [Parameter(ParameterSetName = 'PrepareDraftSlice', Mandatory = $true)]
+    [switch]$PrepareDraftSlice,
 
     [switch]$NoRun
 )
@@ -1557,8 +1561,10 @@ function Test-DraftGeneratedSlice {
 
 function Invoke-DraftSliceGeneration {
     param(
-        [Parameter(Mandatory = $true)]
         [string]$NormalizedIssueJsonPath,
+
+        [AllowNull()]
+        [psobject]$NormalizedIssue,
 
         [Parameter(Mandatory = $true)]
         [string]$ContextManifestPath,
@@ -1574,14 +1580,25 @@ function Invoke-DraftSliceGeneration {
     )
 
     $root = (Resolve-Path -LiteralPath $RepositoryRoot).Path
-    $normalized = $null
-    try {
-        $normalized = Get-NormalizedIssueContractFromFile -Path $NormalizedIssueJsonPath
+    $normalized = $NormalizedIssue
+    if ($null -eq $normalized) {
+        try {
+            if ([string]::IsNullOrWhiteSpace($NormalizedIssueJsonPath)) { throw 'normalized contract path is required' }
+            $normalized = Get-NormalizedIssueContractFromFile -Path $NormalizedIssueJsonPath
+        }
+        catch {
+            return Get-DraftResult -IssueNumber 0 -Generated $false -ManifestPath $ContextManifestPath -Blockers @(
+                (New-DraftBlocker -Category 'Normalized contract' -Message 'normalized Issue contract is missing or invalid; no active slice was written.')
+            )
+        }
     }
-    catch {
-        return Get-DraftResult -IssueNumber 0 -Generated $false -ManifestPath $ContextManifestPath -Blockers @(
-            (New-DraftBlocker -Category 'Normalized contract' -Message 'normalized Issue contract is missing or invalid; no active slice was written.')
-        )
+    else {
+        try { Assert-NormalizedIssueContract -NormalizedIssue $normalized }
+        catch {
+            return Get-DraftResult -IssueNumber 0 -Generated $false -ManifestPath $ContextManifestPath -Blockers @(
+                (New-DraftBlocker -Category 'Normalized contract' -Message 'normalized Issue contract is missing or invalid; no active slice was written.')
+            )
+        }
     }
     $issueNumber = [int]$normalized.Source.Number
     $manifest = Get-DraftManifestInput -RepositoryRoot $root -ManifestPath $ContextManifestPath -IssueNumber $issueNumber -FileReader $FileReader
@@ -1666,8 +1683,126 @@ function Invoke-DraftSliceGeneration {
     return Get-DraftResult -IssueNumber $issueNumber -Generated $true -ManifestPath $manifest.RelativePath -OutputPath 'docs/current-slice.md' -Blockers @()
 }
 
+function New-PreparationWorkflowResult {
+    param(
+        [Parameter(Mandatory = $true)]
+        [int]$IssueNumber,
+
+        [Parameter(Mandatory = $true)]
+        [bool]$Prepared,
+
+        [Parameter(Mandatory = $true)]
+        [string]$Stage,
+
+        [AllowNull()]
+        [string]$ManifestPath,
+
+        [AllowNull()]
+        [string]$DraftPath,
+
+        [AllowEmptyCollection()]
+        [object[]]$Blockers
+    )
+
+    $safeBlockers = @($Blockers | ForEach-Object {
+        $path = if ($null -ne $_.PSObject.Properties['Path'] -and $null -ne $_.Path) { Get-SafeManifestText -Value ([string]$_.Path) } else { $null }
+        $issue = if ($null -ne $_.PSObject.Properties['IssueNumber'] -and $null -ne $_.IssueNumber) { $_.IssueNumber } else { $null }
+        [pscustomobject]@{
+            Category = Get-SafeManifestText -Value ([string]$_.Category)
+            Message = Get-SafeManifestText -Value ([string]$_.Message)
+            Path = $path
+            IssueNumber = $issue
+        }
+    })
+    [pscustomobject]@{
+        IssueNumber = $IssueNumber
+        Prepared = $Prepared
+        Stage = $Stage
+        ManifestPath = if ($null -ne $ManifestPath) { Get-SafeManifestText -Value $ManifestPath } else { $null }
+        DraftPath = if ($null -ne $DraftPath) { Get-SafeManifestText -Value $DraftPath } else { $null }
+        BlockerCount = $safeBlockers.Count
+        Blockers = $safeBlockers
+    }
+}
+
+function Invoke-PreparationWorkflow {
+    param(
+        [Parameter(Mandatory = $true)]
+        [int]$IssueNumber,
+
+        [Parameter(Mandatory = $true)]
+        [string]$RepositoryRoot,
+
+        [AllowNull()]
+        [scriptblock]$IssueSnapshotReader,
+
+        [AllowNull()]
+        [scriptblock]$DependencyStateReader,
+
+        [AllowNull()]
+        [scriptblock]$FileReader
+    )
+
+    $root = (Resolve-Path -LiteralPath $RepositoryRoot).Path
+    $normalized = $null
+    try {
+        $snapshot = if ($null -ne $IssueSnapshotReader) { & $IssueSnapshotReader $IssueNumber } else { Get-IssueSnapshotFromGitHub -Number $IssueNumber }
+        $normalized = Get-NormalizedIssue -Snapshot $snapshot
+        Assert-NormalizedIssueContract -NormalizedIssue $normalized
+    }
+    catch {
+        $message = [string]$_.Exception.Message
+        $category = 'Prerequisite'
+        $action = 'Verify GitHub CLI availability, authentication, repository access, and the explicit Issue number.'
+        if ($message -match 'does not match exactly one supported|missing required section|Readiness') {
+            $category = 'Parser'
+            $action = 'Use one supported Issue form with every required section and checked readiness confirmation.'
+        }
+        elseif ($message -match 'is not open') {
+            $category = 'Source Issue'
+            $action = 'Use an open Ready Issue; preparation does not alter Issue state.'
+        }
+        $blocker = New-DraftBlocker -Category $category -IssueNumber $IssueNumber -Message $action
+        return New-PreparationWorkflowResult -IssueNumber $IssueNumber -Prepared $false -Stage 'Normalization' -ManifestPath $null -DraftPath $null -Blockers @($blocker)
+    }
+
+    $manifestPath = 'docs/context-manifests/' + [int]$normalized.Source.Number + '.md'
+    $manifest = $null
+    try {
+        $manifest = Resolve-ContextManifest -NormalizedIssue $normalized -RepositoryRoot $root -OutputPath $manifestPath -FileReader $FileReader
+        Write-ContextManifest -Manifest $manifest -ManifestOutputRoot (Join-Path $root 'docs/context-manifests') | Out-Null
+    }
+    catch {
+        $blocker = New-DraftBlocker -Category 'Context' -Path $manifestPath -Message 'bounded context preparation or manifest write failed; verify required local authorities and repository write access.'
+        return New-PreparationWorkflowResult -IssueNumber $IssueNumber -Prepared $false -Stage 'Context' -ManifestPath $manifestPath -DraftPath $null -Blockers @($blocker)
+    }
+
+    if (@($manifest.Blockers).Count -gt 0 -or -not $manifest.DownstreamReady) {
+        return New-PreparationWorkflowResult -IssueNumber $IssueNumber -Prepared $false -Stage 'Context' -ManifestPath $manifestPath -DraftPath $null -Blockers @($manifest.Blockers)
+    }
+
+    $draft = Invoke-DraftSliceGeneration `
+        -NormalizedIssue $normalized `
+        -ContextManifestPath $manifestPath `
+        -RepositoryRoot $root `
+        -DependencyStateReader $DependencyStateReader `
+        -FileReader $FileReader
+    $draftPath = $null
+    if ($draft.Generated) { $draftPath = 'docs/current-slice.md' }
+    return New-PreparationWorkflowResult `
+        -IssueNumber $IssueNumber `
+        -Prepared $draft.Generated `
+        -Stage 'Draft' `
+        -ManifestPath $manifestPath `
+        -DraftPath $draftPath `
+        -Blockers @($draft.Blockers)
+}
+
 if (-not $NoRun) {
-    if ($GenerateDraftSlice) {
+    if ($PrepareDraftSlice) {
+        Invoke-PreparationWorkflow -IssueNumber $IssueNumber -RepositoryRoot (Get-Location).Path | ConvertTo-Json -Depth 8 -Compress
+    }
+    elseif ($GenerateDraftSlice) {
         if ([string]::IsNullOrWhiteSpace($NormalizedIssueJsonPath) -or [string]::IsNullOrWhiteSpace($ContextManifestPath) -or [string]::IsNullOrWhiteSpace($RepositoryRoot)) {
             throw 'Draft-generation mode requires NormalizedIssueJsonPath, ContextManifestPath, and RepositoryRoot.'
         }
